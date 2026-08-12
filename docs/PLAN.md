@@ -107,14 +107,17 @@ All unknown values are `TODO:` in content files. Never in components.
 Section order is the strategy. Not rearranged.
 
 1. Hero — full-bleed media, orchestrated load sequence, one `<h1>`
-2. Positioning line — one large sentence on `wax`, plenty of air
-3. Latest event recap — one featured event, full-bleed, huge
-4. Events grid — 3–5 image-led cards with hive ID chips → `/events`
-5. Podcast — one featured episode + platform links
-6. Partners — logo marquee, single row, quiet. **The only marquee on the page.**
-7. By the numbers — odometer digit roll; figures `TODO:` pending real data
+2. Photo carousel — continuous top-aligned row of event frames
+3. By the numbers — five figures, count-up on scroll into view
+4. Latest event recap — one featured event, full-bleed, huge
+5. Events grid — 3–5 image-led cards with hive ID chips → `/events`
+6. Podcast — one featured episode + platform links
+7. Partners — logo marquee, single row, quiet
 8. Join the Hive — community CTA
 9. Footer
+
+The positioning line was cut: the hero headline now carries the same claim, and
+stating it twice within two screens weakened both.
 
 **Stop here for review.**
 

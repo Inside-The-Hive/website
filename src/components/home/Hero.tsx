@@ -20,7 +20,12 @@ import type { Event } from "@/lib/content/schema";
  * Pure CSS: no JS gate, so it cannot block interaction or shift layout.
  */
 
-const LINES = ["We were", "in the room."];
+/**
+ * Hard-split so the break is designed rather than left to the wrap. Each line
+ * is its own clipping mask for the stagger, so a line that wraps on its own
+ * would break out of its mask — the split has to match what actually fits.
+ */
+const LINES = ["Africa's biggest", "web3 media", "brand."];
 
 export function Hero({ event }: { event: Event | null }) {
   return (
@@ -68,14 +73,14 @@ export function Hero({ event }: { event: Event | null }) {
               "hive-media-resolve var(--dur-base) var(--ease-out-expo) 120ms both",
           }}
         >
-          African Web3 media
+          Events · Podcast · Coverage
         </p>
 
         <h1 className="text-(length:--text-mega) text-ink">
           {/* The visible lines are split for the stagger, which would otherwise
-              concatenate into "We werein the room." for assistive tech and for
-              search engines. The accessible sentence is provided once here and
-              the decorative split is hidden from the tree. */}
+              concatenate without a space ("Africa's biggestweb3 media brand.")
+              for assistive tech and for search engines. The accessible sentence
+              is provided once here and the decorative split is hidden. */}
           <span className="sr-only">{LINES.join(" ")}</span>
           <span aria-hidden>
             {LINES.map((line, index) => (

@@ -88,7 +88,14 @@ function Stat({
           </>
         )}
       </dd>
-      <dt className="mt-4 text-ink/55">{stat.label}</dt>
+      {/* Gap scales with the figure, not with the label. leading-[0.85] makes
+          the figure's line box shorter than its digits, so a fixed margin gets
+          eaten by that overhang as the type grows — at 1920 a fixed mt-5 left
+          barely a pixel of daylight. The vw term matches the figure's own
+          clamp, so the spacing holds at every width. */}
+      <dt className="mt-[clamp(0.75rem,1.4vw,1.75rem)] text-ink/55">
+        {stat.label}
+      </dt>
     </div>
   );
 }
@@ -138,7 +145,15 @@ export function StatCounters() {
   const allPending = stats.every((stat) => stat.value === null);
 
   return (
-    <section ref={sectionRef} className="u-section text-ink">
+    // Its own vertical rhythm rather than the shared --spacing-section. This is
+    // one short row, not a full section of content, so it needs more air around
+    // it than the token gives to earn its place between the carousel above and
+    // whatever follows — and the other eight sections should not inflate to
+    // match.
+    <section
+      ref={sectionRef}
+      className="py-[clamp(6rem,18vh,14rem)] text-ink"
+    >
       <div className="u-gutter">
         {/* One row of five, each column an equal share so the stats are evenly
             spaced rather than bunched by how wide their figures happen to be.

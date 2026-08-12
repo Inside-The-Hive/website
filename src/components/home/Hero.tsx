@@ -76,7 +76,13 @@ export function Hero({ event }: { event: Event | null }) {
           Events · Podcast · Coverage
         </p>
 
-        <h1 className="text-(length:--text-mega) text-ink">
+        {/* Weight 400 with looser tracking. At mega size the light weight is
+            the statement — 800 read as shouting, and Inter Tight holds its
+            shape at 400 far better than a grotesque would. Overrides the
+            weight-800 base rule for h1/h2/h3 in globals.css. */}
+        {/* Tighter than the global 0.92 for h1 — at mega size the three-line
+            stack wants to read as a block. */}
+        <h1 className="text-mega font-normal leading-[0.8] tracking-[-0.02em] text-ink">
           {/* The visible lines are split for the stagger, which would otherwise
               concatenate without a space ("Africa's biggestweb3 media brand.")
               for assistive tech and for search engines. The accessible sentence

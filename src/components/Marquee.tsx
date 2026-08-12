@@ -32,7 +32,7 @@ export function Marquee() {
     return (
       <ul className="u-gutter flex flex-wrap gap-x-12 gap-y-4">
         {partners.map((partner) => (
-          <li key={partner.name} className="u-label text-wax/70">
+          <li key={partner.name} className="u-label text-ink/60">
             {partner.name}
           </li>
         ))}
@@ -52,13 +52,16 @@ export function Marquee() {
       }}
     >
       <ul
-        className="flex w-max items-center gap-16 pr-16"
+        // gap-16 on the list plus a matching pl-16 on the duplicate half keeps
+        // the seam spacing identical to every other gap, so the loop point is
+        // invisible rather than showing two logos bunched together.
+        className="flex w-max items-center gap-16 pl-16"
         style={{ animation: "hive-marquee 42s linear infinite" }}
       >
         {[...partners, ...partners].map((partner, index) => (
           <li
             key={`${partner.name}-${index}`}
-            className="u-label shrink-0 text-wax/70"
+            className="u-label shrink-0 text-ink/60"
             // The duplicate half is decorative — screen readers read the list once.
             aria-hidden={index >= partners.length}
           >

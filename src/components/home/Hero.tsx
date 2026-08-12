@@ -24,7 +24,10 @@ const LINES = ["We were", "in the room."];
 
 export function Hero({ event }: { event: Event | null }) {
   return (
-    <section className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden">
+    // Type sits low in the frame so the media above it carries the top of the
+    // viewport — the room arrives behind the words, which is the whole point of
+    // the load sequence.
+    <section className="relative flex min-h-[92svh] flex-col justify-end overflow-hidden pt-[30svh]">
       {/* Media resolves in behind the type. */}
       <div
         className="absolute inset-0 -z-10"
@@ -40,22 +43,26 @@ export function Hero({ event }: { event: Event | null }) {
           }
           priority
           fill={false}
+          quiet
           sizes="100vw"
           className="h-full w-full"
         />
-        {/* Legibility scrim. Type must hold over any frame we drop in later. */}
+        {/* Legibility scrim. The page is white and the headline is ink, so the
+            scrim fades the media to white at the bottom where the type sits —
+            the inverse of a dark-theme scrim. Type must hold over any frame we
+            drop in later. */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to top, var(--color-ink) 8%, color-mix(in srgb, var(--color-ink) 55%, transparent) 45%, color-mix(in srgb, var(--color-ink) 25%, transparent) 100%)",
+              "linear-gradient(to top, var(--color-white) 6%, color-mix(in srgb, var(--color-white) 82%, transparent) 38%, color-mix(in srgb, var(--color-white) 35%, transparent) 100%)",
           }}
         />
       </div>
 
       <div className="u-gutter pb-[clamp(3rem,10vh,7rem)]">
         <p
-          className="u-label mb-8 text-honey"
+          className="u-label mb-8 text-ink"
           style={{
             animation:
               "hive-media-resolve var(--dur-base) var(--ease-out-expo) 120ms both",
@@ -64,7 +71,7 @@ export function Hero({ event }: { event: Event | null }) {
           African Web3 media
         </p>
 
-        <h1 className="text-(length:--text-mega) text-wax">
+        <h1 className="text-(length:--text-mega) text-ink">
           {/* The visible lines are split for the stagger, which would otherwise
               concatenate into "We werein the room." for assistive tech and for
               search engines. The accessible sentence is provided once here and
@@ -89,7 +96,7 @@ export function Hero({ event }: { event: Event | null }) {
         </h1>
 
         <p
-          className="mt-8 max-w-xl text-wax/80"
+          className="mt-8 max-w-xl text-ink/70"
           style={{
             animation:
               "hive-media-resolve var(--dur-base) var(--ease-out-expo) 640ms both",

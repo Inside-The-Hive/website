@@ -28,17 +28,26 @@ export function Nav() {
       className={cn(
         "fixed inset-x-0 top-0 z-50",
         "transition-colors duration-(--dur-fast) ease-(--ease-out-expo)",
-        scrolled ? "u-rule border-b bg-carbon" : "border-b border-transparent",
+        scrolled ? "u-rule border-b bg-white" : "border-b border-transparent",
       )}
     >
       <nav
         aria-label="Primary"
         className="u-gutter flex items-center justify-between gap-6 py-4"
       >
+        {/* The wordmark is the one place yellow appears as a brand mark. The
+            hive dot carries it; the name stays ink so it always passes AA. */}
         <Link
           href="/"
-          className="font-display text-xl leading-none font-extrabold tracking-[-0.03em] text-wax"
+          className="flex items-center gap-2 font-display text-xl leading-none font-extrabold tracking-[-0.03em] text-ink"
         >
+          <span
+            aria-hidden
+            className="inline-block size-3 shrink-0 bg-honey"
+            style={{
+              clipPath: "polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%)",
+            }}
+          />
           {site.name}
         </Link>
 
@@ -55,7 +64,12 @@ export function Nav() {
                     className={cn(
                       "u-label inline-flex min-h-11 items-center",
                       "transition-colors duration-(--dur-fast) ease-(--ease-out-expo)",
-                      active ? "text-honey" : "text-wax hover:text-honey",
+                      // Active is full-strength ink with a honey underline;
+                      // resting is muted. Yellow marks state without ever
+                      // carrying the text itself.
+                      active
+                        ? "text-ink underline decoration-honey decoration-2 underline-offset-8"
+                        : "text-ink/60 hover:text-ink",
                     )}
                   >
                     {link.label}
@@ -72,15 +86,17 @@ export function Nav() {
               target="_blank"
               rel="noopener"
               data-analytics="merch-outbound"
-              className="u-label inline-flex min-h-11 items-center text-wax transition-colors duration-(--dur-fast) hover:text-honey"
+              className="u-label inline-flex min-h-11 items-center gap-1 text-ink/60 transition-colors duration-(--dur-fast) hover:text-ink"
             >
               Merch <span aria-hidden>↗</span>
               <span className="sr-only">(opens in a new tab)</span>
             </a>
 
+            {/* Yellow as a fill with ink text — 19.3:1, and the one loud
+                element in the bar. */}
             <Link
               href="/join"
-              className="u-label inline-flex min-h-11 items-center bg-honey px-4 text-ink transition-colors duration-(--dur-fast) hover:bg-pollen"
+              className="u-label inline-flex min-h-11 items-center bg-honey px-5 text-ink transition-colors duration-(--dur-fast) hover:bg-ink hover:text-white"
             >
               Join the Hive
             </Link>

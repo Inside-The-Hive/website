@@ -44,20 +44,20 @@ export function EventCard({
         </div>
 
         <div className="mt-5 flex items-baseline justify-between gap-4">
-          <h3 className="text-(length:--text-h3) text-wax">{event.title}</h3>
-          <span className="u-label shrink-0 text-wax/60">
+          <h3 className="text-(length:--text-h3) text-ink">{event.title}</h3>
+          <span className="u-label shrink-0 text-ink/55">
             {formatEventDate(event.date)}
           </span>
         </div>
 
-        <p className="mt-2 max-w-prose text-small text-wax/80">{event.summary}</p>
+        <p className="mt-2 max-w-prose text-small text-ink/70">{event.summary}</p>
 
-        <p className="u-label mt-4 flex gap-3 text-honey">
+        <p className="u-label mt-4 flex gap-3 text-ink">
           <span>{event.role}</span>
-          <span aria-hidden className="text-wax/40">
+          <span aria-hidden className="text-ink/40">
             /
           </span>
-          <span className="text-wax/60">{event.location}</span>
+          <span className="text-ink/55">{event.location}</span>
         </p>
       </Link>
     </article>

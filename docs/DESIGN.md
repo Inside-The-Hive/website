@@ -82,59 +82,52 @@ extracted. They are `TODO:` in the content files, never in components.
 
 ## 4. Colour
 
-Warm-black base, honey accent, beeswax light sections, one deep propolis brown so the palette
-is not a flat black-and-yellow cliché.
+**Light theme.** White page, black text, yellow reserved for the logo and small accent marks.
 
 | Token | Hex | Role |
 |---|---|---|
-| `ink` | `#0E0D0F` | Page base, dark sections |
-| `carbon` | `#1A181C` | Raised surfaces, scrolled nav, skeletons |
-| `honey` | `#F0A202` | Primary accent, CTAs, active states |
-| `pollen` | `#FFE08A` | Soft highlight, hover tints, focus rings |
-| `wax` | `#F3EDE3` | Light-section base, body text on dark |
-| `propolis` | `#6B2D0E` | Rules, section breaks, hover fills |
+| `white` | `#FFFFFF` | Page base |
+| `ink` | `#0A0A0A` | All body and display text; inverted sections |
+| `ash` | `#F4F4F2` | Raised surfaces, media skeletons |
+| `line` | `#E2E0DC` | Hairline rules |
+| `honey` | `#F0A202` | Logo, fills, active marks. **Never text.** |
+| `propolis` | `#6B2D0E` | Warm emphasis, used sparingly |
 
 **Measured contrast** (computed by `src/lib/contrast.ts`, rendered live on `/style-guide`):
 
 | Pair | Ratio | Grade |
 |---|---|---|
-| `wax` on `ink` | 16.65:1 | AAA |
-| `ink` on `wax` | 16.65:1 | AAA |
-| `pollen` on `ink` | 15.03:1 | AAA |
-| `honey` on `ink` | 9.12:1 | AAA |
-| `propolis` on `wax` | 8.99:1 | AAA |
-| **`honey` on `wax`** | **1.83:1** | **FAIL** |
-| **`propolis` on `ink`** | **1.85:1** | **FAIL** |
+| `ink` on `white` | 19.80:1 | AAA |
+| `white` on `ink` | 19.80:1 | AAA |
+| `ink` on `ash` | 17.98:1 | AAA |
+| `propolis` on `white` | 10.46:1 | AAA |
+| `ink` on `honey` | 9.31:1 | AAA |
+| `ink/70` on `white` | 8.45:1 | AAA |
+| `ink/55` on `white` | 4.74:1 | AA (lightest permitted text) |
+| **`honey` on `white`** | **2.13:1** | **FAIL** |
 
 **Rules, non-negotiable:**
 
-- Honey is an accent. Never a large field, never a background for body copy.
-- **Never honey text on wax** — 1.83:1. Use `ink` on wax, or `propolis` for warm emphasis.
-- On `ink`: body text is `wax`; secondary is `wax` at 80%, which stays well clear of AA.
-- `honey` on `ink` at 9.12:1 is safe for large display and small utility text alike.
-- `propolis` is a *structural* colour on dark — rules, dividers, hover fills. **Never text on
-  ink** (1.85:1). On wax it is a valid text colour (8.99:1).
-
-Contrast is computed at render time, never asserted by hand. The two failing combinations are
-rendered on `/style-guide` with a FAIL badge so nobody rediscovers them.
+- **Yellow never carries text.** At 2.13:1 on white it fails AA badly. It appears as the logo
+  mark, as button and chip fills with ink text on top (9.31:1), as the active-nav underline, and
+  as the placeholder slot marks in "By the numbers".
+- Body and display text is `ink`. Secondary copy bottoms out at `ink/55` (4.74:1).
+- `propolis` is the only warm colour permitted to carry text, and only on white.
+- One inverted section per page maximum — the Join CTA — so the white scroll has a hard stop at
+  the point of conversion.
 
 ---
 
 ## 5. Type
 
-Three families. A fourth would dilute the voice.
+**One family: Inter.** Hierarchy comes from weight and size, not from switching typefaces.
 
-**Display — Bricolage Grotesque.** Variable, with optical-size and width axes. This is the
-personality. The wonky, slightly-imperfect grotesque reads as *made by people who were there*
-rather than *rendered by a brand agency*. Hero at `--text-mega`, weight 800, tracking `-0.03em`.
-Tight tracking is essential — at 12rem, default tracking looks accidental.
-
-**Body — Instrument Sans.** Warm, humanist, and specifically *not Inter*. Inter is the default
-that makes every site look like every other site.
-
-**Utility — Space Mono.** Eyebrows, dates, hive IDs, index numbers, nav, filter chips.
-Uppercase, `0.08em` tracking, small. The mono is doing real work: it marks everything that is
-*data about the thing* as distinct from *the thing itself*.
+- **Display — Inter Tight, weight 800**, tracking `-0.03em`, line-height 0.92. Very large.
+  Inter Tight's narrower widths let the headline hold at 12rem without the letterspacing looking
+  accidental.
+- **Body — Inter, weight 400.**
+- **Labels — Inter, weight 600**, uppercase, `0.08em` tracking, small. Eyebrows, dates, hive IDs,
+  counts, filter chips. Marks everything that is *data about the thing* as distinct from the thing.
 
 ### Scale
 
@@ -148,11 +141,10 @@ Fluid, clamp-based, capped so 2560px does not become absurd.
 | `--text-h3` | `clamp(1.5rem, 2.5vw, 2.25rem)` | Card titles |
 | `--text-body` | `clamp(1rem, 1.1vw, 1.125rem)` | Body |
 | `--text-small` | `0.875rem` | Secondary |
-| `--text-label` | `0.75rem` | Space Mono, uppercase, tracked |
+| `--text-label` | `0.75rem` | Uppercase, tracked |
 
-At 360px, `--text-mega` resolves to 3.5rem (56px). A four-word headline wraps to three lines and
-does not overflow — this is the case that must be tested first, and it is why the floor is 3.5rem
-and not larger.
+Measured at 360px, `--text-mega` resolves to 56px and the headline ends at x=340 inside a 360px
+viewport — verified with a real browser, not assumed.
 
 ---
 
@@ -181,9 +173,9 @@ more convincing as the catalogue grows, which is the opposite of how decoration 
 
 **Behaviour:**
 
-- Resting: `wax` text, hairline `propolis` border, transparent fill.
+- Resting: `ink` fill with `white` text — it sits on photography, so it carries its own ground.
 - Hover on the parent card: image desaturates to ~60% and the second gallery frame cross-fades
-  in (the NiceAtNoon move); the chip fills `honey` and the text inverts to `ink`.
+  in (the NiceAtNoon move); the chip fills `honey` with `ink` text (9.31:1).
 - Transition `--dur-fast` on the chip, `--dur-base` on the image. The chip snapping before the
   image settles is what makes it feel mechanical rather than soft.
 
@@ -198,7 +190,7 @@ This is where the boldness is spent. Everything else stays quiet.
 
 The display type sets **before** the hero media resolves behind it.
 
-1. `0ms` — `ink` field. Nothing.
+1. `0ms` — white field. Nothing.
 2. `120ms` — headline sets line by line, each line clipped and rising from its own baseline,
    80ms stagger, `--ease-out-expo`.
 3. `560ms` — hero media fades up from black behind the type, `--dur-slow`, and the honey progress
@@ -215,8 +207,9 @@ No other section animates beyond a 300ms opacity/translate reveal.
 
 ### Media skeletons
 
-Photography and video are not delivered yet. Until they land, `<HiveMedia>` renders a `carbon`
-block at the correct aspect ratio with a slow honey shimmer sweep and the hive ID chip in place.
+Photography and video are not delivered yet. Until they land, `<HiveMedia>` renders a warm
+honey-tinted panel at the correct aspect ratio with a slow shimmer sweep, a "Photography coming"
+caption, and the hive ID chip in place.
 The layout is therefore final and testable now, and swapping in real assets is a content-file
 change with zero component edits. The skeleton is a deliberate, designed state — not a grey box.
 

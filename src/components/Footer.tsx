@@ -14,10 +14,10 @@ export function Footer() {
       <div className="u-gutter u-section">
         <div className="flex flex-col gap-16 lg:flex-row lg:justify-between">
           <div className="max-w-md">
-            <p className="font-display text-(length:--text-h3) leading-[0.95] font-extrabold tracking-[-0.03em] text-wax">
+            <p className="font-display text-(length:--text-h3) leading-[0.95] font-extrabold tracking-[-0.03em] text-ink">
               {site.name}
             </p>
-            <p className="mt-4 text-wax/80">
+            <p className="mt-4 text-ink/70">
               African Web3 media. We host the room, cover the room, and put a microphone
               in it.
             </p>
@@ -29,7 +29,7 @@ export function Footer() {
           >
             {footerGroups.map((group) => (
               <div key={group.title}>
-                <h2 className="u-label font-mono text-honey">{group.title}</h2>
+                <h2 className="u-label font-mono text-ink">{group.title}</h2>
                 <ul className="mt-4 flex flex-col gap-3">
                   {group.links.map((link) => (
                     <li key={link.href}>
@@ -38,14 +38,14 @@ export function Footer() {
                           href={link.href}
                           target="_blank"
                           rel="noopener"
-                          className="inline-flex min-h-11 items-center text-small text-wax/80 transition-colors duration-(--dur-fast) hover:text-honey"
+                          className="inline-flex min-h-11 items-center text-small text-ink/70 transition-colors duration-(--dur-fast) hover:text-ink"
                         >
                           {link.label}
                         </a>
                       ) : (
                         <Link
                           href={link.href}
-                          className="inline-flex min-h-11 items-center text-small text-wax/80 transition-colors duration-(--dur-fast) hover:text-honey"
+                          className="inline-flex min-h-11 items-center text-small text-ink/70 transition-colors duration-(--dur-fast) hover:text-ink"
                         >
                           {link.label}
                         </Link>
@@ -58,7 +58,7 @@ export function Footer() {
           </nav>
         </div>
 
-        <p className="u-label mt-20 text-wax/60">
+        <p className="u-label mt-20 text-ink/55">
           © {year} {site.name}
         </p>
       </div>

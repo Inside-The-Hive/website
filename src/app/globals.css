@@ -15,42 +15,42 @@
 
 @theme {
   /* ---- Color -------------------------------------------------------------
-     Warm-black base, honey accent, beeswax light sections, one deep propolis
-     brown so the palette is not a flat black-and-yellow cliché.
+     Light theme. White page, black text, yellow reserved for the logo and
+     small accents.
 
      Contrast, computed (see /style-guide for the live matrix):
-       wax on ink ........... 16.65:1  AAA
-       ink on wax ........... 16.65:1  AAA
-       pollen on ink ........ 15.03:1  AAA
-       honey on ink .......... 9.12:1  AAA
-       propolis on wax ....... 8.99:1  AAA   (warm emphasis on light)
+       ink on white ......... 19.80:1  AAA   (all body and display text)
+       white on ink ......... 19.80:1  AAA   (inverted sections, CTAs)
+       ink on ash ........... 17.98:1  AAA   (text on a raised surface)
+       ink on honey .......... 9.31:1  AAA   (buttons, hive ID chip on hover)
+       propolis on white .... 10.46:1  AAA   (warm emphasis, used sparingly)
+       ink/70 on white ....... 8.45:1  AAA   (secondary copy)
+       ink/55 on white ....... 4.74:1  AA    (lightest permitted text)
 
-     Two combinations FAIL and must never ship:
-       honey on wax .......... 1.83:1  — never honey text on a light ground
-       propolis on ink ....... 1.85:1  — propolis is structural on dark, not text
+     Yellow NEVER carries text:
+       honey on white ........ 2.13:1  FAIL  — fills, marks and the logo only
   -------------------------------------------------------------------------- */
-  --color-ink: #0e0d0f;
-  --color-carbon: #1a181c;
-  --color-honey: #f0a202;
-  --color-pollen: #ffe08a;
-  --color-wax: #f3ede3;
-  --color-propolis: #6b2d0e;
+  --color-white: #ffffff;
+  --color-ink: #0a0a0a; /* body + display text, inverted section base */
+  --color-ash: #f4f4f2; /* light raised surface, skeletons, hover fills */
+  --color-line: #e2e0dc; /* hairline rules */
+  --color-honey: #f0a202; /* logo, small accents, fills. Never text. */
+  --color-propolis: #6b2d0e; /* warm emphasis, used sparingly */
 
-  /* ---- Type families -----------------------------------------------------
-     Three families. A fourth would dilute the voice.
-       display — Bricolage Grotesque: the personality. Used at scale, weight 800.
-       body    — Instrument Sans: warm humanist. Deliberately not Inter.
-       mono    — Space Mono: marks data *about* a thing (IDs, dates, counts).
-     The --font-* variables are injected by next/font in src/lib/fonts.ts.
+  /* ---- Type --------------------------------------------------------------
+     One family: Inter. Hierarchy comes from weight and size, not from
+     switching typefaces.
+       display — Inter Tight 800, tight negative tracking, very large
+       body    — Inter 400
+       label   — Inter 500/600, uppercase, tracked
   -------------------------------------------------------------------------- */
-  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
-  --font-body: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-space-mono), ui-monospace, monospace;
+  --font-display: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
   /* ---- Type scale (fluid, clamp-based) -----------------------------------
      Floors are set for 360px, ceilings so 2560px does not become absurd.
      --text-mega floors at 3.5rem because a four-word headline must wrap to
-     three lines at 360px without overflowing. Test that case first.
+     three lines at 360px without overflowing.
   -------------------------------------------------------------------------- */
   --text-mega: clamp(3.5rem, 13vw, 12rem); /* hero only, once per site */
   --text-h1: clamp(2.75rem, 7vw, 6rem);
@@ -58,11 +58,11 @@
   --text-h3: clamp(1.5rem, 2.5vw, 2.25rem);
   --text-body: clamp(1rem, 1.1vw, 1.125rem);
   --text-small: 0.875rem;
-  --text-label: 0.75rem; /* Space Mono, uppercase, tracked 0.08em */
+  --text-label: 0.75rem; /* uppercase, tracked 0.08em */
 
   /* ---- Spacing rhythm ----------------------------------------------------
      Two rhythms only. Separation comes from space and hairline rules, never
-     from containers. No component defines its own section padding.
+     from containers.
   -------------------------------------------------------------------------- */
   --spacing-gutter: clamp(1.25rem, 4vw, 3rem);
   --spacing-section: clamp(5rem, 12vh, 10rem);
@@ -88,8 +88,8 @@
   }
 
   body {
-    background: var(--color-ink);
-    color: var(--color-wax);
+    background: var(--color-white);
+    color: var(--color-ink);
     font-family: var(--font-body);
     font-size: var(--text-body);
     /* Prevent horizontal scroll from full-bleed children at any width. */
@@ -102,7 +102,7 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-pollen);
+    outline: 2px solid var(--color-ink);
     outline-offset: 3px;
   }
 
@@ -118,8 +118,6 @@
     text-wrap: balance;
   }
 
-  /* Lenis is active: it sets `html.lenis-scrolling`. When Lenis is disabled
-     (reduced motion) nothing here applies. */
   html.lenis,
   html.lenis body {
     height: auto;
@@ -142,16 +140,16 @@
 
 /* ==========================================================================
    Primitives
-   Only patterns used in three or more places live here. Everything else is a
-   Tailwind utility at the call site.
+   Only patterns used in three or more places live here.
    ========================================================================== */
 
 @layer components {
   /* Utility text: eyebrows, dates, hive IDs, counts, filter chips.
-     Space Mono, uppercase, tracked. Marks data *about* a thing. */
+     Inter 600, uppercase, tracked. Marks data *about* a thing. */
   .u-label {
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
     font-size: var(--text-label);
+    font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
@@ -166,8 +164,7 @@
     padding-block: var(--spacing-section);
   }
 
-  /* Full-bleed: escapes any centred container to touch both viewport edges.
-     Used by hero and featured event media. */
+  /* Full-bleed: escapes any centred container to touch both viewport edges. */
   .u-bleed {
     width: 100vw;
     margin-left: 50%;
@@ -176,7 +173,7 @@
 
   /* Hairline rule. The only divider on the site. */
   .u-rule {
-    border-color: color-mix(in srgb, var(--color-propolis) 60%, transparent);
+    border-color: var(--color-line);
   }
 }
 
@@ -207,8 +204,7 @@
   }
 }
 
-/* Skeleton shimmer for media that has not been delivered yet. A designed
-   state, not a grey box. */
+/* Skeleton shimmer for media that has not been delivered yet. */
 @keyframes hive-shimmer {
   from {
     transform: translateX(-100%);

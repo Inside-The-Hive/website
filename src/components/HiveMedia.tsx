@@ -31,6 +31,8 @@ export function HiveMedia({
   /** Second frame, cross-faded in on parent hover. Proof a real set exists. */
   hoverSrc,
   fill = true,
+  /** Hide the pending-state caption where the frame sits behind other content. */
+  quiet = false,
 }: {
   src?: string | null;
   /**
@@ -44,19 +46,20 @@ export function HiveMedia({
   className?: string;
   hoverSrc?: string | null;
   fill?: boolean;
+  quiet?: boolean;
 }) {
   const pending = !src || src.startsWith("TODO");
 
   return (
     <div
       className={cn(
-        "relative overflow-hidden bg-carbon",
+        "relative overflow-hidden bg-ash",
         fill && ratioClass[ratio],
         className,
       )}
     >
       {pending ? (
-        <Skeleton alt={alt} />
+        <Skeleton alt={alt} quiet={quiet} />
       ) : (
         <>
           <Image
@@ -98,12 +101,18 @@ export function HiveMedia({
  * Pending-media state. Announced to assistive tech so a screen reader user is
  * told the media is not available yet rather than meeting silence.
  */
-function Skeleton({ alt }: { alt: string }) {
+function Skeleton({ alt, quiet = false }: { alt: string; quiet?: boolean }) {
   return (
     <div
       className="absolute inset-0 overflow-hidden"
       role="img"
       aria-label={`${alt} — image coming soon`}
+      style={{
+        // A warm wash with enough weight to read as a deliberate panel against
+        // the white page, rather than as a hole in the layout.
+        background:
+          "linear-gradient(160deg, color-mix(in srgb, var(--color-honey) 18%, var(--color-ash)), color-mix(in srgb, var(--color-propolis) 7%, var(--color-ash)))",
+      }}
     >
       {/* Hairline frame so the empty state still reads as composed. */}
       <div className="u-rule absolute inset-0 border" />
@@ -111,13 +120,21 @@ function Skeleton({ alt }: { alt: string }) {
       {/* Honey shimmer sweep. Suppressed under reduced motion by the global
           rule in globals.css. */}
       <div
-        className="absolute -inset-x-full inset-y-0 opacity-[0.07]"
+        className="absolute -inset-x-full inset-y-0 opacity-30"
         style={{
           background:
             "linear-gradient(90deg, transparent, var(--color-honey), transparent)",
           animation: "hive-shimmer 2.6s var(--ease-out-expo) infinite",
         }}
       />
+
+      {/* Says what the state is, so an empty frame is never mistaken for a
+          broken image. Suppressed where the frame sits behind other content. */}
+      {!quiet && (
+        <span className="u-label absolute right-4 bottom-4 text-ink/35">
+          Photography coming
+        </span>
+      )}
     </div>
   );
 }

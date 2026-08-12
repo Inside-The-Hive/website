@@ -1,32 +1,27 @@
-import { Bricolage_Grotesque, Instrument_Sans, Space_Mono } from "next/font/google";
+import { Inter, Inter_Tight } from "next/font/google";
 
 /**
- * Three families, self-hosted at build time by next/font. No external font
- * requests at runtime.
+ * One family: Inter. Hierarchy comes from weight and size, not from switching
+ * typefaces.
  *
- * `display: "swap"` plus the adjusted fallback next/font generates from the
- * font metrics keeps cumulative layout shift at zero on load.
+ * Inter Tight carries display type at weight 800 with negative tracking; plain
+ * Inter carries body and labels. Both self-hosted at build time — no external
+ * font requests at runtime.
+ *
+ * `display: "swap"` plus the adjusted fallback next/font derives from the font
+ * metrics keeps cumulative layout shift at zero on load.
  */
 
-export const bricolage = Bricolage_Grotesque({
+export const inter = Inter({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-bricolage",
-  // Variable font: the optical-size and width axes ship with the weight range.
-  axes: ["opsz", "wdth"],
+  variable: "--font-inter",
 });
 
-export const instrument = Instrument_Sans({
+export const interTight = Inter_Tight({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-instrument",
+  variable: "--font-inter-tight",
 });
 
-export const spaceMono = Space_Mono({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-space-mono",
-  weight: ["400", "700"],
-});
-
-export const fontVariables = `${bricolage.variable} ${instrument.variable} ${spaceMono.variable}`;
+export const fontVariables = `${inter.variable} ${interTight.variable}`;

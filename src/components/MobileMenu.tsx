@@ -73,7 +73,7 @@ export function MobileMenu() {
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-controls="mobile-menu"
-        className="u-label -mr-2 inline-flex min-h-11 min-w-11 items-center justify-end text-wax md:hidden"
+        className="u-label -mr-2 inline-flex min-h-11 min-w-11 items-center justify-end text-ink md:hidden"
       >
         {open ? "Close" : "Menu"}
       </button>
@@ -85,14 +85,14 @@ export function MobileMenu() {
           role="dialog"
           aria-modal="true"
           aria-label="Site menu"
-          className="u-gutter fixed inset-0 z-50 flex flex-col justify-between bg-ink pt-24 pb-10 md:hidden"
+          className="u-gutter fixed inset-0 z-50 flex flex-col justify-between bg-white pt-24 pb-10 md:hidden"
         >
           <ul className="flex flex-col gap-2">
             {navLinks.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="block py-2 font-display text-(length:--text-h2) leading-[0.92] font-extrabold tracking-[-0.03em] text-wax transition-colors duration-(--dur-fast) hover:text-honey"
+                  className="block py-2 font-display text-(length:--text-h2) leading-[0.92] font-extrabold tracking-[-0.03em] text-ink transition-colors duration-(--dur-fast) hover:text-ink"
                 >
                   {link.label}
                 </Link>
@@ -104,7 +104,7 @@ export function MobileMenu() {
                 target="_blank"
                 rel="noopener"
                 data-analytics="merch-outbound"
-                className="block py-2 font-display text-(length:--text-h2) leading-[0.92] font-extrabold tracking-[-0.03em] text-wax transition-colors duration-(--dur-fast) hover:text-honey"
+                className="block py-2 font-display text-(length:--text-h2) leading-[0.92] font-extrabold tracking-[-0.03em] text-ink transition-colors duration-(--dur-fast) hover:text-ink"
               >
                 Merch <span aria-hidden>↗</span>
                 <span className="sr-only">(opens in a new tab)</span>
@@ -127,7 +127,7 @@ export function MobileMenu() {
                     href={social.href}
                     target="_blank"
                     rel="noopener"
-                    className="u-label inline-flex min-h-11 items-center text-wax/80 hover:text-honey"
+                    className="u-label inline-flex min-h-11 items-center text-ink/70 hover:text-ink"
                   >
                     {social.label}
                   </a>

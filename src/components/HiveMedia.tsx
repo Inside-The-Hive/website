@@ -31,7 +31,11 @@ export function HiveMedia({
   /** Second frame, cross-faded in on parent hover. Proof a real set exists. */
   hoverSrc,
   fill = true,
-  /** Hide the pending-state caption where the frame sits behind other content. */
+  /**
+   * Hide the pending-state caption AND the shimmer sweep. Used where the frame
+   * sits behind other content — a looping sweep behind the hero headline reads
+   * as a periodic flash rather than as a loading state.
+   */
   quiet = false,
 }: {
   src?: string | null;
@@ -109,24 +113,29 @@ function Skeleton({ alt, quiet = false }: { alt: string; quiet?: boolean }) {
       aria-label={`${alt} — image coming soon`}
       style={{
         // A warm wash with enough weight to read as a deliberate panel against
-        // the white page, rather than as a hole in the layout.
-        background:
-          "linear-gradient(160deg, color-mix(in srgb, var(--color-honey) 18%, var(--color-ash)), color-mix(in srgb, var(--color-propolis) 7%, var(--color-ash)))",
+        // the white page, rather than as a hole in the layout. Quiet frames sit
+        // behind other content, so they stay neutral and near-white.
+        background: quiet
+          ? "var(--color-white)"
+          : "linear-gradient(160deg, color-mix(in srgb, var(--color-honey) 18%, var(--color-ash)), color-mix(in srgb, var(--color-propolis) 7%, var(--color-ash)))",
       }}
     >
-      {/* Hairline frame so the empty state still reads as composed. */}
-      <div className="u-rule absolute inset-0 border" />
+      {/* Hairline frame so the empty state still reads as composed. Omitted on
+          quiet frames, which have no edge of their own to describe. */}
+      {!quiet && <div className="u-rule absolute inset-0 border" />}
 
       {/* Honey shimmer sweep. Suppressed under reduced motion by the global
-          rule in globals.css. */}
-      <div
-        className="absolute -inset-x-full inset-y-0 opacity-30"
-        style={{
-          background:
-            "linear-gradient(90deg, transparent, var(--color-honey), transparent)",
-          animation: "hive-shimmer 2.6s var(--ease-out-expo) infinite",
-        }}
-      />
+          rule in globals.css, and omitted entirely in quiet frames. */}
+      {!quiet && (
+        <div
+          className="absolute -inset-x-full inset-y-0 opacity-30"
+          style={{
+            background:
+              "linear-gradient(90deg, transparent, var(--color-honey), transparent)",
+            animation: "hive-shimmer 2.6s var(--ease-out-expo) infinite",
+          }}
+        />
+      )}
 
       {/* Says what the state is, so an empty frame is never mistaken for a
           broken image. Suppressed where the frame sits behind other content. */}

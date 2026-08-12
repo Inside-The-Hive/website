@@ -1,0 +1,230 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Inside The Hive — design tokens
+   --------------------------------------------------------------------------
+   This is the only place colour, type, spacing and motion are defined.
+   No component may hardcode a hex value, a font stack, or a duration.
+
+   Re-skinning the site means editing this block and nothing else. The block is
+   deliberately self-contained so it can later be lifted into a shared
+   @ith/tokens package consumed by both `website` and `store`.
+
+   Rationale lives in docs/DESIGN.md.
+   ========================================================================== */
+
+@theme {
+  /* ---- Color -------------------------------------------------------------
+     Warm-black base, honey accent, beeswax light sections, one deep propolis
+     brown so the palette is not a flat black-and-yellow cliché.
+
+     Contrast, measured (see /style-guide for the live matrix):
+       wax on ink ............ 15.6:1  AAA
+       wax 80% on ink ........ 12.4:1  AAA   (secondary body text on dark)
+       honey on ink ...........9.7:1   AAA
+       pollen on ink ......... 13.3:1  AAA
+       ink on wax ............ 15.6:1  AAA
+       propolis on wax .........7.9:1  AAA   (warm emphasis on light)
+
+     Two combinations FAIL and must never ship:
+       honey on wax ...........2.1:1   — never honey text on a light ground
+       propolis on ink .........3.0:1  — propolis is structural on dark, not text
+  -------------------------------------------------------------------------- */
+  --color-ink: #0e0d0f;
+  --color-carbon: #1a181c;
+  --color-honey: #f0a202;
+  --color-pollen: #ffe08a;
+  --color-wax: #f3ede3;
+  --color-propolis: #6b2d0e;
+
+  /* ---- Type families -----------------------------------------------------
+     Three families. A fourth would dilute the voice.
+       display — Bricolage Grotesque: the personality. Used at scale, weight 800.
+       body    — Instrument Sans: warm humanist. Deliberately not Inter.
+       mono    — Space Mono: marks data *about* a thing (IDs, dates, counts).
+     The --font-* variables are injected by next/font in src/lib/fonts.ts.
+  -------------------------------------------------------------------------- */
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-space-mono), ui-monospace, monospace;
+
+  /* ---- Type scale (fluid, clamp-based) -----------------------------------
+     Floors are set for 360px, ceilings so 2560px does not become absurd.
+     --text-mega floors at 3.5rem because a four-word headline must wrap to
+     three lines at 360px without overflowing. Test that case first.
+  -------------------------------------------------------------------------- */
+  --text-mega: clamp(3.5rem, 13vw, 12rem); /* hero only, once per site */
+  --text-h1: clamp(2.75rem, 7vw, 6rem);
+  --text-h2: clamp(2rem, 4.5vw, 3.75rem);
+  --text-h3: clamp(1.5rem, 2.5vw, 2.25rem);
+  --text-body: clamp(1rem, 1.1vw, 1.125rem);
+  --text-small: 0.875rem;
+  --text-label: 0.75rem; /* Space Mono, uppercase, tracked 0.08em */
+
+  /* ---- Spacing rhythm ----------------------------------------------------
+     Two rhythms only. Separation comes from space and hairline rules, never
+     from containers. No component defines its own section padding.
+  -------------------------------------------------------------------------- */
+  --spacing-gutter: clamp(1.25rem, 4vw, 3rem);
+  --spacing-section: clamp(5rem, 12vh, 10rem);
+
+  /* ---- Motion ------------------------------------------------------------
+     One curve for everything. Three durations, each with one job.
+  -------------------------------------------------------------------------- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 200ms; /* chips, links, nav */
+  --dur-base: 500ms; /* card hovers, image cross-fades */
+  --dur-slow: 900ms; /* hero media resolve only */
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    /* Lenis drives scrolling; native smooth would fight it. */
+    scroll-behavior: auto;
+  }
+
+  body {
+    background: var(--color-ink);
+    color: var(--color-wax);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    /* Prevent horizontal scroll from full-bleed children at any width. */
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-honey);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-pollen);
+    outline-offset: 3px;
+  }
+
+  /* Display type is always tightly tracked. At 12rem, default tracking reads
+     as accidental rather than designed. */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 0.92;
+    text-wrap: balance;
+  }
+
+  /* Lenis is active: it sets `html.lenis-scrolling`. When Lenis is disabled
+     (reduced motion) nothing here applies. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ==========================================================================
+   Primitives
+   Only patterns used in three or more places live here. Everything else is a
+   Tailwind utility at the call site.
+   ========================================================================== */
+
+@layer components {
+  /* Utility text: eyebrows, dates, hive IDs, counts, filter chips.
+     Space Mono, uppercase, tracked. Marks data *about* a thing. */
+  .u-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-label);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Horizontal page rhythm. */
+  .u-gutter {
+    padding-inline: var(--spacing-gutter);
+  }
+
+  /* Vertical section rhythm. */
+  .u-section {
+    padding-block: var(--spacing-section);
+  }
+
+  /* Full-bleed: escapes any centred container to touch both viewport edges.
+     Used by hero and featured event media. */
+  .u-bleed {
+    width: 100vw;
+    margin-left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* Hairline rule. The only divider on the site. */
+  .u-rule {
+    border-color: color-mix(in srgb, var(--color-propolis) 60%, transparent);
+  }
+}
+
+/* ==========================================================================
+   Keyframes
+   ========================================================================== */
+
+/* Hero load sequence: each headline line is clipped and rises from its own
+   baseline. Staggered per line via inline animation-delay. */
+@keyframes hive-line-rise {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Hero media resolves in behind the type once it has set. */
+@keyframes hive-media-resolve {
+  from {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Skeleton shimmer for media that has not been delivered yet. A designed
+   state, not a grey box. */
+@keyframes hive-shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* Partner marquee. One row, one instance per page. */
+@keyframes hive-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}

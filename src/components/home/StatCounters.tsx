@@ -135,7 +135,15 @@ export function StatCounters() {
   return (
     <section ref={sectionRef} className="u-section text-ink">
       <div className="u-gutter">
-        <dl className="mt-14 grid grid-cols-2 gap-x-8 gap-y-12 md:grid-cols-3 lg:grid-cols-5">
+        {/* One row of five, each column an equal share so the stats are evenly
+            spaced rather than bunched by how wide their figures happen to be.
+            The outer two align to the gutter rather than centring in their own
+            column, so the row sits flush with the rest of the page instead of
+            floating inside it.
+
+            Below sm it wraps, because five columns of this type at 360px would
+            leave the figures unreadable. */}
+        <dl className="grid grid-cols-2 items-start gap-x-6 gap-y-12 text-center sm:grid-cols-5 *:justify-self-center sm:[&>*:first-child]:justify-self-start sm:[&>*:last-child]:justify-self-end">
           {stats.map((stat) => (
             <Stat
               key={stat.label}

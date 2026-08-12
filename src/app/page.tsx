@@ -1,11 +1,11 @@
 import { Hero } from "@/components/home/Hero";
 import { HiveCarousel } from "@/components/home/HiveCarousel";
 import {
-  EventsGrid,
-  FeaturedEvent,
-  FeaturedPodcast,
-  JoinCta,
-  Partners,
+  // EventsGrid,
+  // FeaturedEvent,
+  // FeaturedPodcast,
+  // JoinCta,
+  // Partners,
 } from "@/components/home/Sections";
 import { StatCounters } from "@/components/home/StatCounters";
 import { site } from "@/content/site";
@@ -53,11 +53,11 @@ export default function Home() {
       <Hero event={featured} />
       <HiveCarousel />
       <StatCounters />
-      <FeaturedEvent event={featured} />
+      {/* <FeaturedEvent event={featured} />
       <EventsGrid events={rest} total={events.length} />
       <FeaturedPodcast episode={episode} />
       <Partners />
-      <JoinCta />
+      <JoinCta /> */}
     </>
   );
 }

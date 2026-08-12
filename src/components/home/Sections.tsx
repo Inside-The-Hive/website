@@ -3,7 +3,7 @@ import { EventCard } from "@/components/EventCard";
 import { HiveId } from "@/components/HiveId";
 import { HiveMedia } from "@/components/HiveMedia";
 import { Marquee } from "@/components/Marquee";
-import { podcastPlatforms, stats } from "@/content/site";
+import { podcastPlatforms } from "@/content/site";
 import { formatEventDate } from "@/lib/content";
 import type { Episode, Event } from "@/lib/content/schema";
 
@@ -11,21 +11,6 @@ import type { Episode, Event } from "@/lib/content/schema";
  * Homepage sections 2–8. Order is the strategy: events lead, podcast follows.
  * Section 1 (Hero) and 9 (Footer) live elsewhere.
  */
-
-/** 2. Positioning — one large sentence on wax, plenty of air. */
-export function Positioning() {
-  return (
-    <section className="u-section bg-ash text-ink">
-      <div className="u-gutter">
-        <p className="u-label text-propolis">Who we are</p>
-        <p className="mt-8 max-w-5xl font-display text-(length:--text-h2) leading-[0.95] font-extrabold tracking-[-0.03em] text-balance">
-          Inside The Hive is an African Web3 media brand. We host the room, cover the
-          room, and put a microphone in it.
-        </p>
-      </div>
-    </section>
-  );
-}
 
 /** 3. Latest event recap — one featured event, full-bleed, huge. The proof. */
 export function FeaturedEvent({ event }: { event: Event | null }) {
@@ -210,43 +195,6 @@ export function Partners() {
     <section className="u-section u-rule border-t">
       <p className="u-gutter u-label mb-10 text-ink/55">Trusted by</p>
       <Marquee />
-    </section>
-  );
-}
-
-/**
- * 7. By the numbers.
- *
- * Renders the labels with an em-dash where a figure is missing. No invented
- * statistics — the section proves the shape and waits for real data.
- */
-export function ByTheNumbers() {
-  return (
-    <section className="u-section u-rule border-t">
-      <div className="u-gutter">
-        <h2 className="text-(length:--text-h2)">By the numbers</h2>
-        <dl className="mt-14 grid grid-cols-2 gap-x-8 gap-y-12 lg:grid-cols-4">
-          {stats.map((stat) => (
-            <div key={stat.label} className="u-rule border-t pt-6">
-              <dd className="font-display text-(length:--text-h1) leading-[0.9] font-extrabold tracking-[-0.03em] text-ink">
-                {/* No invented statistics. A honey underscore holds the slot
-                    until the real figure arrives — it reads as a blank waiting
-                    to be filled, not as a broken value. */}
-                {stat.value ?? (
-                  <span className="inline-block h-[0.12em] w-[0.55em] translate-y-[-0.28em] bg-honey" />
-                )}
-              </dd>
-              <dt className="u-label mt-4 text-ink/55">{stat.label}</dt>
-            </div>
-          ))}
-        </dl>
-
-        {stats.every((stat) => stat.value === null) && (
-          <p className="u-label mt-10 text-ink/40">
-            Figures pending — see content/site.ts
-          </p>
-        )}
-      </div>
     </section>
   );
 }

@@ -70,7 +70,12 @@ function Stat({
 
   return (
     <div>
-      <dd className="font-display text-(length:--text-h1) leading-[0.85] font-normal tracking-[-0.04em] text-ink tabular-nums">
+      {/* Sized to the column, not to the hero. Hero scale (--text-mega, 187px at
+          1440) is roughly twice what a five-column row can hold — "2,000" alone
+          needs about 460px against a 234px column, and the figures collide with
+          their neighbours rather than merely overflowing their own cell. The vw
+          term here is the largest that keeps five on one line. */}
+      <dd className="font-display text-[clamp(3.25rem,6.4vw,8rem)] leading-[0.85] font-normal tracking-[-0.04em] text-ink tabular-nums">
         {stat.value === null ? (
           // No invented statistics. A honey underscore holds the slot until the
           // real figure arrives — it reads as a blank waiting to be filled, not

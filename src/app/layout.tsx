@@ -53,7 +53,7 @@ export default function RootLayout({
           <main id="main" tabIndex={-1}>
             {children}
           </main>
-          <Footer />
+          {/* <Footer /> */}
         </SmoothScroll>
 
         {gaId && <GoogleAnalytics gaId={gaId} />}

@@ -116,9 +116,16 @@ export const footerGroups = [
  * TODO(client): real figures. The section renders the labels and the odometer
  * with `value: null` until supplied — no invented statistics.
  */
+/**
+ * Homepage counters.
+ *
+ * `suffix` marks figures that are approximate by nature, so 20+ reads as a
+ * floor rather than an exact count.
+ */
 export const stats = [
-  { label: "Events covered", value: null as number | null },
-  { label: "Episodes published", value: null as number | null },
-  { label: "Guests hosted", value: null as number | null },
-  { label: "Cities", value: null as number | null },
+  { label: "Events hosted", value: 20, suffix: "+" },
+  { label: "Memories captured", value: 2000, suffix: "" },
+  { label: "Podcast episodes", value: 38, suffix: "" },
+  { label: "Spotify listeners", value: 589, suffix: "" },
+  { label: "Partnerships secured", value: 8, suffix: "" },
 ] as const;

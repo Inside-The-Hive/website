@@ -1,13 +1,13 @@
 import { Hero } from "@/components/home/Hero";
+import { HiveCarousel } from "@/components/home/HiveCarousel";
 import {
-  ByTheNumbers,
   EventsGrid,
   FeaturedEvent,
   FeaturedPodcast,
   JoinCta,
   Partners,
-  Positioning,
 } from "@/components/home/Sections";
+import { StatCounters } from "@/components/home/StatCounters";
 import { site } from "@/content/site";
 import { getEvents, getFeaturedEpisode } from "@/lib/content";
 
@@ -15,6 +15,9 @@ import { getEvents, getFeaturedEpisode } from "@/lib/content";
  * Section order is the strategy, set in the brief and not rearranged:
  * hero → positioning → featured event → events grid → podcast → partners →
  * numbers → join → footer.
+ *
+ * The hex carousel sits between hero and positioning as a visual bridge — it
+ * adds imagery, not a new argument, so the section order above still holds.
  *
  * Events lead. The podcast follows. That ordering is the whole argument.
  */
@@ -48,12 +51,12 @@ export default function Home() {
       />
 
       <Hero event={featured} />
-      <Positioning />
+      <HiveCarousel />
+      <StatCounters />
       <FeaturedEvent event={featured} />
       <EventsGrid events={rest} total={events.length} />
       <FeaturedPodcast episode={episode} />
       <Partners />
-      <ByTheNumbers />
       <JoinCta />
     </>
   );

@@ -94,17 +94,29 @@ is not a flat black-and-yellow cliché.
 | `wax` | `#F3EDE3` | Light-section base, body text on dark |
 | `propolis` | `#6B2D0E` | Rules, section breaks, hover fills |
 
+**Measured contrast** (computed by `src/lib/contrast.ts`, rendered live on `/style-guide`):
+
+| Pair | Ratio | Grade |
+|---|---|---|
+| `wax` on `ink` | 16.65:1 | AAA |
+| `ink` on `wax` | 16.65:1 | AAA |
+| `pollen` on `ink` | 15.03:1 | AAA |
+| `honey` on `ink` | 9.12:1 | AAA |
+| `propolis` on `wax` | 8.99:1 | AAA |
+| **`honey` on `wax`** | **1.83:1** | **FAIL** |
+| **`propolis` on `ink`** | **1.85:1** | **FAIL** |
+
 **Rules, non-negotiable:**
 
 - Honey is an accent. Never a large field, never a background for body copy.
-- **Never honey text on wax** — 2.1:1, fails AA. Use `ink` on wax, or `propolis` for warm emphasis.
-- On `ink`: body text is `wax`; secondary is `wax` at 80% (`#F3EDE3CC` ≈ 12.4:1, passes).
-- `honey` on `ink` is 9.7:1 — safe for large display and for small utility text alike.
-- `propolis` is a *structural* colour: rules, dividers, hover fills. Not a text colour on ink
-  (3.0:1 — fails), only on wax (7.9:1 — passes).
+- **Never honey text on wax** — 1.83:1. Use `ink` on wax, or `propolis` for warm emphasis.
+- On `ink`: body text is `wax`; secondary is `wax` at 80%, which stays well clear of AA.
+- `honey` on `ink` at 9.12:1 is safe for large display and small utility text alike.
+- `propolis` is a *structural* colour on dark — rules, dividers, hover fills. **Never text on
+  ink** (1.85:1). On wax it is a valid text colour (8.99:1).
 
-Contrast was checked, not assumed. The failing combinations are documented so nobody
-rediscovers them.
+Contrast is computed at render time, never asserted by hand. The two failing combinations are
+rendered on `/style-guide` with a FAIL badge so nobody rediscovers them.
 
 ---
 

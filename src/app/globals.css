@@ -18,17 +18,16 @@
      Warm-black base, honey accent, beeswax light sections, one deep propolis
      brown so the palette is not a flat black-and-yellow cliché.
 
-     Contrast, measured (see /style-guide for the live matrix):
-       wax on ink ............ 15.6:1  AAA
-       wax 80% on ink ........ 12.4:1  AAA   (secondary body text on dark)
-       honey on ink ...........9.7:1   AAA
-       pollen on ink ......... 13.3:1  AAA
-       ink on wax ............ 15.6:1  AAA
-       propolis on wax .........7.9:1  AAA   (warm emphasis on light)
+     Contrast, computed (see /style-guide for the live matrix):
+       wax on ink ........... 16.65:1  AAA
+       ink on wax ........... 16.65:1  AAA
+       pollen on ink ........ 15.03:1  AAA
+       honey on ink .......... 9.12:1  AAA
+       propolis on wax ....... 8.99:1  AAA   (warm emphasis on light)
 
      Two combinations FAIL and must never ship:
-       honey on wax ...........2.1:1   — never honey text on a light ground
-       propolis on ink .........3.0:1  — propolis is structural on dark, not text
+       honey on wax .......... 1.83:1  — never honey text on a light ground
+       propolis on ink ....... 1.85:1  — propolis is structural on dark, not text
   -------------------------------------------------------------------------- */
   --color-ink: #0e0d0f;
   --color-carbon: #1a181c;

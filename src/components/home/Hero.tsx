@@ -86,7 +86,11 @@ export function Hero({ event }: { event: Event | null }) {
             {LINES.map((line, index) => (
               // Each line is its own clipping mask so the rise reads as type
               // setting, not as a block sliding.
-              <span key={line} className="block overflow-hidden pb-[0.06em]">
+              //
+              // The mask clips to the line box, which sits above the descender
+              // depth, so without extra room below the baseline it cuts the
+              // tails of "gg" in "biggest". 0.22em clears Inter's descender.
+              <span key={line} className="block overflow-hidden pb-[0.22em]">
                 <span
                   className="block"
                   style={{

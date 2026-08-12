@@ -28,17 +28,33 @@ import type { Event } from "@/lib/content/schema";
 const LINES = ["Africa's biggest", "web3 media", "brand."];
 
 export function Hero({ event }: { event: Event | null }) {
+  const src = event?.heroMedia.src;
+  const hasMedia = Boolean(src) && !src?.startsWith("TODO");
+
   return (
     // Type sits low in the frame so the media above it carries the top of the
     // viewport — the room arrives behind the words, which is the whole point of
     // the load sequence.
-    <section className="relative flex min-h-[92svh] flex-col justify-end overflow-hidden pt-[30svh]">
+    <section
+      className={
+        hasMedia
+          ? "relative flex min-h-[92svh] flex-col justify-end overflow-hidden pt-[30svh]"
+          : "relative flex min-h-[82svh] flex-col justify-end overflow-hidden pt-[18svh]"
+      }
+    >
       {/* Media resolves in behind the type. */}
       <div
         className="absolute inset-0 -z-10"
-        style={{
-          animation: "hive-media-resolve var(--dur-slow) var(--ease-out-expo) 560ms both",
-        }}
+        style={
+          // Nothing to resolve in until real media lands; animating an empty
+          // white frame just reads as a flash.
+          hasMedia
+            ? {
+                animation:
+                  "hive-media-resolve var(--dur-slow) var(--ease-out-expo) 560ms both",
+              }
+            : undefined
+        }
       >
         <HiveMedia
           src={event?.heroMedia.src}
@@ -54,37 +70,31 @@ export function Hero({ event }: { event: Event | null }) {
         />
         {/* Legibility scrim. The page is white and the headline is ink, so the
             scrim fades the media to white at the bottom where the type sits —
-            the inverse of a dark-theme scrim. Type must hold over any frame we
-            drop in later. */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to top, var(--color-white) 6%, color-mix(in srgb, var(--color-white) 82%, transparent) 38%, color-mix(in srgb, var(--color-white) 35%, transparent) 100%)",
-          }}
-        />
+            the inverse of a dark-theme scrim. Only applied once real media
+            exists; over the empty white frame it would just tint the page. */}
+        {hasMedia && (
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(to top, var(--color-white) 6%, color-mix(in srgb, var(--color-white) 82%, transparent) 38%, color-mix(in srgb, var(--color-white) 35%, transparent) 100%)",
+            }}
+          />
+        )}
       </div>
 
       <div className="u-gutter pb-[clamp(3rem,10vh,7rem)]">
-        <p
-          className="u-label mb-8 text-ink"
-          style={{
-            animation:
-              "hive-media-resolve var(--dur-base) var(--ease-out-expo) 120ms both",
-          }}
-        >
-          Events · Podcast · Coverage
-        </p>
-
         {/* Weight 400 with looser tracking. At mega size the light weight is
             the statement — 800 read as shouting, and Inter Tight holds its
             shape at 400 far better than a grotesque would. Overrides the
             weight-800 base rule for h1/h2/h3 in globals.css. */}
         {/* Tighter than the global 0.92 for h1 — at mega size the three-line
-            stack wants to read as a block. */}
+            stack wants to read as a block. 0.88 is about as tight as it goes:
+            measured clearance between the "biggest" descenders and the "web3
+            media" ascenders is 0.107em at 360px, and 0.84 halves that. */}
         <h1 className="text-mega font-normal leading-[0.8] tracking-[-0.02em] text-ink">
           {/* The visible lines are split for the stagger, which would otherwise
-              concatenate without a space ("Africa's biggestweb3 media brand.")
+              concatenate without a space ("Africa's Biggestweb3 media brand.")
               for assistive tech and for search engines. The accessible sentence
               is provided once here and the decorative split is hidden. */}
           <span className="sr-only">{LINES.join(" ")}</span>
@@ -110,15 +120,6 @@ export function Hero({ event }: { event: Event | null }) {
           </span>
         </h1>
 
-        <p
-          className="mt-8 max-w-xl text-ink/70"
-          style={{
-            animation:
-              "hive-media-resolve var(--dur-base) var(--ease-out-expo) 640ms both",
-          }}
-        >
-          We host events, cover them on the ground, and run Africa&apos;s #1 Web3 podcast.
-        </p>
       </div>
     </section>
   );

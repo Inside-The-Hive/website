@@ -64,7 +64,7 @@
      Two rhythms only. Separation comes from space and hairline rules, never
      from containers.
   -------------------------------------------------------------------------- */
-  --spacing-gutter: clamp(1.25rem, 4vw, 3rem);
+  --spacing-gutter: clamp(1.5rem, 5vw, 5.5rem);
   --spacing-section: clamp(5rem, 12vh, 10rem);
 
   /* ---- Motion ------------------------------------------------------------

@@ -69,7 +69,7 @@ function Stat({
   const value = useCountUp(stat.value, start, reduced);
 
   return (
-    <div className="u-rule border-t pt-6">
+    <div>
       <dd className="font-display text-(length:--text-h1) leading-[0.85] font-normal tracking-[-0.04em] text-ink tabular-nums">
         {stat.value === null ? (
           // No invented statistics. A honey underscore holds the slot until the
@@ -83,7 +83,7 @@ function Stat({
           </>
         )}
       </dd>
-      <dt className="u-label mt-4 text-ink/55">{stat.label}</dt>
+      <dt className="mt-4 text-ink/55">{stat.label}</dt>
     </div>
   );
 }

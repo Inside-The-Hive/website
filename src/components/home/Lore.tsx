@@ -31,22 +31,25 @@ export function Lore() {
           How {site.name} started
         </h2>
 
-        {/* The thesis. Runs the full measure between the gutters and is set
-            large — at this width the statement carries the section on its own,
-            which is what makes the copy beneath feel like a footnote to it
-            rather than a second paragraph of equal weight. */}
-        <p className="max-w-[62ch] text-[clamp(1.5rem,3.05vw,2.75rem)] leading-[1.18] font-medium tracking-[-0.02em] text-ink">
+        {/* The thesis. Wide and heavy — at this size the statement carries the
+            section on its own, which is what makes the copy beneath read as a
+            footnote to it rather than a second paragraph of equal weight.
+            Centred on the page, as is the narrative below it. */}
+        <p className="mx-auto max-w-[62ch] text-[clamp(1.5rem,3.05vw,2.75rem)] leading-[1.18] font-semibold tracking-[-0.02em] text-ink">
           {site.name} started the way most things in Lagos start — someone
           young, out of school, with more conviction than plan, walking into
           rooms he had not been invited to and paying attention.
         </p>
 
-        {/* The narrative. Small, on a short measure, and set left of centre
-            rather than under the statement — the indent is what marks it as
-            supporting detail. Left-aligned inside that block: centring every
-            line of a multi-paragraph passage leaves both edges ragged and
-            slows reading for no gain. */}
-        <div className="mt-[clamp(3.5rem,9vh,7rem)] grid max-w-[46ch] gap-6 text-left text-ink/55 md:ml-[22%]">
+        {/* The narrative. Small and on a short measure, centred on the page
+            rather than offset from the statement above — both blocks share the
+            page's centre line, so the section reads as one column of differing
+            widths instead of two blocks nudged against each other.
+
+            Left-aligned inside that block: centring every line of a
+            multi-paragraph passage leaves both edges ragged and slows reading
+            for no gain. */}
+        <div className="mx-auto mt-[clamp(3.5rem,9vh,7rem)] grid max-w-[46ch] gap-6 text-left text-ink/55">
           <p>
             There was no studio and no budget. There was a phone, a borrowed
             camera, and a suspicion that African Web3 was being covered by

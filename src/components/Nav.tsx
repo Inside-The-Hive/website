@@ -8,27 +8,101 @@ import { cn } from "@/lib/cn";
 import { MobileMenu } from "./MobileMenu";
 
 /**
- * Transparent over the hero, then gains a carbon background with a hairline
- * propolis bottom border once scrolled past 80vh.
+ * Transparent over the hero, then a blurred translucent bar once scrolled.
+ *
+ * Hides on scroll down and returns on scroll up. Full-height sections — the
+ * featured-events sequence in particular — need the whole viewport, and a bar
+ * permanently pinned over the top of one eats into it. Reversing direction is
+ * also the moment someone is looking for navigation, so tying the bar to
+ * direction puts it there exactly when it is wanted.
  */
+
+/**
+ * Movement required before the bar reacts, in px. Without it, the sub-pixel
+ * jitter of a trackpad or a momentum scroll flickers the bar on and off.
+ */
+const DIRECTION_THRESHOLD = 8;
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  /** True while the bar sits over a section that marks itself as inverted. */
+  const [onDark, setOnDark] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.8);
-    onScroll();
+    let last = window.scrollY;
+    let frame = 0;
+
+    const read = () => {
+      frame = 0;
+      const y = window.scrollY;
+      const delta = y - last;
+
+      setScrolled(y > 8);
+
+      // The bar has no fill, so its text sits directly on whatever is behind
+      // it. Over an inverted section that would be ink on near-black — 1:1,
+      // invisible. Sampling what is actually under the bar and flipping the
+      // text is what keeps a genuinely transparent bar readable.
+      //
+      // elementsFromPoint, not elementFromPoint: the header is itself the
+      // topmost element at that coordinate, so the single-element form only
+      // ever returns the bar and the test inverts.
+      const stack = document.elementsFromPoint(window.innerWidth / 2, 24);
+      setOnDark(
+        stack.some(
+          (el) => !el.closest("header") && el.closest("[data-nav-invert]"),
+        ),
+      );
+
+      if (Math.abs(delta) >= DIRECTION_THRESHOLD) {
+        // Never hide at the very top: the bar would vanish on the first
+        // downward flick of a page the reader has not started yet.
+        setHidden(delta > 0 && y > window.innerHeight * 0.35);
+        last = y;
+      }
+    };
+
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(read);
+    };
+
+    read();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
   }, []);
+
+  // A route change can leave the bar hidden on a page the reader just opened.
+  useEffect(() => setHidden(false), [pathname]);
 
   return (
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50",
-        "transition-colors duration-(--dur-fast) ease-(--ease-out-expo)",
-        scrolled ? "u-rule border-b bg-white" : "border-b border-transparent",
+        "transition-[transform,background-color,border-color,backdrop-filter]",
+        "duration-(--dur-fast) ease-(--ease-out-expo)",
+        // Translated rather than faded: the bar leaves the frame entirely, so
+        // it cannot sit half-visible over the top of a full-height section.
+        hidden ? "-translate-y-full" : "translate-y-0",
+        // No fill — the blur alone separates the bar from the page, so it
+        // frosts whatever passes underneath rather than laying a white panel
+        // over it. No saturate filter either: that pushes the colour of the
+        // content behind through the glass and tints it.
+        // Text flips to white over inverted sections. Set as a CSS variable so
+        // every link, the wordmark and the rule read from one value rather
+        // than each carrying its own conditional.
+        onDark
+          ? "[--nav-fg:var(--color-white)] [--nav-line:rgba(255,255,255,0.18)]"
+          : "[--nav-fg:var(--color-ink)] [--nav-line:var(--color-line)]",
+        "text-(--nav-fg)",
+        // No bottom rule — the blur alone separates the bar from the page.
+        scrolled && "backdrop-blur-xl",
+        // Under reduced motion the bar simply is or is not there.
+        "motion-reduce:transition-none",
       )}
     >
       <nav
@@ -39,7 +113,7 @@ export function Nav() {
             hive dot carries it; the name stays ink so it always passes AA. */}
         <Link
           href="/"
-          className="flex items-center gap-2 font-display text-xl leading-none font-extrabold tracking-[-0.03em] text-ink"
+          className="flex items-center gap-2 font-display text-xl leading-none font-extrabold tracking-[-0.03em] text-(--nav-fg)"
         >
           <span
             aria-hidden
@@ -68,8 +142,8 @@ export function Nav() {
                       // resting is muted. Yellow marks state without ever
                       // carrying the text itself.
                       active
-                        ? "text-ink underline decoration-honey decoration-2 underline-offset-8"
-                        : "text-ink/60 hover:text-ink",
+                        ? "text-(--nav-fg) underline decoration-honey decoration-2 underline-offset-8"
+                        : "opacity-60 hover:opacity-100",
                     )}
                   >
                     {link.label}
@@ -80,13 +154,13 @@ export function Nav() {
           </ul>
 
           {/* Merch is external and visually separated by the rule. */}
-          <div className="u-rule flex items-center gap-4 border-l pl-8">
+          <div className="flex items-center gap-4 border-l border-(--nav-line) pl-8">
             <a
               href={site.storeUrl}
               target="_blank"
               rel="noopener"
               data-analytics="merch-outbound"
-              className="u-label inline-flex min-h-11 items-center gap-1 text-ink/60 transition-colors duration-(--dur-fast) hover:text-ink"
+              className="u-label inline-flex min-h-11 items-center gap-1 opacity-60 transition-opacity duration-(--dur-fast) hover:opacity-100"
             >
               Merch <span aria-hidden>↗</span>
               <span className="sr-only">(opens in a new tab)</span>
@@ -96,7 +170,9 @@ export function Nav() {
                 element in the bar. */}
             <Link
               href="/join"
-              className="u-label inline-flex min-h-11 items-center bg-honey px-5 text-ink transition-colors duration-(--dur-fast) hover:bg-ink hover:text-white"
+              // Hover inverts to the bar's own foreground, so the button stays
+              // visible whether the ground behind it is white or ink.
+              className="u-label inline-flex min-h-11 items-center bg-honey px-5 text-ink transition-colors duration-(--dur-fast) hover:bg-(--nav-fg) hover:text-ink"
             >
               Join the Hive
             </Link>

@@ -242,6 +242,38 @@ function Backdrop({
 
   const active = Math.round(playhead);
 
+  /**
+   * When every event points at the same clip there is nothing to cross-fade
+   * between — the transition would be invisible and four `<video>` elements
+   * would decode the same file at once. One persistent element instead.
+   */
+  const sources = new Set(clips.map((event) => event.backdropVideo!.src));
+  const shared = sources.size === 1 ? clips[0].backdropVideo! : null;
+
+  if (shared) {
+    return (
+      <div aria-hidden className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 h-[150vh] w-[150vw] -translate-x-1/2 -translate-y-1/2">
+          <video
+            src={shared.src}
+            poster={shared.poster}
+            muted
+            loop
+            playsInline
+            autoPlay
+            preload="auto"
+            // Source is portrait and the frame is wide, so cover crops the top
+            // and bottom rather than letterboxing.
+            className="h-full w-full object-cover"
+          />
+          {/* Heavy enough that the footage reads as atmosphere behind the
+              type rather than as the subject competing with it. */}
+          <div className="absolute inset-0 bg-black/82" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div aria-hidden className="absolute inset-0 overflow-hidden">
       <div className="absolute top-1/2 left-1/2 h-[150vh] w-[150vw] -translate-x-1/2 -translate-y-1/2">
@@ -267,15 +299,24 @@ function Backdrop({
                 // Only the visible clip loads eagerly; the rest stay at
                 // metadata so every loop does not download at once.
                 preload={i === active ? "auto" : "metadata"}
-                autoPlay={i === active}
+                // Always autoplay rather than only while current: a clip that
+                // starts when its event arrives is always seen from frame one
+                // mid-fade, which reads as a stutter. Muted and looping, so a
+                // clip running behind a fully transparent layer costs nothing
+                // visible.
+                autoPlay
+                // The source is portrait (1080x1920) and the frame is wide, so
+                // cover crops the top and bottom rather than letterboxing.
                 className="h-full w-full object-cover"
               />
             </div>
           );
         })}
         {/* Flat wash, not a gradient — the type sits over the centre of frame
-            as often as the edge, so directional shading would fail there. */}
-        <div className="absolute inset-0 bg-black/75" />
+            as often as the edge, so directional shading would fail there.
+            Heavy enough that the footage reads as atmosphere behind the type
+            rather than as the subject competing with it. */}
+        <div className="absolute inset-0 bg-black/82" />
       </div>
     </div>
   );

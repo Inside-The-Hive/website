@@ -20,6 +20,13 @@
 # production
 /build
 
+# Raw video masters. Camera originals are hundreds of megabytes — far past
+# GitHub's 100MB hard limit — and only the transcoded web versions in
+# public/videos/*.mp4 are ever served. Keep the masters out of the repo.
+/public/videos/*.mov
+/public/videos/*.MOV
+/public/videos/*.mp4.original
+
 # misc
 .DS_Store
 *.pem

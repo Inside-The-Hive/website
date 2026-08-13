@@ -41,8 +41,20 @@ const heroMediaSchema = z.object({
   alt: altText,
 });
 
-/** The role ITH played. Drives the tag on every event card. */
-export const eventRoles = ["Host", "Media Partner", "Coverage"] as const;
+/**
+ * The role ITH played. Drives the tag on every event card.
+ *
+ * A closed set on purpose: it keeps the tag consistent across the archive and
+ * stops near-duplicates ("Media partner", "media-partner") from accumulating.
+ * Add a role here when a genuinely new one is needed rather than typing a
+ * free-form value into frontmatter.
+ */
+export const eventRoles = [
+  "Host",
+  "Media Partner",
+  "Media & Event Partner",
+  "Coverage",
+] as const;
 
 export const eventSchema = z.object({
   title: z.string().min(1),
@@ -62,6 +74,28 @@ export const eventSchema = z.object({
     .string()
     .min(1)
     .max(120, "Summary is the card kicker line — keep it under 120 characters"),
+  /**
+   * Short silent loop played behind the featured-events section.
+   *
+   * Muted, looping and decorative — the recap copy carries the meaning, so no
+   * alt text is required here. Optional: without it the section falls back to
+   * the event's poster frame, and the layout is unchanged.
+   */
+  backdropVideo: z
+    .object({
+      src: z.string(),
+      /** Shown until the video can play, and in place of it under reduced motion. */
+      poster: z.string().optional(),
+    })
+    .optional(),
+  /**
+   * Portrait frame for the featured-events sequence.
+   *
+   * Deliberately separate from `heroMedia`: that is the full-bleed landscape
+   * still behind the homepage headline, and reusing it here put an event photo
+   * behind the hero, which is meant to stay white until real hero art lands.
+   */
+  poster: imageSchema.optional(),
   heroMedia: heroMediaSchema,
   gallery: z.array(imageSchema).default([]),
   socialEmbeds: z.array(z.string().url()).default([]),

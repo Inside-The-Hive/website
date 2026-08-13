@@ -31,22 +31,22 @@ export function Lore() {
           How {site.name} started
         </h2>
 
-        {/* The thesis. Centred and set on a wide measure, so it reads as one
-            held thought rather than as body copy. `text-balance` evens the
-            line lengths, which matters more here than anywhere else on the
-            page — a centred block with one short last line looks accidental. */}
-        <p className="mx-auto max-w-[64rem] text-center text-(length:--text-h3) leading-[1.24] text-balance text-ink">
+        {/* The thesis. Runs the full measure between the gutters and is set
+            large — at this width the statement carries the section on its own,
+            which is what makes the copy beneath feel like a footnote to it
+            rather than a second paragraph of equal weight. */}
+        <p className="max-w-[62ch] text-[clamp(1.5rem,3.05vw,2.75rem)] leading-[1.18] font-medium tracking-[-0.02em] text-ink">
           {site.name} started the way most things in Lagos start — someone
           young, out of school, with more conviction than plan, walking into
           rooms he had not been invited to and paying attention.
         </p>
 
-        {/* The narrative. Smaller and on a narrower measure than the statement
-            above: this is the detail behind the claim, not a second claim.
-            The block is centred on the page but the text inside is left
-            aligned — centring every line of a multi-paragraph passage leaves
-            both edges ragged and slows reading for no gain. */}
-        <div className="mx-auto mt-[clamp(3rem,7vh,5.5rem)] grid max-w-[34rem] gap-6 text-left text-ink/60">
+        {/* The narrative. Small, on a short measure, and set left of centre
+            rather than under the statement — the indent is what marks it as
+            supporting detail. Left-aligned inside that block: centring every
+            line of a multi-paragraph passage leaves both edges ragged and
+            slows reading for no gain. */}
+        <div className="mt-[clamp(3.5rem,9vh,7rem)] grid max-w-[46ch] gap-6 text-left text-ink/55 md:ml-[22%]">
           <p>
             There was no studio and no budget. There was a phone, a borrowed
             camera, and a suspicion that African Web3 was being covered by
@@ -71,9 +71,9 @@ export function Lore() {
             summits, a podcast that puts the same people on the record.
           </p>
 
-          {/* Centred and darker than the paragraphs above — it is the closing
-              statement, not another beat of the story. */}
-          <p className="mt-2 text-center text-ink/85">
+          {/* Darker than the paragraphs above — it is the closing statement,
+              not another beat of the story. */}
+          <p className="mt-2 text-ink/85">
             That is still the whole method. Be in the room. Bring a camera.
             Make something the room is proud of.
           </p>

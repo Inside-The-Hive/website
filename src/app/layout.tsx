@@ -39,7 +39,13 @@ export default function RootLayout({
 
   return (
     <html lang="en" className={fontVariables}>
-      <body className="antialiased">
+      {/* Browser extensions inject attributes onto <body> before React
+          hydrates — ColorZilla's `cz-shortcut-listen`, Grammarly's
+          `data-gr-*`, and others — which React reports as a hydration
+          mismatch we cannot fix from here. This suppresses the warning for
+          this element's attributes only; it does not extend to children, so
+          real mismatches inside the tree are still reported. */}
+      <body className="antialiased" suppressHydrationWarning>
         <a
           href="#main"
           className="u-label sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[70] focus:bg-honey focus:px-4 focus:py-3 focus:text-ink"
@@ -53,7 +59,7 @@ export default function RootLayout({
           <main id="main" tabIndex={-1}>
             {children}
           </main>
-          {/* <Footer /> */}
+          <Footer />
         </SmoothScroll>
 
         {gaId && <GoogleAnalytics gaId={gaId} />}

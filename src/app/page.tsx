@@ -1,15 +1,15 @@
+import { FeaturedEvents } from "@/components/home/FeaturedEvents";
 import { Hero } from "@/components/home/Hero";
 import { HiveCarousel } from "@/components/home/HiveCarousel";
 import {
   // EventsGrid,
-  // FeaturedEvent,
-  // FeaturedPodcast,
   // JoinCta,
   // Partners,
 } from "@/components/home/Sections";
+import { PodcastSection } from "@/components/home/PodcastSection";
 import { StatCounters } from "@/components/home/StatCounters";
 import { site } from "@/content/site";
-import { getEvents, getFeaturedEpisode } from "@/lib/content";
+import { formatEventDate, getEpisodes, getEvents } from "@/lib/content";
 
 /**
  * Section order is the strategy, set in the brief and not rearranged:
@@ -24,11 +24,25 @@ import { getEvents, getFeaturedEpisode } from "@/lib/content";
 
 export default function Home() {
   const events = getEvents();
-  const featured = events.find((event) => event.featured) ?? events[0] ?? null;
-  // The featured event already has the full-bleed slot above; the grid shows
-  // what comes after it.
-  const rest = events.filter((event) => event.slug !== featured?.slug).slice(0, 5);
-  const episode = getFeaturedEpisode();
+  const heroEvent = events.find((event) => event.featured) ?? events[0] ?? null;
+  // The featured sequence carries the whole set — it is the events section, not
+  // a teaser in front of one, so there is no featured/rest split here. Capped
+  // at eight because the section pins for a viewport-height per event and a
+  // longer sequence would hold the reader too long.
+  //
+  // The date is formatted here rather than inside the sequence: that is a
+  // client component, and the content loader reads from disk.
+  const featuredEvents = events.slice(0, 8).map((event) => ({
+    ...event,
+    dateLabel: formatEventDate(event.date),
+  }));
+
+  const episodes = getEpisodes();
+  const featuredEpisode = episodes.find((item) => item.featured) ?? episodes[0] ?? null;
+  // The featured episode has the comb above; the list shows what follows it.
+  const restEpisodes = episodes
+    .filter((item) => item.slug !== featuredEpisode?.slug)
+    .slice(0, 4);
 
   const organizationJsonLd = {
     "@context": "https://schema.org",
@@ -50,12 +64,16 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
 
-      <Hero event={featured} />
+      <Hero event={heroEvent} />
       <HiveCarousel />
       <StatCounters />
-      {/* <FeaturedEvent event={featured} />
-      <EventsGrid events={rest} total={events.length} />
-      <FeaturedPodcast episode={episode} />
+      <FeaturedEvents events={featuredEvents} />
+      {/* <PodcastSection
+        featured={featuredEpisode}
+        episodes={restEpisodes}
+        total={episodes.length}
+      /> */}
+      {/* <EventsGrid events={rest} total={events.length} />
       <Partners />
       <JoinCta /> */}
     </>

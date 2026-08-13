@@ -178,6 +178,90 @@
 }
 
 /* ==========================================================================
+   Featured events — fluid unit
+   --------------------------------------------------------------------------
+   The section is laid out in `--u`, a viewport-derived unit, so every
+   proportion in it — type, poster, insets, progress bar — scales with the
+   window as one system instead of each needing its own breakpoint.
+
+   The two bases below are what keep the composition intact at both ends: at
+   desktop one unit is 1/144th of the width, and below the breakpoint it jumps
+   to roughly 1/43rd, because holding the desktop ratio at 390px would render
+   the display type at 27px and collapse the whole layout.
+
+   Declared here rather than inline because a media query cannot be expressed
+   in a style attribute.
+   ========================================================================== */
+
+.u-fluid {
+  --u: 0.6944vw;
+  /* Title size and measure, and the page inset, all step down at the
+     breakpoint independently of --u — even on the mobile basis the desktop
+     ratios overflow a 390px viewport. */
+  /* Scales with width, capped so an ultrawide monitor does not push the
+     display type past what the measure can hold. */
+  /* The largest size at which every event title still holds two lines. These
+     names run long — "Redotpay x Inside The Hive Dinner Night" needs 2520px of
+     single-line width at 180px, against a 1440px viewport — so the size is set
+     by the longest line rather than chosen freely. */
+  --u-title: min(8 * var(--u), 80px);
+  /* The title runs OVER the poster — that overlap is the composition, not a
+     collision to design around. The measure therefore reaches well past the
+     poster's left edge, and the title wraps within it rather than stopping
+     short of the image. */
+  /* Ends at the right gutter. Running the box to 100vw let a long second line
+     extend past the viewport edge and get cut — the box did not overflow, so
+     only the glyphs did. */
+  --u-title-w: calc((100vw - var(--u) * var(--u-inset) * 2) / var(--u));
+  /* Centred, with the type crossing it. */
+  --u-poster-left: calc(50vw - var(--u) * var(--u-poster-w) / 2);
+  --u-inset: 22.2;
+  /* Width of the progress track between the two counters. */
+  --u-track: 91.7;
+  /* Poster box and how far it sits off the bottom. Taller than the reference's
+     36×48 and a stronger portrait ratio — the photography is the product here,
+     so the frame is given more of the screen than a film poster needs. */
+  --u-poster-w: 39;
+  --u-poster-h: 59.5;
+  --u-poster-bottom: calc(var(--u) * 11);
+  /* The metadata stops at the poster's left edge rather than crossing it. The
+     title is display type and reads fine over an image; these are small
+     multi-word values and would not.
+     Measured to the poster edge exactly — no extra inset, or our longer values
+     wrap where the reference's one-word ones do not. */
+  /* Reaches slightly past the poster's left edge. "Inside The Hive x <partner>"
+     is longer than the values this column was sized for, and stopping short of
+     the image wrapped it onto a second line. */
+  --u-caption-w: calc(var(--u-poster-left) - var(--u) * var(--u-inset) + var(--u) * 8);
+}
+
+@media (max-width: 759px) {
+  .u-fluid {
+    --u: 2.3256vw;
+    /* Held below the reference's 7 units: at 390px the longest word in an
+       event name overflows the measure at that size, and a clipped title is
+       worse than a slightly smaller one. */
+    /* Sized so the longest event name still clears the poster below it. The
+       renamed events run to 38 characters, and at the previous size the two
+       longest pushed the caption block into the image. */
+    --u-title: calc(4.4 * var(--u));
+    --u-title-w: 38;
+    --u-poster-left: calc(50vw - var(--u) * var(--u-poster-w) / 2);
+    --u-inset: 3.7;
+    --u-track: 19.1;
+    /* Smaller and lower than before. The renamed events are long enough to
+       take three lines here, and "Inside The Hive x <partner>" wraps too — the
+       caption block grew and the poster has to clear it. */
+    --u-poster-w: 21;
+    --u-poster-h: 26;
+    --u-poster-bottom: 12vh;
+    /* Full measure here: the poster is centred and nearly the width of the
+       screen, so there is no column beside it to stop short of. */
+    --u-caption-w: calc(100vw - var(--u) * var(--u-inset) * 2);
+  }
+}
+
+/* ==========================================================================
    Keyframes
    ========================================================================== */
 

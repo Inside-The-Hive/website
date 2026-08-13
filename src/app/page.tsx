@@ -1,11 +1,11 @@
 import { FeaturedEvents } from "@/components/home/FeaturedEvents";
 import { Hero } from "@/components/home/Hero";
 import { HiveCarousel } from "@/components/home/HiveCarousel";
-import {
-  // EventsGrid,
-  // JoinCta,
-  // Partners,
-} from "@/components/home/Sections";
+import { Lore } from "@/components/home/Lore";
+import {} from // EventsGrid,
+// JoinCta,
+// Partners,
+"@/components/home/Sections";
 import { PodcastSection } from "@/components/home/PodcastSection";
 import { StatCounters } from "@/components/home/StatCounters";
 import { site } from "@/content/site";
@@ -66,8 +66,12 @@ export default function Home() {
 
       <Hero event={heroEvent} />
       <HiveCarousel />
-      <StatCounters />
+      <Lore />
+
       <FeaturedEvents events={featuredEvents} />
+      {/* The sequence is the proof; the lore is the reason. In that order the
+          claim is demonstrated before it is explained. */}
+      <StatCounters />
       {/* <PodcastSection
         featured={featuredEpisode}
         episodes={restEpisodes}

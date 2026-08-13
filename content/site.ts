@@ -129,3 +129,25 @@ export const stats = [
   { label: "Spotify listeners", value: 589, suffix: "" },
   { label: "Partnerships secured", value: 8, suffix: "" },
 ] as const;
+
+/**
+ * Founding facts behind the homepage lore section.
+ *
+ * The narrative there is written from what the brand demonstrably does —
+ * events, on-the-ground coverage, a podcast, work across Nigerian cities.
+ * These four values are the ones only the client can confirm, so they are
+ * TODO rather than invented: this is a real company's history, and a
+ * plausible-sounding fabrication is worse than an obvious blank.
+ *
+ * Once supplied, they can be woven into the copy in Lore.tsx.
+ */
+export const founding = {
+  /** TODO(client): founder's name, as it should be printed. */
+  founder: "TODO",
+  /** TODO(client): year Inside The Hive started. */
+  year: "TODO",
+  /** TODO(client): the first event, and where it happened. */
+  firstEvent: "TODO",
+  /** TODO(client): city the brand started in. The copy currently says Lagos. */
+  city: "Lagos",
+} as const;

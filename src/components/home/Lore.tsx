@@ -35,7 +35,7 @@ export function Lore() {
             section on its own, which is what makes the copy beneath read as a
             footnote to it rather than a second paragraph of equal weight.
             Centred on the page, as is the narrative below it. */}
-        <p className="mx-auto max-w-[62ch] text-[clamp(1.5rem,3.05vw,2.75rem)] leading-[1.18] font-semibold tracking-[-0.02em] text-ink">
+        <p className="mx-auto max-w-[62ch] text-[clamp(1.5rem,3.05vw,2.75rem)] leading-[1.18] font-normal tracking-[-0.02em] text-ink">
           {site.name} started the way most things in Lagos start — someone
           young, out of school, with more conviction than plan, walking into
           rooms he had not been invited to and paying attention.
@@ -49,7 +49,7 @@ export function Lore() {
             Left-aligned inside that block: centring every line of a
             multi-paragraph passage leaves both edges ragged and slows reading
             for no gain. */}
-        <div className="mx-auto mt-[clamp(3.5rem,9vh,7rem)] grid max-w-[46ch] gap-6 text-left text-ink/55">
+        <div className="mx-auto mt-[clamp(3.5rem,9vh,7rem)] grid max-w-[46ch] gap-8 text-left text-[clamp(1.125rem,2.08vw,1.875rem)] leading-[1.42] text-ink/55">
           <p>
             There was no studio and no budget. There was a phone, a borrowed
             camera, and a suspicion that African Web3 was being covered by

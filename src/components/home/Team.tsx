@@ -29,19 +29,32 @@ function isPending(value: string) {
 }
 
 /**
- * Panel colours, cycled. The two brand colours that carry a fill, alternating
- * so the same one never lands beside itself.
+ * One panel per person.
+ *
+ * Colour, height and vertical offset all vary. That irregularity is the whole
+ * composition — panels sharing a baseline and a height read as a chart, and
+ * the reference works precisely because no two start or end in the same place.
+ *
+ * `top` is a share of the row's height; `height` likewise. Figures stand in
+ * front, so a panel that starts lower leaves more of the person above the
+ * colour.
  */
-const PANELS = ["var(--color-honey)", "var(--color-propolis)"];
+const PANELS = [
+  { color: "var(--color-honey)", top: "22%", height: "74%" },
+  { color: "var(--color-propolis)", top: "8%", height: "86%" },
+  { color: "var(--color-honey)", top: "30%", height: "66%" },
+  { color: "var(--color-propolis)", top: "14%", height: "82%" },
+];
 
 /**
  * The slant, as a clip-path parallelogram.
  *
  * Cut from the panel rather than applied as a rotation: rotating would tilt
  * the portrait in front of it too, and the person needs to stay upright while
- * the panel behind them leans.
+ * the panel behind them leans. Raked hard — a shallow lean reads as a
+ * rectangle that has gone slightly wrong rather than as a deliberate shape.
  */
-const SLANT = "polygon(22% 0, 100% 0, 78% 100%, 0 100%)";
+const SLANT = "polygon(38% 0, 100% 0, 62% 100%, 0 100%)";
 
 export function Team() {
   const members = team.filter((member) => member.photo);
@@ -82,19 +95,24 @@ export function Team() {
                 // inside the scroller.
                 className="group relative -mx-[3%] w-[62%] shrink-0 first:ml-0 last:mr-0 hover:z-10 sm:w-[38%] md:w-1/4"
               >
-                {/* The panel. Shorter than the portrait, so the person stands
-                    out of the top of the colour rather than being contained
-                    by it. */}
+                {/* The panel. Its own height and offset, so the row is a set
+                    of staggered shapes rather than a line of identical ones. */}
                 <span
                   aria-hidden
-                  className="absolute inset-x-0 bottom-0 h-[78%]"
+                  className="absolute inset-x-0"
                   style={{
-                    background: PANELS[index % PANELS.length],
+                    top: PANELS[index % PANELS.length].top,
+                    height: PANELS[index % PANELS.length].height,
+                    background: PANELS[index % PANELS.length].color,
                     clipPath: SLANT,
                   }}
                 />
 
-                <div className="relative aspect-[3/4] origin-bottom transition-transform duration-(--dur-base) ease-(--ease-out-expo) group-hover:scale-[1.06] motion-reduce:transition-none">
+                {/* The figure. Taller than its panel and bottom-aligned, so a
+                    cut-out stands out of the top of the colour rather than
+                    being contained by it — that break across the panel edge is
+                    what makes the row read as people in front of shapes. */}
+                <div className="relative aspect-[3/3.4] origin-bottom transition-transform duration-(--dur-base) ease-(--ease-out-expo) group-hover:scale-[1.06] motion-reduce:transition-none">
                   <Image
                     src={member.photo!}
                     alt=""

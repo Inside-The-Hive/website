@@ -47,11 +47,21 @@ function isPending(value: string) {
  * than as a collision.
  */
 const PANELS = [
-  { color: "var(--color-honey)", top: "12%", bottom: "4%", z: 1 },
-  { color: "var(--color-propolis)", top: "2%", bottom: "6%", z: 3 },
-  { color: "var(--color-honey)", top: "16%", bottom: "2%", z: 2 },
-  { color: "var(--color-propolis)", top: "6%", bottom: "5%", z: 4 },
+  { color: "var(--color-honey)", z: 1 },
+  { color: "var(--color-propolis)", z: 3 },
+  { color: "var(--color-honey)", z: 2 },
+  { color: "var(--color-propolis)", z: 4 },
 ];
+
+/**
+ * How far each figure is dropped, as a share of the box.
+ *
+ * The heads carry the row's variation, not the shapes: the reference keeps its
+ * parallelograms geometrically identical and lets the people sit at different
+ * heights. Small values only — enough to break the line, not enough to read as
+ * four unrelated scales.
+ */
+const DROPS = ["0%", "5%", "2%", "7%"];
 
 /**
  * The slant, as a clip-path parallelogram.
@@ -126,16 +136,15 @@ export function Team() {
                       colour, a shorter one sits inside it, and that is where
                       the row's irregularity comes from now that the shapes
                       themselves are uniform. */}
-                  {/* The lift lives on the panel, not the list item: the item
-                      is the positioning context for the figure too, so moving
-                      it would carry the person along and the stagger would
-                      never show. */}
+                  {/* The panel. Bottom-anchored on one baseline with a fixed
+                      height, so every shape is geometrically identical — the
+                      reference keeps its parallelograms uniform and lets the
+                      people carry the variation. Its top offset only sets how
+                      far the colour rises behind the figure. */}
                   <span
                     aria-hidden
-                    className="absolute right-[6%] left-[6%]"
+                    className="absolute right-[6%] bottom-[4%] left-[6%] h-[82%]"
                     style={{
-                      top: PANELS[index % PANELS.length].top,
-                      bottom: PANELS[index % PANELS.length].bottom,
                       background: PANELS[index % PANELS.length].color,
                       clipPath: SLANT,
                     }}
@@ -144,8 +153,13 @@ export function Team() {
                   {/* The figure, standing on the same bottom line as its
                       panel. */}
                   {/* Bottom-inset to match the panels' own base, so the
-                      figures stand on the colour rather than below it. */}
-                  <div className="absolute inset-x-0 top-0 bottom-[4%] origin-bottom transition-transform duration-(--dur-base) ease-(--ease-out-expo) group-hover:scale-[1.05] motion-reduce:transition-none">
+                      figures stand on the colour rather than below it. The
+                      per-person drop varies the head heights while every
+                      figure keeps the same ground line. */}
+                  <div
+                    className="absolute inset-x-0 bottom-[4%] origin-bottom transition-transform duration-(--dur-base) ease-(--ease-out-expo) group-hover:scale-[1.05] motion-reduce:transition-none"
+                    style={{ top: DROPS[index % DROPS.length] }}
+                  >
                     <Image
                       src={member.photo!}
                       alt=""

@@ -109,7 +109,13 @@ export function Services() {
     >
       <div className="u-gutter">
         <div className="mb-[clamp(3rem,7vh,5rem)] flex flex-wrap items-baseline justify-between gap-4">
-          <h2 id="services-heading" className="text-(length:--text-h2)">
+          {/* Weight 400 against the global heading rule's 800. Overridden here
+              rather than in globals.css because other sections still want the
+              heavier display setting. */}
+          <h2
+            id="services-heading"
+            className="text-(length:--text-h2) font-normal"
+          >
             What we do
           </h2>
           <p className="u-label max-w-sm text-ink/55">
@@ -178,7 +184,7 @@ export function Services() {
                     {String(index + 1).padStart(2, "0")}
                   </span>
 
-                  <h3 className="text-(length:--text-h3) text-ink">
+                  <h3 className="text-(length:--text-h3) font-normal text-ink">
                     {service.title}
                   </h3>
                 </div>

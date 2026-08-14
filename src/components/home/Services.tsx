@@ -12,10 +12,9 @@ import { services } from "@/content/team";
  * with, which is "what can you do for me". This states the capability
  * directly.
  *
- * A numbered list rather than a card grid. The numbering is not decoration —
- * these are the four things the brand does, and a set small enough to count is
- * a set worth counting. Cards would imply they are interchangeable options;
- * a list reads as a single offering with four parts.
+ * A list rather than a card grid. Cards would imply four interchangeable
+ * options; a list reads as one offering with four parts, and the hairline
+ * rules carry the separation without drawing a box around anything.
  *
  * Hovering a row lifts a photograph under the cursor. That image is the
  * evidence for the claim on the row it belongs to, which is why it is real
@@ -166,9 +165,6 @@ export function Services() {
               // comes from the hairline and the space, never from a container.
               className="u-rule border-t py-[clamp(1.75rem,3.5vh,2.75rem)] transition-colors duration-(--dur-fast) last:border-b"
             >
-              {/* Below md the twelve-column grid collapses, so the number and
-                  the title share one flex row rather than stacking — a lone
-                  index on its own line reads as a stray figure. */}
               <div
                 className="grid items-baseline gap-x-8 gap-y-3 transition-opacity duration-(--dur-fast) md:grid-cols-12"
                 // Rows other than the hovered one recede. The dimming is what
@@ -178,16 +174,9 @@ export function Services() {
                   opacity: active === null || active === index ? 1 : 0.35,
                 }}
               >
-                <div className="flex items-baseline gap-4 md:col-span-5 md:gap-8">
-                  {/* Tabular so the column stays true as it counts. */}
-                  <span className="u-label shrink-0 text-ink/35 tabular-nums md:w-8">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-
-                  <h3 className="text-(length:--text-h3) font-normal text-ink">
-                    {service.title}
-                  </h3>
-                </div>
+                <h3 className="text-(length:--text-h3) font-normal text-ink md:col-span-5">
+                  {service.title}
+                </h3>
 
                 <p className="max-w-prose text-ink/60 md:col-span-5">
                   {service.description}

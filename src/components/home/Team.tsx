@@ -101,7 +101,10 @@ export function Team() {
         {/* `items-start`, not `items-end`: bottom-aligning the items cancels
             the per-item lift that breaks the row's baseline. Top padding is
             the room the lifted items rise into. */}
-        <ul className="-mx-[var(--spacing-gutter)] flex items-start overflow-x-auto px-[var(--spacing-gutter)] pt-[7%] pb-2 [scrollbar-width:none] md:mx-0 md:overflow-visible md:px-0 md:pb-0">
+        {/* Centred once the row fits: the items overlap heavily, so the group
+            is far narrower than four full-width columns and would otherwise
+            sit hard against the left gutter with its first figure clipped. */}
+        <ul className="-mx-[var(--spacing-gutter)] flex items-start overflow-x-auto px-[var(--spacing-gutter)] pt-[7%] pb-2 [scrollbar-width:none] md:mx-0 md:justify-center md:overflow-visible md:px-0 md:pb-0">
           {members.map((member, index) => {
             const pending = isPending(member.name);
 
@@ -112,7 +115,12 @@ export function Team() {
                 // its neighbour, and each is lifted a different amount so the
                 // row sits on a broken line. Hover jumps above every static
                 // z-index so the scaling portrait is never clipped.
-                className="group relative -mx-[2.5%] w-[62%] shrink-0 hover:z-20 sm:w-[38%] md:w-1/4"
+                // Items overlap hard — the boxes are wider than the people
+                // inside them, so a small overlap leaves the visible figures
+                // still separated and the row reads as four pasted cut-outs.
+                // At this depth each person genuinely passes in front of their
+                // neighbour, which is what the z-index ordering is for.
+                className="group relative -mx-[7%] w-[62%] shrink-0 hover:z-20 sm:w-[38%] md:w-[36%]"
                 style={{ zIndex: PANELS[index % PANELS.length].z }}
               >
                 {/* Panel and figure share one box and one bottom line.
@@ -143,7 +151,7 @@ export function Team() {
                       far the colour rises behind the figure. */}
                   <span
                     aria-hidden
-                    className="absolute right-[6%] bottom-[4%] left-[6%] h-[82%]"
+                    className="absolute right-[12%] bottom-[4%] left-[12%] h-[82%]"
                     style={{
                       background: PANELS[index % PANELS.length].color,
                       clipPath: SLANT,

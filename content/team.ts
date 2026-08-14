@@ -52,6 +52,13 @@ export const team: TeamMember[] = [
     role: "TODO(client): role",
     photo: "/cynthia-trim.png",
   },
+  {
+    name: "TODO(client): name",
+    role: "TODO(client): role",
+    // Used as supplied — already cut out and framed like the others, so it
+    // needs no trimming pass.
+    photo: "/anya.png",
+  },
 ];
 
 /**

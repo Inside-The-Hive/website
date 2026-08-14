@@ -40,17 +40,16 @@ function isPending(value: string) {
 /**
  * One entry per position in the row.
  *
- * `lift` raises the whole item — panel and figure together — so the row sits
- * on a broken line rather than a flat one. `z` controls which items overlap
- * on top of their neighbours: the pair that sit forward carry the higher
- * value, so an overlap reads as one shape passing in front of another rather
- * than as a collision.
+ * `z` ascends strictly left to right, so each person overlaps the one before
+ * them and the row reads as a single receding line rather than a set of
+ * arbitrary layer collisions.
  */
 const PANELS = [
   { color: "var(--color-honey)", z: 1 },
-  { color: "var(--color-propolis)", z: 3 },
-  { color: "var(--color-honey)", z: 2 },
+  { color: "var(--color-propolis)", z: 2 },
+  { color: "var(--color-honey)", z: 3 },
   { color: "var(--color-propolis)", z: 4 },
+  { color: "var(--color-honey)", z: 5 },
 ];
 
 /**
@@ -61,18 +60,18 @@ const PANELS = [
  * heights. Small values only — enough to break the line, not enough to read as
  * four unrelated scales.
  */
-const DROPS = ["0%", "5%", "2%", "7%"];
+const DROPS = ["0%", "5%", "2%", "7%", "3%"];
 
 /**
  * Per-person scale correction, for when a cut-out is framed differently from
  * the rest.
  *
- * `object-contain` fits by width, so a crop that is wider relative to its
- * height fills more of its box and reads as a larger person. All four are
- * currently framed alike (0.59–0.74), so every value is 1; a replacement
- * portrait cropped tighter would need trimming back here.
+ * `object-contain` fits to whichever axis runs out first, so a crop framed
+ * differently from the rest renders at a different scale. All five currently
+ * sit at 0.59–0.74, so every value is 1; a replacement cropped tighter or
+ * wider would need correcting here.
  */
-const SCALES = [1, 1, 1, 1];
+const SCALES = [1, 1, 1, 1, 1];
 
 /**
  * The slant, as a clip-path parallelogram.
@@ -131,7 +130,7 @@ export function Team() {
                 // still separated and the row reads as four pasted cut-outs.
                 // At this depth each person genuinely passes in front of their
                 // neighbour, which is what the z-index ordering is for.
-                className="group relative -mx-[7%] w-[62%] shrink-0 hover:z-20 sm:w-[38%] md:w-[36%]"
+                className="group relative -mx-[5%] w-[62%] shrink-0 hover:z-20 sm:w-[38%] md:w-[26%]"
                 style={{ zIndex: PANELS[index % PANELS.length].z }}
               >
                 {/* Panel and figure share one box and one bottom line.
@@ -162,7 +161,7 @@ export function Team() {
                       far the colour rises behind the figure. */}
                   <span
                     aria-hidden
-                    className="absolute right-[9%] bottom-[4%] left-[9%] h-[82%]"
+                    className="absolute right-[8%] bottom-[4%] left-[8%] h-[82%]"
                     style={{
                       background: PANELS[index % PANELS.length].color,
                       clipPath: SLANT,
@@ -193,7 +192,7 @@ export function Team() {
                       // wrapper, which already owns the hover transform and
                       // would overwrite it. Bottom origin so a scaled figure
                       // stays on the shared ground line.
-                      className="origin-bottom object-contain object-[center_bottom] grayscale transition-[filter] duration-(--dur-base) group-hover:grayscale-0"
+                      className="origin-bottom object-contain object-[35%_bottom] grayscale transition-[filter] duration-(--dur-base) group-hover:grayscale-0"
                       style={{ scale: String(SCALES[index % SCALES.length]) }}
                     />
                   </div>

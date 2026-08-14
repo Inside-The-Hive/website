@@ -20,11 +20,37 @@ export type TeamMember = {
   url?: string;
 };
 
+/**
+ * Photos are cut-outs on a transparent ground — the layout stands each person
+ * against an angled colour panel, so a photo with its original background
+ * would sit as a rectangle on top of that panel and lose the effect entirely.
+ *
+ * Cutting out has to happen before the file lands here; it is not something
+ * the site can do to an arbitrary photograph. The images below are event
+ * stills standing in for the real portraits, which is why they still carry
+ * their backgrounds.
+ */
 export const team: TeamMember[] = [
-  { name: "TODO(client): name", role: "TODO(client): role", photo: null },
-  { name: "TODO(client): name", role: "TODO(client): role", photo: null },
-  { name: "TODO(client): name", role: "TODO(client): role", photo: null },
-  { name: "TODO(client): name", role: "TODO(client): role", photo: null },
+  {
+    name: "TODO(client): name",
+    role: "TODO(client): role",
+    photo: "/Technova.jpg",
+  },
+  {
+    name: "TODO(client): name",
+    role: "TODO(client): role",
+    photo: "/unchainsummer.jpg",
+  },
+  {
+    name: "TODO(client): name",
+    role: "TODO(client): role",
+    photo: "/redot%20x%20ith%20x%20dinner.jpg",
+  },
+  {
+    name: "TODO(client): name",
+    role: "TODO(client): role",
+    photo: "/movienight.jpg",
+  },
 ];
 
 /**

@@ -6,17 +6,22 @@ import { team } from "@/content/team";
  * The crew.
  *
  * The lore says "someone young, out of school, with a camera" but never shows
- * who — and a media brand is its people. This closes that gap: the faces
- * behind the coverage, named, with what they actually do rather than a job
- * title.
+ * who — and a media brand is its people. This closes that gap.
  *
- * Portrait frames on a warm ground, echoing the poster treatment in the events
- * sequence so the two read as the same brand rather than two designs.
+ * Each person stands against an angled colour panel, the row overlapping into
+ * one composition rather than four portraits in boxes. The panels are cut with
+ * a clip-path rather than rotated, so the colour leans while the person stays
+ * upright. Portraits are greyscale, which leaves the brand's own two fill
+ * colours as the only colour in the section; hovering lifts one back to
+ * full colour and scales it forward.
  *
- * Names are TODO until the client supplies them. Rather than render four rows
- * of "TODO(client)" to a visitor, unconfirmed members fall back to a numbered
- * placeholder cell — the layout is complete and reviewable, and nothing on the
- * page claims to be a person who has not been confirmed.
+ * REQUIRES CUT-OUT PHOTOGRAPHY. Each portrait must be a PNG with a
+ * transparent ground and the subject standing full-height in frame. A photo
+ * that still has its background renders as a rectangle sitting on top of its
+ * panel and the composition collapses — that cannot be fixed in CSS, the
+ * cutting out happens before the file arrives. The images wired up now are
+ * event stills standing in, so the section is showing exactly that failure
+ * until real portraits replace them.
  */
 
 function isPending(value: string) {
@@ -24,203 +29,109 @@ function isPending(value: string) {
 }
 
 /**
- * Rotations cycled across the grid.
- *
- * Irregular on purpose — a repeating alternation reads as a pattern, which is
- * the opposite of prints laid out by hand. Kept under a degree and a half so
- * the row still scans as a row.
+ * Panel colours, cycled. The two brand colours that carry a fill, alternating
+ * so the same one never lands beside itself.
  */
-const TILTS = ["-1.4deg", "0.9deg", "-0.6deg", "1.3deg"];
+const PANELS = ["var(--color-honey)", "var(--color-propolis)"];
 
 /**
- * One print on the line.
+ * The slant, as a clip-path parallelogram.
  *
- * The list item carries the string and stays square to the page; the tilt goes
- * on an inner wrapper. Rotating the item itself would rotate its line with it,
- * and four tilted line segments do not join into one straight string.
+ * Cut from the panel rather than applied as a rotation: rotating would tilt
+ * the portrait in front of it too, and the person needs to stay upright while
+ * the panel behind them leans.
  */
-function Hanger({
-  children,
-  tilt,
-  ...rest
-}: {
-  children: React.ReactNode;
-  tilt: string;
-} & React.LiHTMLAttributes<HTMLLIElement>) {
-  return (
-    <li className="relative" {...rest}>
-      {/* Stretched well past the item on both sides rather than using
-          `.u-bleed`, whose 100vw + 50% margin is measured against this narrow
-          list item and pushes the page into horizontal scroll. The overflow is
-          clipped by the section, so the line still runs edge to edge. */}
-      <span
-        aria-hidden
-        className="absolute -inset-x-[100vw] top-0 border-t border-dashed border-ink/25"
-      />
-      <div style={{ rotate: tilt }}>{children}</div>
-    </li>
-  );
-}
-
-/**
- * A Polaroid print.
- *
- * White border on all four sides with a deep bottom margin, which is the
- * proportion that actually reads as instant film — the caption sits in that
- * margin the way a handwritten one would. The image well is square, again
- * following the format rather than a web crop.
- *
- * The card lifts and straightens on hover, so a grid of scattered prints
- * becomes momentarily legible when you point at one.
- */
-function Polaroid({
-  children,
-  caption,
-  sub,
-  url,
-}: {
-  children: React.ReactNode;
-  caption?: string;
-  sub?: string;
-  url?: string;
-}) {
-  return (
-    // The bottom margin is deeper than the other three whether or not a
-    // caption fills it — that asymmetry is what reads as instant film, so it
-    // holds on the placeholder cards too.
-    //
-    // Hover lifts the print toward the line rather than straight up, and the
-    // origin sits at the peg so it swings from where it is pinned instead of
-    // sliding.
-    <div className="group relative origin-top bg-white p-3 pb-14 shadow-[0_2px_10px_rgba(10,10,10,0.10),0_12px_28px_rgba(10,10,10,0.08)] transition-[transform,box-shadow] duration-(--dur-base) ease-(--ease-out-expo) hover:-translate-y-1 hover:rotate-0 hover:shadow-[0_4px_14px_rgba(10,10,10,0.14),0_20px_44px_rgba(10,10,10,0.12)] motion-reduce:transition-none">
-      {/* The peg. Sits above the print's top edge so it straddles the line
-          the row hangs from. Honey, because it is the one small brand mark
-          this section carries. */}
-      <span
-        aria-hidden
-        className="absolute -top-5 left-1/2 h-6 w-2 -translate-x-1/2 rounded-[1px] bg-honey shadow-[0_1px_2px_rgba(10,10,10,0.25)]"
-      />
-      {/* Square well, as on the real format. */}
-      <div className="relative aspect-square overflow-hidden bg-ash">
-        {children}
-      </div>
-
-      {/* The caption sits in the print's bottom margin. Centred, because a
-          handwritten Polaroid caption is. */}
-      {caption && (
-        // Absolutely placed inside the reserved margin rather than added below
-        // it, so a captioned print and an empty one are exactly the same
-        // height and the row of prints stays aligned.
-        <div className="absolute inset-x-3 bottom-3 text-center">
-          {/* Sized to the margin it sits in, not to the page's h3 scale — a
-              caption on a print is small by nature. */}
-          <h3 className="text-lg leading-tight font-normal text-ink">
-            {url ? (
-              <Link
-                href={url}
-                target="_blank"
-                rel="noopener"
-                className="transition-colors duration-(--dur-fast) hover:text-propolis"
-              >
-                {caption} <span aria-hidden>↗</span>
-              </Link>
-            ) : (
-              caption
-            )}
-          </h3>
-          {sub && <p className="u-label mt-1.5 text-ink/55">{sub}</p>}
-        </div>
-      )}
-    </div>
-  );
-}
+const SLANT = "polygon(22% 0, 100% 0, 78% 100%, 0 100%)";
 
 export function Team() {
-  const confirmed = team.filter(
-    (member) => !isPending(member.name) && !isPending(member.role),
-  );
-  const pendingCount = team.length - confirmed.length;
+  const members = team.filter((member) => member.photo);
+  if (members.length === 0) return null;
 
   return (
-    // Clips the over-wide washing lines so they read as running off both edges
-    // without putting the page into horizontal scroll.
+    // Clips the panels where they run past the gutter.
     <section
       aria-labelledby="team-heading"
       className="u-section u-rule overflow-x-clip border-t text-ink"
     >
       <div className="u-gutter">
         <div className="mb-[clamp(3rem,7vh,5rem)] flex flex-wrap items-baseline justify-between gap-4">
-          {/* Weight 400 against the global heading rule's 800, matching the
-              services section. */}
           <h2 id="team-heading" className="text-(length:--text-h2) font-normal">
             The crew
           </h2>
+          <p className="u-label max-w-sm text-ink/55">The people in the room</p>
         </div>
 
-        {/* The washing line.
+        {/* The row. Items overlap by a negative margin so the portraits break
+            across each other's panels — that interlock is the composition, and
+            an even gap would read as four separate cards. */}
+        {/* Scrolls horizontally below md. Four overlapping figures across a
+            390px screen leaves each about 90px wide, which is not a portrait
+            — swiping keeps them at a readable size and suits a row that is
+            already one continuous composition rather than a grid. */}
+        <ul className="-mx-[var(--spacing-gutter)] flex items-end overflow-x-auto px-[var(--spacing-gutter)] pb-2 [scrollbar-width:none] md:mx-0 md:overflow-visible md:px-0 md:pb-0">
+          {members.map((member, index) => {
+            const pending = isPending(member.name);
 
-            Drawn per grid row rather than once for the section: the grid wraps
-            to two rows on mobile, and a single line left the bottom pair
-            pegged to nothing. Each <li> carries its own full-bleed rule at its
-            top edge, so every row gets a string no matter how the grid wraps.
-
-            Full-bleed rather than gutter-to-gutter because a line that stops
-            at the text margin reads as a divider; one that runs off both edges
-            reads as string strung across a room. */}
-        <div className="relative">
-          {/* Prints hang from the line, so the row is aligned to its top edge
-              and each card is pushed down by its own peg. */}
-          <ul className="grid grid-cols-2 items-start gap-x-8 gap-y-16 pt-4 md:grid-cols-4 md:gap-x-12">
-          {confirmed.map((member, index) => (
-            <Hanger key={member.name} tilt={TILTS[index % TILTS.length]}>
-              <Polaroid
-                caption={member.name}
-                sub={member.role}
-                url={member.url}
+            return (
+              <li
+                key={index}
+                // Raised on hover so the scaling portrait rises above its
+                // neighbours rather than being clipped by the next panel.
+                // Fixed width while the row scrolls, a quarter share once it
+                // fits. `shrink-0` stops flex from compressing them back down
+                // inside the scroller.
+                className="group relative -mx-[3%] w-[62%] shrink-0 first:ml-0 last:mr-0 hover:z-10 sm:w-[38%] md:w-1/4"
               >
-                {member.photo ? (
+                {/* The panel. Shorter than the portrait, so the person stands
+                    out of the top of the colour rather than being contained
+                    by it. */}
+                <span
+                  aria-hidden
+                  className="absolute inset-x-0 bottom-0 h-[78%]"
+                  style={{
+                    background: PANELS[index % PANELS.length],
+                    clipPath: SLANT,
+                  }}
+                />
+
+                <div className="relative aspect-[3/4] origin-bottom transition-transform duration-(--dur-base) ease-(--ease-out-expo) group-hover:scale-[1.06] motion-reduce:transition-none">
                   <Image
-                    src={member.photo}
+                    src={member.photo!}
                     alt=""
                     fill
-                    sizes="(min-width: 768px) 22vw, 45vw"
-                    className="object-cover"
+                    sizes="(min-width: 768px) 25vw, 50vw"
+                    // `contain` and bottom-aligned so a cut-out keeps its own
+                    // proportions and stands on the panel rather than being
+                    // cropped to fill a box.
+                    className="object-contain object-bottom grayscale transition-[filter] duration-(--dur-base) group-hover:grayscale-0"
                   />
-                ) : (
-                  // No photo yet. The initial rather than a grey silhouette.
-                  <span
-                    aria-hidden
-                    className="absolute inset-0 grid place-items-center font-display text-(length:--text-h1) text-ink/12"
-                  >
-                    {member.name.charAt(0)}
-                  </span>
-                )}
-              </Polaroid>
-            </Hanger>
-          ))}
+                </div>
 
-          {/* Placeholder cards for members not yet confirmed. Quiet on
-              purpose — a page in front of a visitor should read as composed
-              rather than unfinished, so these hold the grid's shape without
-              announcing that something is missing. */}
-          {Array.from({ length: pendingCount }).map((_, index) => {
-            const position = confirmed.length + index;
-            return (
-              <Hanger
-                key={`pending-${index}`}
-                tilt={TILTS[position % TILTS.length]}
-                aria-hidden
-              >
-                <Polaroid>
-                  <span className="u-label absolute inset-0 grid place-items-center text-ink/15">
-                    {String(position + 1).padStart(2, "0")}
-                  </span>
-                </Polaroid>
-              </Hanger>
-              );
-            })}
-          </ul>
-        </div>
+                {/* Names sit below the row so the composition itself stays
+                    clear of type. */}
+                {!pending && (
+                  <div className="relative mt-5 text-center">
+                    <h3 className="text-lg leading-tight font-normal text-ink">
+                      {member.url ? (
+                        <Link
+                          href={member.url}
+                          target="_blank"
+                          rel="noopener"
+                          className="transition-colors duration-(--dur-fast) hover:text-propolis"
+                        >
+                          {member.name} <span aria-hidden>↗</span>
+                        </Link>
+                      ) : (
+                        member.name
+                      )}
+                    </h3>
+                    <p className="u-label mt-1.5 text-ink/55">{member.role}</p>
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </section>
   );

@@ -38,14 +38,20 @@ function isPending(value: string) {
  * colour.
  */
 /**
- * Panel colours, alternating so the same one never lands beside itself.
+ * One entry per position in the row.
  *
- * Colour is the only thing that varies. Every panel is the same size and sits
- * on the same baseline — the row's irregularity comes from the figures, who
- * stand at whatever height their own crop gives them, not from the shapes
- * behind them.
+ * `lift` raises the whole item — panel and figure together — so the row sits
+ * on a broken line rather than a flat one. `z` controls which items overlap
+ * on top of their neighbours: the pair that sit forward carry the higher
+ * value, so an overlap reads as one shape passing in front of another rather
+ * than as a collision.
  */
-const PANELS = ["var(--color-honey)", "var(--color-propolis)"];
+const PANELS = [
+  { color: "var(--color-honey)", top: "12%", bottom: "4%", z: 1 },
+  { color: "var(--color-propolis)", top: "2%", bottom: "6%", z: 3 },
+  { color: "var(--color-honey)", top: "16%", bottom: "2%", z: 2 },
+  { color: "var(--color-propolis)", top: "6%", bottom: "5%", z: 4 },
+];
 
 /**
  * The slant, as a clip-path parallelogram.
@@ -82,19 +88,22 @@ export function Team() {
             390px screen leaves each about 90px wide, which is not a portrait
             — swiping keeps them at a readable size and suits a row that is
             already one continuous composition rather than a grid. */}
-        <ul className="-mx-[var(--spacing-gutter)] flex items-end overflow-x-auto px-[var(--spacing-gutter)] pb-2 [scrollbar-width:none] md:mx-0 md:overflow-visible md:px-0 md:pb-0">
+        {/* `items-start`, not `items-end`: bottom-aligning the items cancels
+            the per-item lift that breaks the row's baseline. Top padding is
+            the room the lifted items rise into. */}
+        <ul className="-mx-[var(--spacing-gutter)] flex items-start overflow-x-auto px-[var(--spacing-gutter)] pt-[7%] pb-2 [scrollbar-width:none] md:mx-0 md:overflow-visible md:px-0 md:pb-0">
           {members.map((member, index) => {
             const pending = isPending(member.name);
 
             return (
               <li
                 key={index}
-                // Raised on hover so the scaling portrait rises above its
-                // neighbours rather than being clipped by the next panel.
-                // Fixed width while the row scrolls, a quarter share once it
-                // fits. `shrink-0` stops flex from compressing them back down
-                // inside the scroller.
-                className="group relative w-[62%] shrink-0 hover:z-10 sm:w-[38%] md:w-1/4"
+                // Items overlap by a negative margin so each panel passes over
+                // its neighbour, and each is lifted a different amount so the
+                // row sits on a broken line. Hover jumps above every static
+                // z-index so the scaling portrait is never clipped.
+                className="group relative -mx-[2.5%] w-[62%] shrink-0 hover:z-20 sm:w-[38%] md:w-1/4"
+                style={{ zIndex: PANELS[index % PANELS.length].z }}
               >
                 {/* Panel and figure share one box and one bottom line.
                     Previously the panel was sized off the list item and the
@@ -103,7 +112,11 @@ export function Team() {
                     than behind them. Both are now absolute children of the
                     same grounded container, which is what keeps them
                     registered to each other at every width. */}
-                <div className="relative aspect-[3/4.3]">
+                {/* Sized between the crops it has to hold. The cut-outs range
+                    from 0.74 to 1.35 in ratio; a box much taller than that
+                    range shrinks the wide ones to fit its width and leaves
+                    them floating small above the panel's base. */}
+                <div className="relative aspect-[3/3.2]">
                   {/* The panel. Identical on every item — same size, same
                       baseline — and inset from the figure's edges so the
                       person overhangs it slightly on both sides.
@@ -113,27 +126,35 @@ export function Team() {
                       colour, a shorter one sits inside it, and that is where
                       the row's irregularity comes from now that the shapes
                       themselves are uniform. */}
+                  {/* The lift lives on the panel, not the list item: the item
+                      is the positioning context for the figure too, so moving
+                      it would carry the person along and the stagger would
+                      never show. */}
                   <span
                     aria-hidden
-                    className="absolute top-[16%] right-[3%] bottom-0 left-[3%]"
+                    className="absolute right-[6%] left-[6%]"
                     style={{
-                      background: PANELS[index % PANELS.length],
+                      top: PANELS[index % PANELS.length].top,
+                      bottom: PANELS[index % PANELS.length].bottom,
+                      background: PANELS[index % PANELS.length].color,
                       clipPath: SLANT,
                     }}
                   />
 
                   {/* The figure, standing on the same bottom line as its
                       panel. */}
-                  <div className="absolute inset-0 origin-bottom transition-transform duration-(--dur-base) ease-(--ease-out-expo) group-hover:scale-[1.05] motion-reduce:transition-none">
+                  {/* Bottom-inset to match the panels' own base, so the
+                      figures stand on the colour rather than below it. */}
+                  <div className="absolute inset-x-0 top-0 bottom-[4%] origin-bottom transition-transform duration-(--dur-base) ease-(--ease-out-expo) group-hover:scale-[1.05] motion-reduce:transition-none">
                     <Image
                       src={member.photo!}
                       alt=""
                       fill
                       sizes="(min-width: 768px) 25vw, 50vw"
                       // Cut-outs are trimmed to their subject's bounding box,
-                      // so the file's edges are the person's edges. `contain`
-                      // with a bottom anchor then stands the whole figure on
-                      // the panel's base without cropping their feet or head.
+                      // so the file's edges are the person's edges, and
+                      // `contain` keeps each person whole rather than cropping
+                      // heads and shoulders to fill.
                       className="object-contain object-[center_bottom] grayscale transition-[filter] duration-(--dur-base) group-hover:grayscale-0"
                     />
                   </div>

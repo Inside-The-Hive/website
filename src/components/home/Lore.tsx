@@ -49,7 +49,7 @@ export function Lore() {
             Left-aligned inside that block: centring every line of a
             multi-paragraph passage leaves both edges ragged and slows reading
             for no gain. */}
-        <div className="mx-auto mt-[clamp(3.5rem,9vh,7rem)] grid max-w-[46ch] gap-8 text-left text-[clamp(1.125rem,2.08vw,1.875rem)] leading-[1.42] text-ink/55">
+        <div className="mx-auto mt-[clamp(3.5rem,9vh,7rem)] grid max-w-[65ch] gap-8 text-left text-[clamp(1.125rem,2.08vw,1.5rem)] leading-[1.42] text-ink/55">
           <p>
             There was no studio and no budget. There was a phone, a borrowed
             camera, and a suspicion that African Web3 was being covered by

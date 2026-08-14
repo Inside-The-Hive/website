@@ -44,6 +44,11 @@ export type Service = {
   description: string;
   /** Proof point. Drawn from figures already in site.ts stats. */
   note: string;
+  /**
+   * Revealed under the cursor while the row is hovered. Real work rather than
+   * an illustration — the image is the evidence for the row it belongs to.
+   */
+  image: string;
 };
 
 export const services: Service[] = [
@@ -52,23 +57,27 @@ export const services: Service[] = [
     description:
       "We host and produce — dinners, screenings, summits. From the room list to the run of show to what it looks like afterwards.",
     note: "20+ hosted",
+    image: "/redot%20x%20ith%20x%20dinner.jpg",
   },
   {
     title: "Coverage",
     description:
       "On the ground with a camera, not watching a livestream. Photography and video that treats an event as something that happened to people.",
     note: "2,000+ frames",
+    image: "/unchainsummer.jpg",
   },
   {
     title: "The podcast",
     description:
       "Long-form conversation with the people actually building. Africa's Web3 story told by the ones in it, on the record.",
     note: "38 episodes",
+    image: "/videos/movienight-poster.jpg",
   },
   {
     title: "Partnership",
     description:
       "Media partner, event partner, or both. Brands come to us when they need a room filled and the result documented properly.",
     note: "8 partners",
+    image: "/Technova.jpg",
   },
 ];

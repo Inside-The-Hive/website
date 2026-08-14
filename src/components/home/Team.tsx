@@ -64,18 +64,15 @@ const PANELS = [
 const DROPS = ["0%", "5%", "2%", "7%"];
 
 /**
- * Per-person scale correction.
+ * Per-person scale correction, for when a cut-out is framed differently from
+ * the rest.
  *
- * The cut-outs are not framed alike: three are roughly 0.62–0.74 wide against
- * their height, but the second is 0.92 — a tighter crop holding less of the
- * body. Filling a tall box with `cover` scales a wide crop up until it covers,
- * so that one rendered noticeably larger than the rest. This trims it back so
- * the four read as one group at a consistent scale.
- *
- * Values are corrections to the source framing, not a design choice; a re-crop
- * that matches the others would let this go back to 1.
+ * `object-contain` fits by width, so a crop that is wider relative to its
+ * height fills more of its box and reads as a larger person. All four are
+ * currently framed alike (0.59–0.74), so every value is 1; a replacement
+ * portrait cropped tighter would need trimming back here.
  */
-const SCALES = [1, 0.82, 1, 1];
+const SCALES = [1, 1, 1, 1];
 
 /**
  * The slant, as a clip-path parallelogram.

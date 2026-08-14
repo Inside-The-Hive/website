@@ -25,18 +25,16 @@ export type TeamMember = {
  * against an angled colour panel, so a photo with its original background
  * would sit as a rectangle on top of that panel and lose the effect entirely.
  *
- * Cutting out has to happen before the file lands here; it is not something
- * the site can do to an arbitrary photograph. The images below are event
- * stills standing in for the real portraits, which is why they still carry
- * their backgrounds.
+ * Cutting out happens before the file lands here; it is not something the site
+ * can do to an arbitrary photograph. Each file is then trimmed to its
+ * subject's alpha bounding box (the `-trim` suffix) so the image's edges are
+ * the person's edges — without that, two portraits exported on different
+ * canvases render at different scales and sit off their panels.
  */
 export const team: TeamMember[] = [
   {
     name: "TODO(client): name",
     role: "TODO(client): role",
-    // A real cut-out — transparent ground, subject in frame. This is the
-    // format the section is built for; the three below are event stills
-    // standing in until their portraits are cut out the same way.
     photo: "/feezy-trim.png",
   },
   {
@@ -52,7 +50,7 @@ export const team: TeamMember[] = [
   {
     name: "TODO(client): name",
     role: "TODO(client): role",
-    photo: "/movienight.jpg",
+    photo: "/cynthia-trim.png",
   },
 ];
 

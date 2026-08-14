@@ -15,13 +15,11 @@ import { team } from "@/content/team";
  * colours as the only colour in the section; hovering lifts one back to
  * full colour and scales it forward.
  *
- * REQUIRES CUT-OUT PHOTOGRAPHY. Each portrait must be a PNG with a
- * transparent ground and the subject standing full-height in frame. A photo
- * that still has its background renders as a rectangle sitting on top of its
- * panel and the composition collapses — that cannot be fixed in CSS, the
- * cutting out happens before the file arrives. The images wired up now are
- * event stills standing in, so the section is showing exactly that failure
- * until real portraits replace them.
+ * Requires cut-out photography: each portrait is a PNG with a transparent
+ * ground, trimmed to the subject's bounding box so the file's edges are the
+ * person's edges. A photo that still carries its background renders as a
+ * rectangle over its panel and the composition collapses, and an untrimmed
+ * cut-out seats at the wrong scale — see content/team.ts.
  */
 
 function isPending(value: string) {

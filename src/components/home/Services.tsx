@@ -126,11 +126,11 @@ export function Services() {
             <div
               ref={previewRef}
               aria-hidden
-              className="pointer-events-none absolute top-0 left-0 z-20 hidden w-[min(15vw,13rem)] md:block"
+              className="pointer-events-none absolute top-0 left-0 z-20 hidden w-[min(32vw,30rem)] md:block"
               style={{ willChange: "transform" }}
             >
               <div
-                className="relative aspect-[3/4] overflow-hidden rounded-xl transition-[opacity,scale] duration-(--dur-base) ease-(--ease-out-expo)"
+                className="relative aspect-[3/4] overflow-hidden transition-[opacity,scale] duration-(--dur-base) ease-(--ease-out-expo)"
                 style={{
                   opacity: active === null ? 0 : 1,
                   scale: active === null ? "0.92" : "1",
@@ -142,7 +142,7 @@ export function Services() {
                     src={service.image}
                     alt=""
                     fill
-                    sizes="(min-width: 768px) 15vw, 0px"
+                    sizes="(min-width: 768px) 32vw, 0px"
                     className="object-cover transition-opacity duration-(--dur-base)"
                     style={{ opacity: active === index ? 1 : 0 }}
                   />

@@ -52,6 +52,16 @@ export const team: TeamMember[] = [
     role: "TODO(client): role",
     photo: "/cynthia-trim.png",
   },
+  {
+    name: "TODO(client): name",
+    role: "TODO(client): role",
+    // TODO(client): re-export with the background removed. This file has an
+    // alpha channel but every pixel in it is opaque — the studio backdrop is
+    // still there, so it renders as a black square over its panel instead of
+    // a figure standing on it. Nothing here can strip it; the other four were
+    // supplied already cut out.
+    photo: "/anya.png",
+  },
 ];
 
 /**

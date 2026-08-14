@@ -51,6 +51,7 @@ const PANELS = [
   { color: "var(--color-propolis)", z: 3 },
   { color: "var(--color-honey)", z: 2 },
   { color: "var(--color-propolis)", z: 4 },
+  { color: "var(--color-honey)", z: 5 },
 ];
 
 /**
@@ -61,7 +62,7 @@ const PANELS = [
  * heights. Small values only — enough to break the line, not enough to read as
  * four unrelated scales.
  */
-const DROPS = ["0%", "5%", "2%", "7%"];
+const DROPS = ["0%", "5%", "2%", "7%", "3%"];
 
 /**
  * The slant, as a clip-path parallelogram.
@@ -120,7 +121,7 @@ export function Team() {
                 // still separated and the row reads as four pasted cut-outs.
                 // At this depth each person genuinely passes in front of their
                 // neighbour, which is what the z-index ordering is for.
-                className="group relative -mx-[7%] w-[62%] shrink-0 hover:z-20 sm:w-[38%] md:w-[36%]"
+                className="group relative -mx-[7%] w-[62%] shrink-0 hover:z-20 sm:w-[38%] md:w-[29%]"
                 style={{ zIndex: PANELS[index % PANELS.length].z }}
               >
                 {/* Panel and figure share one box and one bottom line.

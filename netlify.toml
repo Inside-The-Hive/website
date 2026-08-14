@@ -1,0 +1,26 @@
+# Netlify build configuration.
+#
+# Kept in the repo rather than only in the dashboard UI so the settings are
+# versioned and cannot silently drift. The failure this was written for was a
+# UI field holding the branch name in the "base directory" slot, which made the
+# build look for /opt/build/repo/feat/site-v1 — a path that never exists.
+#
+# There is deliberately no `base` key: the app lives at the repository root.
+
+[build]
+  command = "npm run build"
+  # Next.js writes here, and the plugin below picks it up from this path.
+  publish = ".next"
+
+# Required for Next 15. Without it Netlify serves the build output as static
+# files, which drops SSR, the image optimizer and the routing layer.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  # Match the local toolchain. Netlify's default is older than what Next 15
+  # and the lockfile expect.
+  NODE_VERSION = "20"
+
+# Production builds should fail loudly on a type error rather than shipping
+# something broken; nothing here suppresses that.

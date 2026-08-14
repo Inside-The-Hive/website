@@ -40,10 +40,10 @@ function isPending(value: string) {
  * colour.
  */
 const PANELS = [
-  { color: "var(--color-honey)", top: "22%", height: "74%" },
-  { color: "var(--color-propolis)", top: "8%", height: "86%" },
-  { color: "var(--color-honey)", top: "30%", height: "66%" },
-  { color: "var(--color-propolis)", top: "14%", height: "82%" },
+  { color: "var(--color-honey)", top: "10%", height: "90%" },
+  { color: "var(--color-propolis)", top: "0%", height: "96%" },
+  { color: "var(--color-honey)", top: "16%", height: "84%" },
+  { color: "var(--color-propolis)", top: "5%", height: "93%" },
 ];
 
 /**
@@ -54,7 +54,7 @@ const PANELS = [
  * the panel behind them leans. Raked hard — a shallow lean reads as a
  * rectangle that has gone slightly wrong rather than as a deliberate shape.
  */
-const SLANT = "polygon(38% 0, 100% 0, 62% 100%, 0 100%)";
+const SLANT = "polygon(30% 0, 100% 0, 70% 100%, 0 100%)";
 
 export function Team() {
   const members = team.filter((member) => member.photo);
@@ -99,7 +99,11 @@ export function Team() {
                     of staggered shapes rather than a line of identical ones. */}
                 <span
                   aria-hidden
-                  className="absolute inset-x-0"
+                  // Wider than the item and pulled left, so the parallelogram's
+                  // body — not its slanted corner — sits behind the figure.
+                  // A panel spanning exactly the item leaves the person on the
+                  // cut-away edge rather than against the colour.
+                  className="absolute -left-[18%] w-[136%]"
                   style={{
                     top: PANELS[index % PANELS.length].top,
                     height: PANELS[index % PANELS.length].height,
@@ -118,10 +122,13 @@ export function Team() {
                     alt=""
                     fill
                     sizes="(min-width: 768px) 25vw, 50vw"
-                    // `contain` and bottom-aligned so a cut-out keeps its own
-                    // proportions and stands on the panel rather than being
-                    // cropped to fill a box.
-                    className="object-contain object-bottom grayscale transition-[filter] duration-(--dur-base) group-hover:grayscale-0"
+                    // `contain` so a cut-out keeps its own proportions rather
+                    // than being cropped, and anchored bottom-centre so the
+                    // figure sits on the body of the parallelogram behind it.
+                    // Bottom-left would leave the person beside their panel
+                    // instead of in front of it, since the slant cuts the
+                    // colour away from the lower-left corner.
+                    className="object-contain object-[center_bottom] grayscale transition-[filter] duration-(--dur-base) group-hover:grayscale-0"
                   />
                 </div>
 

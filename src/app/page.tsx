@@ -73,7 +73,7 @@ export default function Home() {
       <FeaturedEvents events={featuredEvents} />
       {/* The sequence is the proof; the lore is the reason. In that order the
           claim is demonstrated before it is explained. */}
-      <StatCounters />
+      {/* <StatCounters /> */}
       {/* Capability after proof: the sequence and the counters establish the
           track record, so "what we do" is read as a summary of demonstrated
           work rather than as a claim. The crew follows it — the offering,

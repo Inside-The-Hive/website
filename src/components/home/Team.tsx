@@ -33,6 +33,36 @@ function isPending(value: string) {
 const TILTS = ["-1.4deg", "0.9deg", "-0.6deg", "1.3deg"];
 
 /**
+ * One print on the line.
+ *
+ * The list item carries the string and stays square to the page; the tilt goes
+ * on an inner wrapper. Rotating the item itself would rotate its line with it,
+ * and four tilted line segments do not join into one straight string.
+ */
+function Hanger({
+  children,
+  tilt,
+  ...rest
+}: {
+  children: React.ReactNode;
+  tilt: string;
+} & React.LiHTMLAttributes<HTMLLIElement>) {
+  return (
+    <li className="relative" {...rest}>
+      {/* Stretched well past the item on both sides rather than using
+          `.u-bleed`, whose 100vw + 50% margin is measured against this narrow
+          list item and pushes the page into horizontal scroll. The overflow is
+          clipped by the section, so the line still runs edge to edge. */}
+      <span
+        aria-hidden
+        className="absolute -inset-x-[100vw] top-0 border-t border-dashed border-ink/25"
+      />
+      <div style={{ rotate: tilt }}>{children}</div>
+    </li>
+  );
+}
+
+/**
  * A Polaroid print.
  *
  * White border on all four sides with a deep bottom margin, which is the
@@ -58,7 +88,18 @@ function Polaroid({
     // The bottom margin is deeper than the other three whether or not a
     // caption fills it — that asymmetry is what reads as instant film, so it
     // holds on the placeholder cards too.
-    <div className="group relative bg-white p-3 pb-14 shadow-[0_2px_10px_rgba(10,10,10,0.10),0_12px_28px_rgba(10,10,10,0.08)] transition-[transform,box-shadow] duration-(--dur-base) ease-(--ease-out-expo) hover:-translate-y-1.5 hover:rotate-0 hover:shadow-[0_4px_14px_rgba(10,10,10,0.14),0_20px_44px_rgba(10,10,10,0.12)] motion-reduce:transition-none">
+    //
+    // Hover lifts the print toward the line rather than straight up, and the
+    // origin sits at the peg so it swings from where it is pinned instead of
+    // sliding.
+    <div className="group relative origin-top bg-white p-3 pb-14 shadow-[0_2px_10px_rgba(10,10,10,0.10),0_12px_28px_rgba(10,10,10,0.08)] transition-[transform,box-shadow] duration-(--dur-base) ease-(--ease-out-expo) hover:-translate-y-1 hover:rotate-0 hover:shadow-[0_4px_14px_rgba(10,10,10,0.14),0_20px_44px_rgba(10,10,10,0.12)] motion-reduce:transition-none">
+      {/* The peg. Sits above the print's top edge so it straddles the line
+          the row hangs from. Honey, because it is the one small brand mark
+          this section carries. */}
+      <span
+        aria-hidden
+        className="absolute -top-5 left-1/2 h-6 w-2 -translate-x-1/2 rounded-[1px] bg-honey shadow-[0_1px_2px_rgba(10,10,10,0.25)]"
+      />
       {/* Square well, as on the real format. */}
       <div className="relative aspect-square overflow-hidden bg-ash">
         {children}
@@ -101,9 +142,11 @@ export function Team() {
   const pendingCount = team.length - confirmed.length;
 
   return (
+    // Clips the over-wide washing lines so they read as running off both edges
+    // without putting the page into horizontal scroll.
     <section
       aria-labelledby="team-heading"
-      className="u-section u-rule border-t text-ink"
+      className="u-section u-rule overflow-x-clip border-t text-ink"
     >
       <div className="u-gutter">
         <div className="mb-[clamp(3rem,7vh,5rem)] flex flex-wrap items-baseline justify-between gap-4">
@@ -112,16 +155,24 @@ export function Team() {
           <h2 id="team-heading" className="text-(length:--text-h2) font-normal">
             The crew
           </h2>
-          <p className="u-label max-w-sm text-ink/55">
-            The people in the room
-          </p>
         </div>
 
-        {/* Wider gaps than a plain grid needs: each card is tilted, so the
-            corners swing out past their column and need room not to collide. */}
-        <ul className="grid grid-cols-2 gap-x-8 gap-y-14 md:grid-cols-4 md:gap-x-12">
+        {/* The washing line.
+
+            Drawn per grid row rather than once for the section: the grid wraps
+            to two rows on mobile, and a single line left the bottom pair
+            pegged to nothing. Each <li> carries its own full-bleed rule at its
+            top edge, so every row gets a string no matter how the grid wraps.
+
+            Full-bleed rather than gutter-to-gutter because a line that stops
+            at the text margin reads as a divider; one that runs off both edges
+            reads as string strung across a room. */}
+        <div className="relative">
+          {/* Prints hang from the line, so the row is aligned to its top edge
+              and each card is pushed down by its own peg. */}
+          <ul className="grid grid-cols-2 items-start gap-x-8 gap-y-16 pt-4 md:grid-cols-4 md:gap-x-12">
           {confirmed.map((member, index) => (
-            <li key={member.name} style={{ rotate: TILTS[index % TILTS.length] }}>
+            <Hanger key={member.name} tilt={TILTS[index % TILTS.length]}>
               <Polaroid
                 caption={member.name}
                 sub={member.role}
@@ -145,7 +196,7 @@ export function Team() {
                   </span>
                 )}
               </Polaroid>
-            </li>
+            </Hanger>
           ))}
 
           {/* Placeholder cards for members not yet confirmed. Quiet on
@@ -155,20 +206,21 @@ export function Team() {
           {Array.from({ length: pendingCount }).map((_, index) => {
             const position = confirmed.length + index;
             return (
-              <li
+              <Hanger
                 key={`pending-${index}`}
+                tilt={TILTS[position % TILTS.length]}
                 aria-hidden
-                style={{ rotate: TILTS[position % TILTS.length] }}
               >
                 <Polaroid>
                   <span className="u-label absolute inset-0 grid place-items-center text-ink/15">
                     {String(position + 1).padStart(2, "0")}
                   </span>
                 </Polaroid>
-              </li>
-            );
-          })}
-        </ul>
+              </Hanger>
+              );
+            })}
+          </ul>
+        </div>
       </div>
     </section>
   );

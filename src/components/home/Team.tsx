@@ -63,6 +63,20 @@ const PANELS = [
 const LIFTS = ["-6%", "0%", "-6%", "0%", "-6%"];
 
 /**
+ * Horizontal companion to LIFTS, keeping the visible gaps even.
+ *
+ * The panels are parallelograms whose left edge travels 30% of their width
+ * across their full height — about 0.31px sideways for every 1px of vertical
+ * travel. So a panel sitting lower presents its edge further right at any
+ * shared height, and lifting alternate items made every other gap read wider
+ * even though the boxes were evenly spaced.
+ *
+ * Each lifted item is pushed right by roughly what the slant owes it, which
+ * evens the gaps back out.
+ */
+const NUDGES = ["7px", "0", "7px", "0", "7px"];
+
+/**
  * Per-person scale correction, for when a cut-out is framed differently from
  * the rest.
  *
@@ -135,9 +149,16 @@ export function Team() {
                 // percentage had nothing to resolve against and collapsed to
                 // zero. A transform percentage is measured against the
                 // element's own box, which is what makes the lift land.
+                //
+                // The paired X nudge keeps the *visible* gaps even. Because
+                // the panels are parallelograms, a panel sitting lower has its
+                // slanted left edge further right at any shared height, so
+                // lifting alternate items made every other gap read wider.
+                // Shifting each lifted item right by the same amount the slant
+                // owes it cancels that out.
                 style={{
                   zIndex: PANELS[index % PANELS.length].z,
-                  translate: `0 ${LIFTS[index % LIFTS.length]}`,
+                  translate: `${NUDGES[index % NUDGES.length]} ${LIFTS[index % LIFTS.length]}`,
                 }}
               >
                 {/* Panel and figure share one box and one bottom line.

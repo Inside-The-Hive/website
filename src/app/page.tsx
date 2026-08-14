@@ -2,6 +2,8 @@ import { FeaturedEvents } from "@/components/home/FeaturedEvents";
 import { Hero } from "@/components/home/Hero";
 import { HiveCarousel } from "@/components/home/HiveCarousel";
 import { Lore } from "@/components/home/Lore";
+import { Services } from "@/components/home/Services";
+import { Team } from "@/components/home/Team";
 import {} from // EventsGrid,
 // JoinCta,
 // Partners,
@@ -72,6 +74,12 @@ export default function Home() {
       {/* The sequence is the proof; the lore is the reason. In that order the
           claim is demonstrated before it is explained. */}
       <StatCounters />
+      {/* Capability after proof: the sequence and the counters establish the
+          track record, so "what we do" is read as a summary of demonstrated
+          work rather than as a claim. The crew follows it — the offering,
+          then the people behind it. */}
+      <Services />
+      <Team />
       {/* <PodcastSection
         featured={featuredEpisode}
         episodes={restEpisodes}

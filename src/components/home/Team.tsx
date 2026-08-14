@@ -64,6 +64,20 @@ const PANELS = [
 const DROPS = ["0%", "5%", "2%", "7%"];
 
 /**
+ * Per-person scale correction.
+ *
+ * The cut-outs are not framed alike: three are roughly 0.62–0.74 wide against
+ * their height, but the second is 0.92 — a tighter crop holding less of the
+ * body. Filling a tall box with `cover` scales a wide crop up until it covers,
+ * so that one rendered noticeably larger than the rest. This trims it back so
+ * the four read as one group at a consistent scale.
+ *
+ * Values are corrections to the source framing, not a design choice; a re-crop
+ * that matches the others would let this go back to 1.
+ */
+const SCALES = [1, 0.82, 1, 1];
+
+/**
  * The slant, as a clip-path parallelogram.
  *
  * Cut from the panel rather than applied as a rotation: rotating would tilt
@@ -177,7 +191,13 @@ export function Team() {
                       // so the file's edges are the person's edges, and
                       // `contain` keeps each person whole rather than cropping
                       // heads and shoulders to fill.
-                      className="object-contain object-[center_bottom] grayscale transition-[filter] duration-(--dur-base) group-hover:grayscale-0"
+                      //
+                      // The per-person scale sits here rather than on the
+                      // wrapper, which already owns the hover transform and
+                      // would overwrite it. Bottom origin so a scaled figure
+                      // stays on the shared ground line.
+                      className="origin-bottom object-contain object-[center_bottom] grayscale transition-[filter] duration-(--dur-base) group-hover:grayscale-0"
+                      style={{ scale: String(SCALES[index % SCALES.length]) }}
                     />
                   </div>
                 </div>

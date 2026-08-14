@@ -37,12 +37,15 @@ function isPending(value: string) {
  * front, so a panel that starts lower leaves more of the person above the
  * colour.
  */
-const PANELS = [
-  { color: "var(--color-honey)", top: "16%" },
-  { color: "var(--color-propolis)", top: "4%" },
-  { color: "var(--color-honey)", top: "22%" },
-  { color: "var(--color-propolis)", top: "10%" },
-];
+/**
+ * Panel colours, alternating so the same one never lands beside itself.
+ *
+ * Colour is the only thing that varies. Every panel is the same size and sits
+ * on the same baseline — the row's irregularity comes from the figures, who
+ * stand at whatever height their own crop gives them, not from the shapes
+ * behind them.
+ */
+const PANELS = ["var(--color-honey)", "var(--color-propolis)"];
 
 /**
  * The slant, as a clip-path parallelogram.
@@ -91,7 +94,7 @@ export function Team() {
                 // Fixed width while the row scrolls, a quarter share once it
                 // fits. `shrink-0` stops flex from compressing them back down
                 // inside the scroller.
-                className="group relative -mx-[3%] w-[62%] shrink-0 first:ml-0 last:mr-0 hover:z-10 sm:w-[38%] md:w-1/4"
+                className="group relative w-[62%] shrink-0 hover:z-10 sm:w-[38%] md:w-1/4"
               >
                 {/* Panel and figure share one box and one bottom line.
                     Previously the panel was sized off the list item and the
@@ -100,24 +103,28 @@ export function Team() {
                     than behind them. Both are now absolute children of the
                     same grounded container, which is what keeps them
                     registered to each other at every width. */}
-                <div className="relative aspect-[3/3.9]">
-                  {/* The panel. Inset from the figure's edges so the person
-                      overhangs it slightly on both sides, and shorter, so they
-                      stand out of the top of the colour. Its own top offset
-                      staggers the row. */}
+                <div className="relative aspect-[3/4.3]">
+                  {/* The panel. Identical on every item — same size, same
+                      baseline — and inset from the figure's edges so the
+                      person overhangs it slightly on both sides.
+
+                      It starts below the top of the box, leaving room for the
+                      figures to rise into: a taller crop breaks above the
+                      colour, a shorter one sits inside it, and that is where
+                      the row's irregularity comes from now that the shapes
+                      themselves are uniform. */}
                   <span
                     aria-hidden
-                    className="absolute right-[-8%] bottom-0 left-[-8%]"
+                    className="absolute top-[16%] right-[3%] bottom-0 left-[3%]"
                     style={{
-                      top: PANELS[index % PANELS.length].top,
-                      background: PANELS[index % PANELS.length].color,
+                      background: PANELS[index % PANELS.length],
                       clipPath: SLANT,
                     }}
                   />
 
                   {/* The figure, standing on the same bottom line as its
                       panel. */}
-                  <div className="absolute inset-x-0 bottom-0 top-[6%] origin-bottom transition-transform duration-(--dur-base) ease-(--ease-out-expo) group-hover:scale-[1.05] motion-reduce:transition-none">
+                  <div className="absolute inset-0 origin-bottom transition-transform duration-(--dur-base) ease-(--ease-out-expo) group-hover:scale-[1.05] motion-reduce:transition-none">
                     <Image
                       src={member.photo!}
                       alt=""

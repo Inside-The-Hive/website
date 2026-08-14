@@ -129,9 +129,15 @@ export function Team() {
                 // z-index resolves. Hover jumps above every static value so
                 // the scaling portrait is never clipped.
                 className="group relative -mx-[5%] w-[62%] shrink-0 hover:z-20 sm:w-[38%] md:w-[26%]"
+                // `translateY`, not `top`: a percentage `top` on a relative
+                // item resolves against the containing block's height, and the
+                // flex row's height is derived from these items — so the
+                // percentage had nothing to resolve against and collapsed to
+                // zero. A transform percentage is measured against the
+                // element's own box, which is what makes the lift land.
                 style={{
                   zIndex: PANELS[index % PANELS.length].z,
-                  top: LIFTS[index % LIFTS.length],
+                  translate: `0 ${LIFTS[index % LIFTS.length]}`,
                 }}
               >
                 {/* Panel and figure share one box and one bottom line.

@@ -53,14 +53,14 @@ const PANELS = [
 ];
 
 /**
- * How far each figure is dropped, as a share of the box.
+ * How far each item is lifted, as a share of the box.
  *
- * The heads carry the row's variation, not the shapes: the reference keeps its
- * parallelograms geometrically identical and lets the people sit at different
- * heights. Small values only — enough to break the line, not enough to read as
- * four unrelated scales.
+ * Applied to the whole list item so the figure and its panel move together —
+ * the person stays standing on their own colour, and the pair rises as one
+ * unit. Alternating means every other member sits slightly proud of their
+ * neighbours, so the row rests on a broken line rather than a flat one.
  */
-const DROPS = ["0%", "5%", "2%", "7%", "3%"];
+const LIFTS = ["-6%", "0%", "-6%", "0%", "-6%"];
 
 /**
  * Per-person scale correction, for when a cut-out is framed differently from
@@ -108,9 +108,9 @@ export function Team() {
             390px screen leaves each about 90px wide, which is not a portrait
             — swiping keeps them at a readable size and suits a row that is
             already one continuous composition rather than a grid. */}
-        {/* `items-start`, not `items-end`: bottom-aligning the items cancels
-            the per-item lift that breaks the row's baseline. Top padding is
-            the room the lifted items rise into. */}
+        {/* `items-start`, not `items-end`: bottom-aligning would pin every
+            item to one line and cancel the per-item lift. Top padding is the
+            room the lifted items rise into. */}
         {/* Centred once the row fits: the items overlap heavily, so the group
             is far narrower than four full-width columns and would otherwise
             sit hard against the left gutter with its first figure clipped. */}
@@ -121,17 +121,18 @@ export function Team() {
             return (
               <li
                 key={index}
-                // Items overlap by a negative margin so each panel passes over
-                // its neighbour, and each is lifted a different amount so the
-                // row sits on a broken line. Hover jumps above every static
-                // z-index so the scaling portrait is never clipped.
-                // Items overlap hard — the boxes are wider than the people
-                // inside them, so a small overlap leaves the visible figures
-                // still separated and the row reads as four pasted cut-outs.
-                // At this depth each person genuinely passes in front of their
-                // neighbour, which is what the z-index ordering is for.
+                // Items overlap hard by a negative margin — the boxes are
+                // wider than the people inside them, so a small overlap leaves
+                // the visible figures separated and the row reads as pasted
+                // cut-outs. At this depth each person genuinely passes in
+                // front of their neighbour, which is what the ascending
+                // z-index resolves. Hover jumps above every static value so
+                // the scaling portrait is never clipped.
                 className="group relative -mx-[5%] w-[62%] shrink-0 hover:z-20 sm:w-[38%] md:w-[26%]"
-                style={{ zIndex: PANELS[index % PANELS.length].z }}
+                style={{
+                  zIndex: PANELS[index % PANELS.length].z,
+                  top: LIFTS[index % LIFTS.length],
+                }}
               >
                 {/* Panel and figure share one box and one bottom line.
                     Previously the panel was sized off the list item and the
@@ -174,10 +175,11 @@ export function Team() {
                       figures stand on the colour rather than below it. The
                       per-person drop varies the head heights while every
                       figure keeps the same ground line. */}
-                  <div
-                    className="absolute inset-x-0 bottom-[4%] origin-bottom transition-transform duration-(--dur-base) ease-(--ease-out-expo) group-hover:scale-[1.05] motion-reduce:transition-none"
-                    style={{ top: DROPS[index % DROPS.length] }}
-                  >
+                  {/* Fills its box top to bottom. The row's vertical variation
+                      is the item's own lift, which carries the panel with it,
+                      so nothing moves the figure independently of the colour
+                      it stands on. */}
+                  <div className="absolute inset-x-0 top-0 bottom-[4%] origin-bottom transition-transform duration-(--dur-base) ease-(--ease-out-expo) group-hover:scale-[1.05] motion-reduce:transition-none">
                     <Image
                       src={member.photo!}
                       alt=""

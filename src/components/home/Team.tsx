@@ -40,10 +40,10 @@ function isPending(value: string) {
  * colour.
  */
 const PANELS = [
-  { color: "var(--color-honey)", top: "10%", height: "90%" },
-  { color: "var(--color-propolis)", top: "0%", height: "96%" },
-  { color: "var(--color-honey)", top: "16%", height: "84%" },
-  { color: "var(--color-propolis)", top: "5%", height: "93%" },
+  { color: "var(--color-honey)", top: "16%" },
+  { color: "var(--color-propolis)", top: "4%" },
+  { color: "var(--color-honey)", top: "22%" },
+  { color: "var(--color-propolis)", top: "10%" },
 ];
 
 /**
@@ -95,42 +95,43 @@ export function Team() {
                 // inside the scroller.
                 className="group relative -mx-[3%] w-[62%] shrink-0 first:ml-0 last:mr-0 hover:z-10 sm:w-[38%] md:w-1/4"
               >
-                {/* The panel. Its own height and offset, so the row is a set
-                    of staggered shapes rather than a line of identical ones. */}
-                <span
-                  aria-hidden
-                  // Wider than the item and pulled left, so the parallelogram's
-                  // body — not its slanted corner — sits behind the figure.
-                  // A panel spanning exactly the item leaves the person on the
-                  // cut-away edge rather than against the colour.
-                  className="absolute -left-[18%] w-[136%]"
-                  style={{
-                    top: PANELS[index % PANELS.length].top,
-                    height: PANELS[index % PANELS.length].height,
-                    background: PANELS[index % PANELS.length].color,
-                    clipPath: SLANT,
-                  }}
-                />
-
-                {/* The figure. Taller than its panel and bottom-aligned, so a
-                    cut-out stands out of the top of the colour rather than
-                    being contained by it — that break across the panel edge is
-                    what makes the row read as people in front of shapes. */}
-                <div className="relative aspect-[3/3.4] origin-bottom transition-transform duration-(--dur-base) ease-(--ease-out-expo) group-hover:scale-[1.06] motion-reduce:transition-none">
-                  <Image
-                    src={member.photo!}
-                    alt=""
-                    fill
-                    sizes="(min-width: 768px) 25vw, 50vw"
-                    // Cut-outs are trimmed to their subject's bounding box, so
-                    // the file's edges are the person's edges — `cover` then
-                    // seats the figure in the box at a consistent scale
-                    // regardless of the canvas it was exported on. `contain`
-                    // sized each image to its own empty margin instead, which
-                    // is why two portraits rendered at different scales and
-                    // sat off their panels.
-                    className="object-cover object-[center_bottom] grayscale transition-[filter] duration-(--dur-base) group-hover:grayscale-0"
+                {/* Panel and figure share one box and one bottom line.
+                    Previously the panel was sized off the list item and the
+                    figure off its own aspect box — 440px against 324px, offset
+                    58px apart — so the colour sat beside the person rather
+                    than behind them. Both are now absolute children of the
+                    same grounded container, which is what keeps them
+                    registered to each other at every width. */}
+                <div className="relative aspect-[3/3.9]">
+                  {/* The panel. Inset from the figure's edges so the person
+                      overhangs it slightly on both sides, and shorter, so they
+                      stand out of the top of the colour. Its own top offset
+                      staggers the row. */}
+                  <span
+                    aria-hidden
+                    className="absolute right-[-8%] bottom-0 left-[-8%]"
+                    style={{
+                      top: PANELS[index % PANELS.length].top,
+                      background: PANELS[index % PANELS.length].color,
+                      clipPath: SLANT,
+                    }}
                   />
+
+                  {/* The figure, standing on the same bottom line as its
+                      panel. */}
+                  <div className="absolute inset-x-0 bottom-0 top-[6%] origin-bottom transition-transform duration-(--dur-base) ease-(--ease-out-expo) group-hover:scale-[1.05] motion-reduce:transition-none">
+                    <Image
+                      src={member.photo!}
+                      alt=""
+                      fill
+                      sizes="(min-width: 768px) 25vw, 50vw"
+                      // Cut-outs are trimmed to their subject's bounding box,
+                      // so the file's edges are the person's edges. `contain`
+                      // with a bottom anchor then stands the whole figure on
+                      // the panel's base without cropping their feet or head.
+                      className="object-contain object-[center_bottom] grayscale transition-[filter] duration-(--dur-base) group-hover:grayscale-0"
+                    />
+                  </div>
                 </div>
 
                 {/* Names sit below the row so the composition itself stays

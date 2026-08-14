@@ -122,13 +122,14 @@ export function Team() {
                     alt=""
                     fill
                     sizes="(min-width: 768px) 25vw, 50vw"
-                    // `contain` so a cut-out keeps its own proportions rather
-                    // than being cropped, and anchored bottom-centre so the
-                    // figure sits on the body of the parallelogram behind it.
-                    // Bottom-left would leave the person beside their panel
-                    // instead of in front of it, since the slant cuts the
-                    // colour away from the lower-left corner.
-                    className="object-contain object-[center_bottom] grayscale transition-[filter] duration-(--dur-base) group-hover:grayscale-0"
+                    // Cut-outs are trimmed to their subject's bounding box, so
+                    // the file's edges are the person's edges — `cover` then
+                    // seats the figure in the box at a consistent scale
+                    // regardless of the canvas it was exported on. `contain`
+                    // sized each image to its own empty margin instead, which
+                    // is why two portraits rendered at different scales and
+                    // sat off their panels.
+                    className="object-cover object-[center_bottom] grayscale transition-[filter] duration-(--dur-base) group-hover:grayscale-0"
                   />
                 </div>
 

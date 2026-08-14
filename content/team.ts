@@ -37,12 +37,12 @@ export const team: TeamMember[] = [
     // A real cut-out — transparent ground, subject in frame. This is the
     // format the section is built for; the three below are event stills
     // standing in until their portraits are cut out the same way.
-    photo: "/feezy.png",
+    photo: "/feezy-trim.png",
   },
   {
     name: "TODO(client): name",
     role: "TODO(client): role",
-    photo: "/unchainsummer.jpg",
+    photo: "/divine-trim.png",
   },
   {
     name: "TODO(client): name",

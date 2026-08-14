@@ -47,7 +47,7 @@ export const team: TeamMember[] = [
   {
     name: "TODO(client): name",
     role: "TODO(client): role",
-    photo: "/redot%20x%20ith%20x%20dinner.jpg",
+    photo: "/anya-trim.png",
   },
   {
     name: "TODO(client): name",

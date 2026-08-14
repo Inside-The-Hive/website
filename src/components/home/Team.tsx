@@ -151,7 +151,7 @@ export function Team() {
                       far the colour rises behind the figure. */}
                   <span
                     aria-hidden
-                    className="absolute right-[12%] bottom-[4%] left-[12%] h-[82%]"
+                    className="absolute right-[9%] bottom-[4%] left-[9%] h-[82%]"
                     style={{
                       background: PANELS[index % PANELS.length].color,
                       clipPath: SLANT,

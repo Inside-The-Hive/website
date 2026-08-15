@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -107,22 +108,24 @@ export function Nav() {
     >
       <nav
         aria-label="Primary"
-        className="u-gutter flex items-center justify-between gap-6 py-4"
+        className="u-gutter flex items-center justify-between gap-6 py-2"
       >
-        {/* The wordmark is the one place yellow appears as a brand mark. The
-            hive dot carries it; the name stays ink so it always passes AA. */}
-        <Link
-          href="/"
-          className="flex items-center gap-2 font-display text-xl leading-none font-extrabold tracking-[-0.03em] text-(--nav-fg)"
-        >
-          <span
-            aria-hidden
-            className="inline-block size-3 shrink-0 bg-honey"
-            style={{
-              clipPath: "polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%)",
-            }}
+        {/* The logo already sets "Inside The Hive" as type, so the wordmark is
+            the image alone — repeating the name beside it would say it twice.
+            The accessible name comes from `alt`, which keeps the link readable
+            to a screen reader and to search. */}
+        <Link href="/" className="flex shrink-0 items-center">
+          <Image
+            src="/Logo.png"
+            alt={site.name}
+            width={500}
+            height={500}
+            priority
+            // Large for a nav mark, because the logo sets its own name in a
+            // ring of small type — below this it stops resolving as words and
+            // reads as a smudge. The bar's padding tightens to compensate.
+            className="h-16 w-auto md:h-[4.5rem]"
           />
-          {site.name}
         </Link>
 
         <div className="hidden items-center gap-8 md:flex">

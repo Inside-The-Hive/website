@@ -60,7 +60,7 @@ export const team: TeamMember[] = [
     photo: "/cynthia-trim.png",
   },
   {
-    name: "TODO(client): name",
+    name: "Anya The Brand",
     role: "Brand & Design",
     labelAt: "top",
     // Used as supplied — already cut out and framed like the others, so it

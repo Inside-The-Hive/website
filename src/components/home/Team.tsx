@@ -241,14 +241,22 @@ export function Team() {
                     <div
                       className={cn(
                         // Sits in the white wedge the slant leaves beside the
-                        // panel, not over the figure. The parallelogram leans
-                        // right, so there is clear space above its leading
-                        // edge and below its trailing one — the label takes
-                        // whichever of those its position calls for.
-                        "pointer-events-none absolute z-30 w-[60%] translate-y-1 text-left opacity-0 transition-[opacity,transform] duration-(--dur-base) ease-(--ease-out-expo) group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:transition-none",
+                        // panel, aligned to the actual cut rather than to a
+                        // guessed percentage.
+                        //
+                        // The panel spans 8%–92% of the item and the clip runs
+                        // 30%–100% along its top, 0%–70% along its bottom. In
+                        // item coordinates that puts the colour's top edge at
+                        // 33.2% and its bottom edge at 66.8% — so the free
+                        // wedges are 0–33.2% above the lean and 66.8–100%
+                        // below it. Anything else overlaps the colour.
+                        // `whitespace-nowrap` so a two-word name keeps to one
+                        // line — wrapping pushes the role down onto the
+                        // colour, and the wedge is wide enough to hold it.
+                        "pointer-events-none absolute z-30 translate-y-1 whitespace-nowrap opacity-0 transition-[opacity,transform] duration-(--dur-base) ease-(--ease-out-expo) group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:transition-none",
                         member.labelAt === "top"
-                          ? "top-[1%] left-[62%]"
-                          : "-bottom-[6%] left-[70%]",
+                          ? "top-[1%] right-[68%] text-right"
+                          : "-bottom-[7%] left-[68%] text-left",
                       )}
                     >
                       <p className="text-base leading-tight font-normal text-ink">

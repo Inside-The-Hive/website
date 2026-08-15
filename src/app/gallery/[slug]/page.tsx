@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ContactSheet } from "@/components/gallery/ContactSheet";
+import { PartnerCta } from "@/components/gallery/PartnerCta";
 import { galleryEventSlugs, photosForEvent } from "@/content/gallery";
 import { formatEventDate, getEvent, getEvents } from "@/lib/content";
 
@@ -84,44 +85,14 @@ export default async function GalleryEventPage({ params }: Params) {
         </p>
       </header>
 
-      {/* The contact sheet. A hairline grid rather than gapped cards: these are
-          frames from one roll, and separating them into tiles would imply they
-          are four unrelated things. */}
       <section aria-label="Photographs" className="u-gutter">
-        <div className="grid gap-px bg-(--color-line) sm:grid-cols-2 lg:grid-cols-3">
-          {photos.map((photo) => (
-            <figure key={photo.id} className="relative bg-white">
-              <div className="relative aspect-square overflow-hidden">
-                <Image
-                  src={photo.image}
-                  alt={`${event.title} — photograph ${photo.id + 1}`}
-                  fill
-                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                  className="object-cover transition-transform duration-(--dur-base) ease-(--ease-out-expo) hover:scale-[1.03]"
-                />
-              </div>
-            </figure>
-          ))}
-        </div>
+        <ContactSheet frames={photos} eventTitle={event.title} />
       </section>
 
       {/* Back into the site rather than a dead end. */}
       <section className="u-section u-gutter">
-        <div className="u-rule flex flex-wrap items-center justify-between gap-6 border-t pt-8">
-          <p className="max-w-prose text-ink/70">
-            Shot on the ground by the Inside The Hive crew.{" "}
-            <Link
-              href="/partner"
-              className="underline decoration-honey decoration-2 underline-offset-4"
-            >
-              Work with us
-            </Link>
-            .
-          </p>
-        </div>
-
         {others.length > 0 && (
-          <div className="mt-[clamp(3rem,7vh,5rem)]">
+          <div>
             <h2 className="u-label text-ink/55">More events</h2>
             <ul className="mt-6 grid gap-px bg-(--color-line) sm:grid-cols-3">
               {others.map((item) => (
@@ -143,6 +114,8 @@ export default async function GalleryEventPage({ params }: Params) {
           </div>
         )}
       </section>
+
+      <PartnerCta />
     </>
   );
 }

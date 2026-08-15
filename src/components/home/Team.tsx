@@ -33,6 +33,47 @@ function isPending(value: string) {
 }
 
 /**
+ * One social mark.
+ *
+ * Renders as a link when a URL exists and as plain marked-up icon when it does
+ * not, so the row of three is visually complete before the handles are
+ * supplied without offering anything that leads nowhere. The placeholder is
+ * hidden from assistive tech and cannot be focused — a keyboard user should
+ * not land on a mark that does nothing.
+ */
+function SocialMark({
+  href,
+  label,
+  children,
+}: {
+  href?: string;
+  label: string;
+  children: React.ReactNode;
+}) {
+  const tone = "text-ink/45 transition-colors duration-(--dur-fast)";
+
+  if (!href) {
+    return (
+      <span aria-hidden className={cn(tone, "opacity-55")}>
+        {children}
+      </span>
+    );
+  }
+
+  return (
+    <Link
+      href={href}
+      target={href.startsWith("mailto:") ? undefined : "_blank"}
+      rel={href.startsWith("mailto:") ? undefined : "noopener"}
+      aria-label={label}
+      className={cn(tone, "hover:text-ink")}
+    >
+      {children}
+    </Link>
+  );
+}
+
+/**
  * One panel per person.
  *
  * Colour, height and vertical offset all vary. That irregularity is the whole
@@ -287,54 +328,40 @@ export function Team() {
                         {member.role}
                       </p>
 
-                      {/* Personal accounts. Only the ones a member actually
-                          has render, so nobody gets a row of dead links, and
-                          the whole strip disappears when they have none.
+                      {/* Personal accounts. All three marks always show, so
+                          the label's design is settled before the handles
+                          arrive; each becomes a real link the moment its URL
+                          is filled in.
 
                           `pointer-events-auto` overrides the label's own
                           `pointer-events-none` — the label must not intercept
                           the hover that reveals it, but these do need to be
                           clickable once it is showing. */}
-                      {(member.x || member.telegram || member.email) && (
-                        <div
-                          className={cn(
-                            "pointer-events-auto mt-3 flex items-center gap-3.5",
-                            member.labelAt === "top" && "justify-end",
-                          )}
+                      <div
+                        className={cn(
+                          "pointer-events-auto mt-3 flex items-center gap-3.5",
+                          member.labelAt === "top" && "justify-end",
+                        )}
+                      >
+                        <SocialMark
+                          href={member.x}
+                          label={`${member.name} on X`}
                         >
-                          {member.x && (
-                            <Link
-                              href={member.x}
-                              target="_blank"
-                              rel="noopener"
-                              aria-label={`${member.name} on X`}
-                              className="text-ink/45 transition-colors duration-(--dur-fast) hover:text-ink"
-                            >
-                              <XIcon className="size-[18px]" />
-                            </Link>
-                          )}
-                          {member.telegram && (
-                            <Link
-                              href={member.telegram}
-                              target="_blank"
-                              rel="noopener"
-                              aria-label={`${member.name} on Telegram`}
-                              className="text-ink/45 transition-colors duration-(--dur-fast) hover:text-ink"
-                            >
-                              <TelegramIcon className="size-[19px]" />
-                            </Link>
-                          )}
-                          {member.email && (
-                            <a
-                              href={`mailto:${member.email}`}
-                              aria-label={`Email ${member.name}`}
-                              className="text-ink/45 transition-colors duration-(--dur-fast) hover:text-ink"
-                            >
-                              <EmailIcon className="size-[19px]" />
-                            </a>
-                          )}
-                        </div>
-                      )}
+                          <XIcon className="size-[18px]" />
+                        </SocialMark>
+                        <SocialMark
+                          href={member.telegram}
+                          label={`${member.name} on Telegram`}
+                        >
+                          <TelegramIcon className="size-[19px]" />
+                        </SocialMark>
+                        <SocialMark
+                          href={member.email && `mailto:${member.email}`}
+                          label={`Email ${member.name}`}
+                        >
+                          <EmailIcon className="size-[19px]" />
+                        </SocialMark>
+                      </div>
                     </div>
                   )}
                 </div>

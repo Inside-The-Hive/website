@@ -110,27 +110,6 @@ const PANELS = [
 const LIFTS = ["-6%", "0%", "-6%", "0%", "-6%"];
 
 /**
- * Horizontal companion to LIFTS, keeping the visible gaps even.
- *
- * The boxes themselves are already evenly spaced: measured with these nudges
- * removed, the panels sit exactly 207px apart with identical -76px gaps. The
- * unevenness is entirely an artefact of the lift. The panels are
- * parallelograms, so one sitting 22px lower presents its slanted edge further
- * right at any shared height — and the visible gap beside it spans two edges
- * that both move. Pairs 1-2 and 3-4 therefore read wider than 2-3 and 4-5.
- *
- * Values are cumulative rather than alternating: each is the running offset
- * for that position, so the steps between neighbours work out as -25, 0, -25,
- * 0. That pulls the two wide pairs closed and leaves the others alone.
- *
- * Derived by measuring the rendered result, not from the slant's geometry —
- * a first attempt calculated 7px from the panel's own height and badly
- * under-corrected, because the gap spans two moving edges rather than one.
- * Re-measure if LIFTS or SLANT change.
- */
-const NUDGES = ["0px", "-25px", "-25px", "-50px", "-50px"];
-
-/**
  * Per-person scale correction, for when a cut-out is framed differently from
  * the rest.
  *
@@ -203,11 +182,9 @@ export function Team() {
                 // zero. A transform percentage is measured against the
                 // element's own box, which is what makes the lift land.
                 //
-                // The paired X nudge keeps the *visible* gaps even — see
-                // NUDGES for why the lift makes alternate gaps read wider.
                 style={{
                   zIndex: PANELS[index % PANELS.length].z,
-                  translate: `${NUDGES[index % NUDGES.length]} ${LIFTS[index % LIFTS.length]}`,
+                  translate: `0 ${LIFTS[index % LIFTS.length]}`,
                 }}
               >
                 {/* Panel and figure share one box and one bottom line.

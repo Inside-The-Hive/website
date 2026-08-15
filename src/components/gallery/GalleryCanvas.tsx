@@ -69,12 +69,25 @@ function WorldImage({
       >
         {/* A plain img, not next/image: these are absolutely positioned into a
             transformed world at sizes the optimizer cannot infer, and the fill
-            layout would fight the explicit box. */}
+            layout would fight the explicit box. The files behind these are
+            pre-sized derivatives, so there is nothing for the optimizer to do
+            that has not already been done at build time.
+
+            Eager, not lazy. Every frame sits inside one transformed node, so a
+            lazy image entering view decodes on the main thread *during* a pan
+            and drops frames exactly when the movement is most visible. The
+            whole set is under a megabyte — cheaper to pay for it once up front.
+
+            decoding="sync" for the same reason: it forces the decode to happen
+            with the initial load rather than being deferred into a frame that
+            is trying to composite. */}
         {/* eslint-disable-next-line @next/next/no-img-element -- see above */}
         <img
           src={photo.image}
           alt={photo.title}
-          loading="lazy"
+          decoding="sync"
+          width={900}
+          height={900}
           className="size-full object-cover"
           draggable={false}
         />
@@ -293,7 +306,15 @@ export function GalleryCanvas() {
           animated nodes will not stay smooth; one composited transform will. */}
       <motion.div
         className="absolute top-1/2 left-1/2"
-        style={{ x: cameraXSpring, y: cameraYSpring }}
+        style={{
+          x: cameraXSpring,
+          y: cameraYSpring,
+          // Promoted to its own compositor layer, so panning is a GPU transform
+          // of one already-rasterised surface rather than a repaint of two
+          // dozen images every frame.
+          willChange: "transform",
+          backfaceVisibility: "hidden",
+        }}
       >
         {world.photos.map((photo, index) => (
           <WorldImage

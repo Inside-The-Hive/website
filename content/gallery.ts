@@ -37,62 +37,62 @@ export type GalleryPhoto = {
  */
 const REAL: Omit<GalleryPhoto, "id">[] = [
   {
-    image: "/dinner1.jpg",
+    image: "/gallery/dinner1.webp",
     title: "Redotpay x Inside The Hive Dinner Night",
     slug: "redots-club-dinner",
   },
   {
-    image: "/dinner2.jpg",
+    image: "/gallery/dinner2.webp",
     title: "Redotpay x Inside The Hive Dinner Night",
     slug: "redots-club-dinner",
   },
   {
-    image: "/dinner3.jpg",
+    image: "/gallery/dinner3.webp",
     title: "Redotpay x Inside The Hive Dinner Night",
     slug: "redots-club-dinner",
   },
   {
-    image: "/movie1.JPG",
+    image: "/gallery/movie1.webp",
     title: "Redots Club Movie Night",
     slug: "redots-club-movie-night",
   },
   {
-    image: "/movie2.JPG",
+    image: "/gallery/movie2.webp",
     title: "Redots Club Movie Night",
     slug: "redots-club-movie-night",
   },
   {
-    image: "/movie3.JPG",
+    image: "/gallery/movie3.webp",
     title: "Redots Club Movie Night",
     slug: "redots-club-movie-night",
   },
   {
-    image: "/technova1.jpg",
+    image: "/gallery/technova1.webp",
     title: "TechNova Summit",
     slug: "technova",
   },
   {
-    image: "/technova2.jpg",
+    image: "/gallery/technova2.webp",
     title: "TechNova Summit",
     slug: "technova",
   },
   {
-    image: "/technova3.jpg",
+    image: "/gallery/technova3.webp",
     title: "TechNova Summit",
     slug: "technova",
   },
   {
-    image: "/unchain1.jpg",
+    image: "/gallery/unchain1.webp",
     title: "UNCHAIN Summer x NFT NG",
     slug: "nftng-unchain-summer",
   },
   {
-    image: "/unchain2.jpg",
+    image: "/gallery/unchain2.webp",
     title: "UNCHAIN Summer x NFT NG",
     slug: "nftng-unchain-summer",
   },
   {
-    image: "/unchain3.jpg",
+    image: "/gallery/unchain3.webp",
     title: "UNCHAIN Summer x NFT NG",
     slug: "nftng-unchain-summer",
   },

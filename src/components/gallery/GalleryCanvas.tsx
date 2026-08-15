@@ -250,20 +250,39 @@ export function GalleryCanvas() {
     };
   }, [isDesktop, hoveringImage, world.width, world.height, cameraX, cameraY]);
 
-  /** Fades the canvas out as the reader scrolls past it to the page below. */
+  /**
+   * Hands the canvas off to the page below as the reader scrolls.
+   *
+   * `fade` runs 1 to 0 across a single viewport-height. It does not only drive
+   * opacity: the canvas also scales down and lifts slightly, so it reads as
+   * receding behind the arriving section rather than dissolving into white.
+   * A pure opacity fade left the photographs gone and the section not yet
+   * arrived, and the gap between them was blank screen.
+   */
   useEffect(() => {
     const read = () => {
       const vh = window.innerHeight;
       const y = window.scrollY;
-      // Rounded before it is stored. The interpolation can land on a value
-      // like 0.05 at the tail, which never satisfies an equality test against
-      // zero — so the faded layer would keep pointer-events and go on
-      // swallowing clicks meant for the page scrolled up over it.
-      if (y < vh * 0.5) setFade(1);
-      else if (y < vh) {
-        const next = 1 - (y - vh * 0.5) / (vh * 0.5);
-        setFade(next < 0.02 ? 0 : next);
-      } else setFade(0);
+      // The handoff begins almost immediately rather than at half a viewport.
+      // Waiting held the canvas at full strength while the reader was already
+      // scrolling away from it, so the departure felt abrupt when it came.
+      const start = vh * 0.15;
+      const end = vh * 0.9;
+
+      if (y <= start) {
+        setFade(1);
+        return;
+      }
+      if (y >= end) {
+        setFade(0);
+        return;
+      }
+      // Rounded at the tail. The interpolation can land on a value like 0.05,
+      // which never satisfies an equality test against zero — so the faded
+      // layer would keep pointer-events and go on swallowing clicks meant for
+      // the page scrolled up over it.
+      const next = 1 - (y - start) / (end - start);
+      setFade(next < 0.02 ? 0 : next);
     };
 
     read();
@@ -280,6 +299,12 @@ export function GalleryCanvas() {
       className="fixed inset-0 overflow-hidden bg-white"
       style={{
         opacity: fade,
+        // Recedes as it goes: shrinking slightly and lifting, so the canvas
+        // reads as falling back behind the section arriving over it. Opacity
+        // alone made the photographs simply cease to exist, which is what left
+        // an empty white screen between the two.
+        transform: `scale(${0.9 + fade * 0.1}) translateY(${(1 - fade) * -4}vh)`,
+        transformOrigin: "center 35%",
         // A fully faded layer must stop swallowing clicks meant for the page
         // that has scrolled up over it.
         pointerEvents: fade === 0 ? "none" : "auto",

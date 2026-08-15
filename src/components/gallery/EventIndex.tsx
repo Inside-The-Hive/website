@@ -23,7 +23,7 @@ export function EventIndex() {
   return (
     <section
       aria-labelledby="gallery-events-heading"
-      className="u-section relative bg-white text-ink"
+      className="u-section relative z-10 bg-white text-ink"
     >
       <div className="u-gutter">
         <div className="mb-[clamp(2.5rem,6vh,4rem)] flex flex-wrap items-end justify-between gap-4">

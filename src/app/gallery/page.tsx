@@ -36,18 +36,24 @@ export default function GalleryPage() {
       <GalleryCanvas />
 
       {/* The canvas is `fixed`, so it is out of flow and contributes no height.
-          This reserves the scroll distance the fade interpolates across, and it
-          has to clear a full viewport-height *past* the point the fade ends —
-          otherwise the page bottoms out mid-fade and the canvas never reaches
-          zero, so it keeps intercepting clicks. */}
-      <div className="h-[200svh]" aria-hidden />
+          This reserves the scroll distance the handoff interpolates across.
+
+          One viewport, not two. The handoff finishes at 0.9vh, so a taller
+          spacer left the canvas gone and the next section not yet arrived —
+          a full screen of white between them, which is exactly what made the
+          transition feel broken. At this height the stats begin rising into
+          frame while the canvas is still receding behind them. */}
+      <div className="h-[100svh]" aria-hidden />
 
       {/* The canvas asserts that there is a great deal of this; the figures say
           how much. Drawn from the same stats the homepage uses, so the two
           cannot drift apart. */}
+      {/* z-10 so the arriving content passes over the receding canvas rather
+          than under it — the canvas is fixed, so without a stacking context of
+          its own this band would slide beneath the photographs. */}
       <section
         aria-label="By the numbers"
-        className="u-rule relative border-y bg-white"
+        className="u-rule relative z-10 border-b bg-white"
       >
         <div className="u-gutter">
           <dl className="grid grid-cols-1 divide-y divide-(--color-line) sm:grid-cols-3 sm:divide-x sm:divide-y-0">

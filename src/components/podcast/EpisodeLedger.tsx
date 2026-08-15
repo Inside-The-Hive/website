@@ -33,7 +33,7 @@ export function EpisodeLedger() {
           <h2 id="ledger-heading" className="text-(length:--text-h2) font-normal">
             Every conversation
           </h2>
-          <p className="u-label text-ink/50">
+          <p className="text-sm text-ink/50">
             {episodes.length} episodes · more on the way
           </p>
         </div>
@@ -84,11 +84,11 @@ export function EpisodeLedger() {
                     </span>
                   </span>
 
-                  <span className="u-label hidden text-ink/45 capitalize md:block">
-                    {episode.category.replace(/-/g, " ")}
+                  <span className="hidden text-sm text-ink/45 md:block">
+                    {episode.categoryLabel}
                   </span>
 
-                  <span className="u-label hidden text-ink/45 tabular-nums md:block">
+                  <span className="hidden text-sm text-ink/45 tabular-nums md:block">
                     {episode.duration ?? "—"}
                   </span>
 

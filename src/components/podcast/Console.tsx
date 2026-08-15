@@ -124,42 +124,11 @@ export function Console() {
       data-nav-invert
       className="relative isolate overflow-hidden bg-ink text-white"
     >
-      {/* A single warm wash from the top corner — the glow of a lit room, not
-          a gradient for its own sake. Propolis is the site's warm tone and
-          this is the one section that uses it at scale. */}
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10"
-        style={{
-          background:
-            "radial-gradient(90% 70% at 12% 0%, rgba(107,45,14,0.55), transparent 62%)",
-        }}
-      />
-
       <div className="u-gutter py-[clamp(3rem,8vh,6rem)]">
-        {/* Status row: the lamp answers the audio, the catalogue ID answers
-            "which record is this". */}
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <p className="u-label flex items-center gap-2.5">
-            <span
-              aria-hidden
-              className={
-                playing
-                  ? "size-2 rounded-full bg-honey motion-safe:animate-pulse"
-                  : "size-2 rounded-full bg-white/30"
-              }
-            />
-            <span className={playing ? "text-honey" : "text-white/50"}>
-              {playing ? "On air" : "Standing by"}
-            </span>
-          </p>
-          <p className="u-label text-white/40">{current.hiveId}</p>
-        </div>
-
         {/* The record itself. The numeral is the largest thing on the page —
             episode number is the one fact the whole console is organised
             around, so it carries the display weight. */}
-        <div className="mt-[clamp(2rem,6vh,4rem)] flex flex-wrap items-end gap-x-[clamp(1.5rem,4vw,3.5rem)] gap-y-6">
+        <div className="flex flex-wrap items-end gap-x-[clamp(1.5rem,4vw,3.5rem)] gap-y-6">
           <p
             aria-hidden
             className="font-display text-[clamp(6rem,16vw,13rem)] leading-[0.8] font-extrabold tracking-[-0.05em] text-white/[0.13]"
@@ -170,12 +139,12 @@ export function Console() {
             <h2 className="max-w-[24ch] text-(length:--text-h2) leading-[1.02] font-normal text-balance">
               {current.title}
             </h2>
-            <p className="u-label mt-4 flex flex-wrap gap-x-3 gap-y-1 text-white/45">
+            <p className="mt-4 flex flex-wrap gap-x-3 gap-y-1 text-sm text-white/45">
               <span>Episode {current.episodeNumber}</span>
               <span aria-hidden>·</span>
               <span>{current.dateLabel}</span>
               <span aria-hidden>·</span>
-              <span className="capitalize">{current.category.replace(/-/g, " ")}</span>
+              <span>{current.categoryLabel}</span>
             </p>
           </div>
         </div>
@@ -188,7 +157,7 @@ export function Console() {
         {/* Seek. A thin rail directly under the meter, so the moving needle
             and the sound it measures read as one object. */}
         <div className="mt-3 flex items-center gap-4">
-          <span className="u-label w-11 text-white/45 tabular-nums">
+          <span className="w-11 text-sm text-white/45 tabular-nums">
             {clock(time)}
           </span>
           <input
@@ -205,7 +174,7 @@ export function Console() {
               ["--fill" as string]: `${stated ? (time / stated) * 100 : 0}%`,
             }}
           />
-          <span className="u-label w-11 text-right text-white/45 tabular-nums">
+          <span className="w-11 text-right text-sm text-white/45 tabular-nums">
             {stated ? clock(stated) : (current.duration ?? "—")}
           </span>
         </div>
@@ -323,7 +292,7 @@ export function Console() {
             browser and the "what else is there" in one ruler. The needle
             sits over whatever is tuned. */}
         <div className="mt-[clamp(2.5rem,6vh,4rem)] border-t border-white/10 pt-6">
-          <p className="u-label text-white/40">The dial</p>
+          <p className="text-sm text-white/40">The dial</p>
           <div className="relative mt-5 overflow-x-auto pb-2" data-lenis-prevent>
             <div className="relative min-w-[34rem]">
               {/* Minor ticks: the ruler's texture. */}

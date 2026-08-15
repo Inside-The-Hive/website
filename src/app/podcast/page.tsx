@@ -5,7 +5,7 @@ import {
   PlayerProvider,
   type PlayerEpisode,
 } from "@/components/podcast/player-context";
-import { episodeCategories, podcastPlatforms, site } from "@/content/site";
+import { episodeCategories, podcastPlatforms } from "@/content/site";
 import { formatEventDate, getEpisodes } from "@/lib/content";
 
 /**
@@ -41,6 +41,9 @@ export default function PodcastPage() {
       episodeNumber: episode.episodeNumber ?? position + 1,
       hiveId: episode.hiveId,
       category: episode.category,
+      categoryLabel:
+        episodeCategories.find((c) => c.slug === episode.category)?.label ??
+        episode.category,
       dateLabel: formatEventDate(episode.date),
       duration: episode.duration,
       audio: episode.audio,
@@ -54,8 +57,7 @@ export default function PodcastPage() {
       {/* The opening. White, quiet, and short — its whole job is to name the
           show and hand over to the console. */}
       <header className="u-gutter pt-[9rem] pb-[clamp(3rem,8vh,5rem)]">
-        <p className="u-label text-ink/50">The podcast</p>
-        <h1 className="mt-6 max-w-[16ch] text-(length:--text-h1) font-normal text-balance">
+        <h1 className="max-w-[16ch] text-(length:--text-h1) font-normal text-balance">
           The hive, <span className="font-script">on air</span>
         </h1>
         <p className="mt-8 max-w-prose text-[clamp(1.05rem,1.5vw,1.35rem)] leading-relaxed text-ink/70">
@@ -81,7 +83,7 @@ export default function PodcastPage() {
 
           <div className="mt-[clamp(2.5rem,6vh,4rem)] grid gap-x-[clamp(2rem,4vw,4rem)] gap-y-10 md:grid-cols-3">
             <div>
-              <h3 className="u-label text-ink/50">The show</h3>
+              <h3 className="text-sm font-medium text-ink/50">The show</h3>
               <p className="mt-4 max-w-prose text-ink/80">
                 Not soundbites — the actual argument. An hour with someone who
                 is building, long enough to get past the pitch and into how it
@@ -89,7 +91,7 @@ export default function PodcastPage() {
               </p>
             </div>
             <div>
-              <h3 className="u-label text-ink/50">The guests</h3>
+              <h3 className="text-sm font-medium text-ink/50">The guests</h3>
               <p className="mt-4 max-w-prose text-ink/80">
                 The people doing the work: founders shipping products, creators
                 getting paid onchain, artists and organisers holding the scene
@@ -97,7 +99,7 @@ export default function PodcastPage() {
               </p>
             </div>
             <div>
-              <h3 className="u-label text-ink/50">The listen</h3>
+              <h3 className="text-sm font-medium text-ink/50">The listen</h3>
               <p className="mt-4 max-w-prose text-ink/80">
                 Audio first, by design. Take it on a commute, in a queue, over a
                 build — the conversation holds without a screen.
@@ -108,7 +110,7 @@ export default function PodcastPage() {
           {/* The territories the catalogue actually covers — the same five
               categories the episodes are filed under. */}
           <div className="u-rule mt-[clamp(2.5rem,6vh,4rem)] flex flex-wrap items-baseline gap-x-6 gap-y-3 border-t pt-8">
-            <span className="u-label text-ink/45">On the dial</span>
+            <span className="text-sm text-ink/45">On the dial</span>
             {episodeCategories.map((category) => (
               <span key={category.slug} className="text-ink/70">
                 {category.label}
@@ -136,7 +138,6 @@ export default function PodcastPage() {
                 one of them and new conversations arrive on their own.
               </p>
             </div>
-            <p className="u-label text-ink/45">{site.shortName} · audio</p>
           </div>
 
           <ul className="u-rule mt-[clamp(2rem,5vh,3rem)] grid border-t sm:grid-cols-2 lg:grid-cols-3">
@@ -169,7 +170,7 @@ export default function PodcastPage() {
                       <span className="text-(length:--text-h3) font-normal">
                         {platform.label}
                       </span>
-                      <span className="u-label">Soon</span>
+                      <span className="text-sm">Soon</span>
                     </span>
                   )}
                 </li>

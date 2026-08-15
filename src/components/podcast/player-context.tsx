@@ -32,6 +32,8 @@ export type PlayerEpisode = {
   episodeNumber: number;
   hiveId: string;
   category: string;
+  /** The category's display label — "Creator & SocialFi", not the slug. */
+  categoryLabel: string;
   /** Pre-formatted for display; the loader owns date formatting. */
   dateLabel: string;
   /** Stated runtime from the catalogue, shown before metadata loads. */

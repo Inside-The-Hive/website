@@ -100,14 +100,44 @@ const PANELS = [
 ];
 
 /**
- * How far each item is lifted, as a share of the box.
- *
- * Applied to the whole list item so the figure and its panel move together —
- * the person stays standing on their own colour, and the pair rises as one
- * unit. Alternating means every other member sits slightly proud of their
- * neighbours, so the row rests on a broken line rather than a flat one.
+ * Which positions sit lifted. Applied to the whole list item so the figure
+ * and its panel move together, and alternating so the row rests on a broken
+ * line rather than a flat one.
  */
-const LIFTS = ["-6%", "0%", "-6%", "0%", "-6%"];
+const LIFTED = [true, false, true, false, true];
+
+/** Lift, as a share of the item's height. */
+const LIFT_PCT = 6;
+
+/**
+ * Horizontal compensation for the lift — derived, not tuned.
+ *
+ * The clip edges lean: they run SLANT_RUN of the panel's width over the
+ * panel's height. Lifting an item means any shared horizontal line crosses
+ * its panel nearer the bottom, where both edges sit further left — so the
+ * whole panel reads shifted left by slope x lift. That widens the gap on its
+ * right and narrows the one on its left by the same amount, which is exactly
+ * the alternating wide/narrow pattern the row showed.
+ *
+ * Moving the lifted item right by that same distance restores both of its
+ * edges at once:
+ *
+ *   dx = SLANT_RUN x PANEL_W x LIFT / PANEL_H
+ *      = 0.30 x 0.84 x 0.06 / 0.82  ~ 1.844% of the item's width
+ *
+ * The item's height cancels out of the algebra, so the result is a pure
+ * percentage of the item's own width — it scales with every viewport, where
+ * the fixed-pixel nudges this replaces were only right at one width (about
+ * 23px of asymmetry at 2560, 11px at 1280).
+ *
+ * The constants mirror the classes below: SLANT_RUN from the 30% run in
+ * SLANT, PANEL_W from left-[8%]/right-[8%], PANEL_H from h-[82%]. Change
+ * those and this recomputes.
+ */
+const SLANT_RUN = 0.3;
+const PANEL_W = 0.84;
+const PANEL_H = 0.82;
+const LIFT_COMP = (SLANT_RUN * PANEL_W * LIFT_PCT) / PANEL_H; // ~1.844
 
 /**
  * Per-person scale correction, for when a cut-out is framed differently from
@@ -184,7 +214,9 @@ export function Team() {
                 //
                 style={{
                   zIndex: PANELS[index % PANELS.length].z,
-                  translate: `0 ${LIFTS[index % LIFTS.length]}`,
+                  translate: LIFTED[index % LIFTED.length]
+                    ? `${LIFT_COMP.toFixed(3)}% -${LIFT_PCT}%`
+                    : "0 0",
                 }}
               >
                 {/* Panel and figure share one box and one bottom line.

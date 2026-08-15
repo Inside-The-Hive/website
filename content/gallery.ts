@@ -39,32 +39,32 @@ const REAL: Omit<GalleryPhoto, "id">[] = [
   {
     image: "/gallery/dinner1.webp",
     title: "Redotpay x Inside The Hive Dinner Night",
-    slug: "redots-club-dinner",
+    slug: "redotpay-dinner-night",
   },
   {
     image: "/gallery/dinner2.webp",
     title: "Redotpay x Inside The Hive Dinner Night",
-    slug: "redots-club-dinner",
+    slug: "redotpay-dinner-night",
   },
   {
     image: "/gallery/dinner3.webp",
     title: "Redotpay x Inside The Hive Dinner Night",
-    slug: "redots-club-dinner",
+    slug: "redotpay-dinner-night",
   },
   {
     image: "/gallery/movie1.webp",
     title: "Redots Club Movie Night",
-    slug: "redots-club-movie-night",
+    slug: "redotpay-movie-night",
   },
   {
     image: "/gallery/movie2.webp",
     title: "Redots Club Movie Night",
-    slug: "redots-club-movie-night",
+    slug: "redotpay-movie-night",
   },
   {
     image: "/gallery/movie3.webp",
     title: "Redots Club Movie Night",
-    slug: "redots-club-movie-night",
+    slug: "redotpay-movie-night",
   },
   {
     image: "/gallery/technova1.webp",
@@ -115,3 +115,22 @@ export const galleryPhotos: GalleryPhoto[] = Array.from(
     repeat: index >= REAL.length,
   }),
 );
+
+/**
+ * The distinct frames belonging to one event, in the order they were supplied.
+ *
+ * Reads from REAL rather than from `galleryPhotos`, because the latter pads
+ * with repeats to populate the canvas — an event page showing the same
+ * photograph twice would look like a mistake rather than like scaffolding.
+ */
+export function photosForEvent(slug: string) {
+  return REAL.filter((photo) => photo.slug === slug).map((photo, index) => ({
+    ...photo,
+    id: index,
+  }));
+}
+
+/** Event slugs that have at least one frame, in first-appearance order. */
+export function galleryEventSlugs() {
+  return [...new Set(REAL.map((photo) => photo.slug))];
+}

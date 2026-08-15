@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { EventIndex } from "@/components/gallery/EventIndex";
 import { GalleryCanvas } from "@/components/gallery/GalleryCanvas";
+import { stats } from "@/content/site";
 
 /**
  * The gallery.
@@ -15,6 +17,19 @@ export const metadata: Metadata = {
     "Two thousand frames from Inside The Hive events — dinners, summits, screenings, shot on the ground.",
 };
 
+/**
+ * The figures worth stating on this page specifically.
+ *
+ * Picked from the site-wide stats rather than restated, so a corrected figure
+ * in site.ts corrects here too. Spotify listeners and partnerships are left out
+ * — true, but not what someone looking at photographs is asking about.
+ */
+const GALLERY_STATS = stats.filter((stat) =>
+  ["Memories captured", "Events hosted", "Podcast episodes"].includes(
+    stat.label,
+  ),
+);
+
 export default function GalleryPage() {
   return (
     <>
@@ -27,20 +42,32 @@ export default function GalleryPage() {
           zero, so it keeps intercepting clicks. */}
       <div className="h-[200svh]" aria-hidden />
 
-      <section className="u-section relative bg-white text-ink">
+      {/* The canvas asserts that there is a great deal of this; the figures say
+          how much. Drawn from the same stats the homepage uses, so the two
+          cannot drift apart. */}
+      <section
+        aria-label="By the numbers"
+        className="u-rule relative border-y bg-white"
+      >
         <div className="u-gutter">
-          <h2 className="text-(length:--text-h2) font-normal">
-            Every room we have <span className="font-script">been in</span>
-          </h2>
-          <p className="mt-6 max-w-prose text-ink/70">
-            Dinners, screenings, summits. Shot on the ground, at the events
-            themselves — the same nights the rest of this site is about.
-          </p>
-          {/* TODO(client): twelve real frames, each appearing twice to fill the
-              world. Adding more to content/gallery.ts reduces the repetition
-              automatically; at twenty-four real photographs it stops entirely. */}
+          <dl className="grid grid-cols-1 divide-y divide-(--color-line) sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+            {GALLERY_STATS.map((stat) => (
+              <div
+                key={stat.label}
+                className="px-[clamp(0.75rem,2vw,2rem)] py-[clamp(2rem,5vh,3.5rem)] first:pl-0 last:pr-0"
+              >
+                <dt className="u-label text-ink/45">{stat.label}</dt>
+                <dd className="mt-3 font-display text-[clamp(2.25rem,5vw,4rem)] leading-none font-extrabold tracking-[-0.04em]">
+                  {stat.value.toLocaleString("en")}
+                  {stat.suffix}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </section>
+
+      <EventIndex />
     </>
   );
 }

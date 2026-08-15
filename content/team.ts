@@ -1,11 +1,6 @@
 /**
  * The crew.
  *
- * Everything here is TODO because these are real people — names, roles and
- * faces cannot be invented, and a placeholder that reads like a real person is
- * worse than an obvious blank. The section renders the designed empty state
- * until the client supplies them, so the layout is reviewable now.
- *
  * `photo: null` renders the initial in a honey cell instead of an image, which
  * is the same approach `partners.ts` takes with missing logos.
  */
@@ -18,6 +13,14 @@ export type TeamMember = {
   photo: string | null;
   /** Optional. Rendered as a link on the name when present. */
   url?: string;
+  /**
+   * Which corner the hover label occupies.
+   *
+   * Alternates down the row so the labels do not stack into one horizontal
+   * band, and so a label never lands on the face of the neighbour its own
+   * figure overlaps.
+   */
+  labelAt: "top" | "bottom";
 };
 
 /**
@@ -33,28 +36,33 @@ export type TeamMember = {
  */
 export const team: TeamMember[] = [
   {
-    name: "TODO(client): name",
-    role: "TODO(client): role",
+    name: "Feezy",
+    role: "Founder",
+    labelAt: "top",
     photo: "/feezy-trim.png",
   },
   {
-    name: "TODO(client): name",
-    role: "TODO(client): role",
+    name: "Divine",
+    role: "Social Media",
+    labelAt: "bottom",
     photo: "/divine-trim.png",
   },
   {
-    name: "TODO(client): name",
-    role: "TODO(client): role",
+    name: "DannyYak",
+    role: "Marketing",
+    labelAt: "top",
     photo: "/danny-trim.png",
   },
   {
-    name: "TODO(client): name",
-    role: "TODO(client): role",
+    name: "Cynthia",
+    role: "Content Writer",
+    labelAt: "bottom",
     photo: "/cynthia-trim.png",
   },
   {
     name: "TODO(client): name",
-    role: "TODO(client): role",
+    role: "Brand & Design",
+    labelAt: "top",
     // Used as supplied — already cut out and framed like the others, so it
     // needs no trimming pass.
     photo: "/anya.png",

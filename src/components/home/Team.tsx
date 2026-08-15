@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { team } from "@/content/team";
+import { cn } from "@/lib/cn";
 
 /**
  * The crew.
@@ -65,16 +66,23 @@ const LIFTS = ["-6%", "0%", "-6%", "0%", "-6%"];
 /**
  * Horizontal companion to LIFTS, keeping the visible gaps even.
  *
- * The panels are parallelograms whose left edge travels 30% of their width
- * across their full height — about 0.31px sideways for every 1px of vertical
- * travel. So a panel sitting lower presents its edge further right at any
- * shared height, and lifting alternate items made every other gap read wider
- * even though the boxes were evenly spaced.
+ * The boxes themselves are already evenly spaced: measured with these nudges
+ * removed, the panels sit exactly 207px apart with identical -76px gaps. The
+ * unevenness is entirely an artefact of the lift. The panels are
+ * parallelograms, so one sitting 22px lower presents its slanted edge further
+ * right at any shared height — and the visible gap beside it spans two edges
+ * that both move. Pairs 1-2 and 3-4 therefore read wider than 2-3 and 4-5.
  *
- * Each lifted item is pushed right by roughly what the slant owes it, which
- * evens the gaps back out.
+ * Values are cumulative rather than alternating: each is the running offset
+ * for that position, so the steps between neighbours work out as -25, 0, -25,
+ * 0. That pulls the two wide pairs closed and leaves the others alone.
+ *
+ * Derived by measuring the rendered result, not from the slant's geometry —
+ * a first attempt calculated 7px from the panel's own height and badly
+ * under-corrected, because the gap spans two moving edges rather than one.
+ * Re-measure if LIFTS or SLANT change.
  */
-const NUDGES = ["7px", "0", "7px", "0", "7px"];
+const NUDGES = ["0px", "-25px", "-25px", "-50px", "-50px"];
 
 /**
  * Per-person scale correction, for when a cut-out is framed differently from
@@ -108,11 +116,10 @@ export function Team() {
       className="u-section u-rule overflow-x-clip border-t text-ink"
     >
       <div className="u-gutter">
-        <div className="mb-[clamp(3rem,7vh,5rem)] flex flex-wrap items-baseline justify-between gap-4">
+        <div className="flex flex-wrap items-baseline justify-between gap-4">
           <h2 id="team-heading" className="text-(length:--text-h2) font-normal">
-            The crew
+            The Dream Team
           </h2>
-          <p className="u-label max-w-sm text-ink/55">The people in the room</p>
         </div>
 
         {/* The row. Items overlap by a negative margin so the portraits break
@@ -150,12 +157,8 @@ export function Team() {
                 // zero. A transform percentage is measured against the
                 // element's own box, which is what makes the lift land.
                 //
-                // The paired X nudge keeps the *visible* gaps even. Because
-                // the panels are parallelograms, a panel sitting lower has its
-                // slanted left edge further right at any shared height, so
-                // lifting alternate items made every other gap read wider.
-                // Shifting each lifted item right by the same amount the slant
-                // owes it cancels that out.
+                // The paired X nudge keeps the *visible* gaps even — see
+                // NUDGES for why the lift makes alternate gaps read wider.
                 style={{
                   zIndex: PANELS[index % PANELS.length].z,
                   translate: `${NUDGES[index % NUDGES.length]} ${LIFTS[index % LIFTS.length]}`,
@@ -225,29 +228,49 @@ export function Team() {
                       style={{ scale: String(SCALES[index % SCALES.length]) }}
                     />
                   </div>
-                </div>
 
-                {/* Names sit below the row so the composition itself stays
-                    clear of type. */}
-                {!pending && (
-                  <div className="relative mt-5 text-center">
-                    <h3 className="text-lg leading-tight font-normal text-ink">
-                      {member.url ? (
-                        <Link
-                          href={member.url}
-                          target="_blank"
-                          rel="noopener"
-                          className="transition-colors duration-(--dur-fast) hover:text-propolis"
-                        >
-                          {member.name} <span aria-hidden>↗</span>
-                        </Link>
-                      ) : (
-                        member.name
+                  {/* The label. Hidden until the figure is hovered, so the
+                      row reads as one composition at rest and only names a
+                      person when you point at them.
+
+                      Sits inside the figure's box rather than below the row,
+                      and alternates corner down the line so the labels never
+                      form a horizontal band. `pointer-events-none` keeps it
+                      from interrupting the hover it responds to. */}
+                  {!pending && (
+                    <div
+                      className={cn(
+                        // Sits in the white wedge the slant leaves beside the
+                        // panel, not over the figure. The parallelogram leans
+                        // right, so there is clear space above its leading
+                        // edge and below its trailing one — the label takes
+                        // whichever of those its position calls for.
+                        "pointer-events-none absolute z-30 w-[60%] translate-y-1 text-left opacity-0 transition-[opacity,transform] duration-(--dur-base) ease-(--ease-out-expo) group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:transition-none",
+                        member.labelAt === "top"
+                          ? "top-[1%] left-[62%]"
+                          : "-bottom-[6%] left-[70%]",
                       )}
-                    </h3>
-                    <p className="u-label mt-1.5 text-ink/55">{member.role}</p>
-                  </div>
-                )}
+                    >
+                      <p className="text-base leading-tight font-normal text-ink">
+                        {member.url ? (
+                          <Link
+                            href={member.url}
+                            target="_blank"
+                            rel="noopener"
+                            className="pointer-events-auto"
+                          >
+                            {member.name}
+                          </Link>
+                        ) : (
+                          member.name
+                        )}
+                      </p>
+                      <p className="mt-0.5 text-sm leading-tight font-normal text-ink/55">
+                        {member.role}
+                      </p>
+                    </div>
+                  )}
+                </div>
               </li>
             );
           })}

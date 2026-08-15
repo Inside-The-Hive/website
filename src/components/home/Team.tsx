@@ -255,11 +255,16 @@ export function Team() {
                         // colour, and the wedge is wide enough to hold it.
                         "pointer-events-none absolute z-30 translate-y-1 whitespace-nowrap opacity-0 transition-[opacity,transform] duration-(--dur-base) ease-(--ease-out-expo) group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:transition-none",
                         member.labelAt === "top"
-                          ? "top-[1%] right-[68%] text-right"
-                          : "-bottom-[7%] left-[68%] text-left",
+                          ? "-top-[6%] right-[68%] text-right"
+                          : "-bottom-[9%] left-[68%] text-left",
                       )}
                     >
-                      <p className="text-base leading-tight font-normal text-ink">
+                      {/* Sacramento, the one place the site leaves Inter — a
+                          signature reads as the person signing their own
+                          portrait rather than as a caption. Script faces run
+                          small for their point size, so this sits well above
+                          the role beneath it. */}
+                      <p className="font-script text-4xl leading-none font-normal text-ink">
                         {member.url ? (
                           <Link
                             href={member.url}
@@ -273,7 +278,7 @@ export function Team() {
                           member.name
                         )}
                       </p>
-                      <p className="mt-0.5 text-sm leading-tight font-normal text-ink/55">
+                      <p className="mt-1.5 text-base leading-tight font-normal text-ink/55">
                         {member.role}
                       </p>
                     </div>

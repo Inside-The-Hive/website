@@ -46,6 +46,8 @@
   -------------------------------------------------------------------------- */
   --font-display: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  /* Script face. Crew names only — the one place the site leaves Inter. */
+  --font-script: var(--font-sacramento), ui-serif, cursive;
 
   /* ---- Type scale (fluid, clamp-based) -----------------------------------
      Floors are set for 360px, ceilings so 2560px does not become absurd.

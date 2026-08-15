@@ -263,7 +263,13 @@ export function GalleryCanvas() {
       {/* Pinned, and deliberately outside the transformed node — inside it the
           headline would pan with the photographs and the parallax would read
           as flat. */}
-      <h1 className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center text-(length:--text-mega) font-extrabold tracking-[-0.04em] text-white mix-blend-difference">
+      {/* Plain white with a shadow rather than a blend mode. Difference
+          blending inverts against whatever passes behind, so a light
+          photograph drifting under the type erased it mid-pan. */}
+      <h1
+        className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center text-(length:--text-mega) font-extrabold tracking-[-0.04em] text-white"
+        style={{ textShadow: "0 2px 40px rgba(0,0,0,0.55)" }}
+      >
         Gallery
       </h1>
 

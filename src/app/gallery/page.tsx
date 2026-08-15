@@ -33,17 +33,12 @@ export default function GalleryPage() {
             Every room we have <span className="font-script">been in</span>
           </h2>
           <p className="mt-6 max-w-prose text-ink/70">
-            TODO(client): this page currently repeats five real photographs to
-            populate the canvas. Drop the full set into{" "}
-            <code className="bg-ash px-1.5 py-0.5 text-[0.9em]">
-              public/gallery/
-            </code>{" "}
-            and replace the list in{" "}
-            <code className="bg-ash px-1.5 py-0.5 text-[0.9em]">
-              content/gallery.ts
-            </code>
-            .
+            Dinners, screenings, summits. Shot on the ground, at the events
+            themselves — the same nights the rest of this site is about.
           </p>
+          {/* TODO(client): twelve real frames, each appearing twice to fill the
+              world. Adding more to content/gallery.ts reduces the repetition
+              automatically; at twenty-four real photographs it stops entirely. */}
         </div>
       </section>
     </>

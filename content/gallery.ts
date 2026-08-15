@@ -2,73 +2,116 @@
  * The photographs behind the gallery canvas.
  *
  * ITH's claim is two thousand frames captured; the canvas is where that stops
- * being a number and becomes something you move through. It wants 20-30 images
- * to feel populated — below about fifteen the world reads as sparse and the pan
- * has nothing to find.
+ * being a number and becomes something you move through. It wants roughly
+ * twenty to thirty images to feel populated — below about fifteen the world
+ * reads as sparse and the pan has nothing to find.
  *
- * TODO(client): the repository currently holds five real event photographs, so
- * the list below repeats them to fill the world. Repeats are marked so they are
- * obviously scaffolding rather than a deliberate edit. Drop real files into
- * `public/gallery/` and replace this list; nothing else needs to change.
+ * Twelve real frames across four events, each appearing twice to reach a
+ * populated world. Repeats carry `repeat: true` and the layout shuffles before
+ * placing, so a frame and its double land far apart rather than side by side.
+ * Adding more photographs below automatically reduces the repetition — the
+ * padding stops as soon as the real set is large enough on its own.
  *
- * Filenames with spaces must be percent-encoded here. Next's image optimizer
- * takes these as URLs, and a raw space silently fails the request.
+ * Filenames with spaces must be percent-encoded here. Next takes these as URLs
+ * and a raw space silently fails the request.
  */
 
 export type GalleryPhoto = {
   id: number;
-  /** Path under /public. Percent-encoded. */
+  /** Path under /public. Percent-encoded if it contains spaces. */
   image: string;
-  /** Used as the accessible name and shown on hover. */
+  /** Accessible name for the frame. */
   title: string;
-  /** Route target: /gallery/<slug>. */
+  /** Route target: /gallery/<slug>. Matches the event slugs in content/events. */
   slug: string;
-  /** True while this is a duplicate standing in for a photo not yet supplied. */
-  placeholder?: boolean;
+  /** True when this entry is a second appearance of an earlier photograph. */
+  repeat?: boolean;
 };
 
-/** The five real frames. Everything below is built from these. */
+/**
+ * The real frames, grouped by the event they were shot at.
+ *
+ * Titles name the event rather than describing the picture: they are the
+ * accessible name for a link into that event, so what matters is where the
+ * frame leads, not what is in it.
+ */
 const REAL: Omit<GalleryPhoto, "id">[] = [
   {
-    image: "/redot%20x%20ith%20x%20dinner.jpg",
+    image: "/dinner1.jpg",
     title: "Redotpay x Inside The Hive Dinner Night",
     slug: "redots-club-dinner",
   },
   {
-    image: "/Technova.jpg",
+    image: "/dinner2.jpg",
+    title: "Redotpay x Inside The Hive Dinner Night",
+    slug: "redots-club-dinner",
+  },
+  {
+    image: "/dinner3.jpg",
+    title: "Redotpay x Inside The Hive Dinner Night",
+    slug: "redots-club-dinner",
+  },
+  {
+    image: "/movie1.JPG",
+    title: "Redots Club Movie Night",
+    slug: "redots-club-movie-night",
+  },
+  {
+    image: "/movie2.JPG",
+    title: "Redots Club Movie Night",
+    slug: "redots-club-movie-night",
+  },
+  {
+    image: "/movie3.JPG",
+    title: "Redots Club Movie Night",
+    slug: "redots-club-movie-night",
+  },
+  {
+    image: "/technova1.jpg",
     title: "TechNova Summit",
     slug: "technova",
   },
   {
-    image: "/unchainsummer.jpg",
-    title: "UNCHAIN Summer",
-    slug: "nftng-unchain-summer",
+    image: "/technova2.jpg",
+    title: "TechNova Summit",
+    slug: "technova",
   },
   {
-    image: "/UNCHAIN%20SUMMER%20x%20NFT%20NG%20x%20ITH%20(93%20of%2051).jpg",
+    image: "/technova3.jpg",
+    title: "TechNova Summit",
+    slug: "technova",
+  },
+  {
+    image: "/unchain1.jpg",
     title: "UNCHAIN Summer x NFT NG",
     slug: "nftng-unchain-summer",
   },
   {
-    image: "/movienight.jpg",
-    title: "Redots Club Movie Night",
-    slug: "redots-club-movie-night",
+    image: "/unchain2.jpg",
+    title: "UNCHAIN Summer x NFT NG",
+    slug: "nftng-unchain-summer",
+  },
+  {
+    image: "/unchain3.jpg",
+    title: "UNCHAIN Summer x NFT NG",
+    slug: "nftng-unchain-summer",
   },
 ];
 
-/** How many frames the world holds. Twenty-five sits in the spec's range. */
-const TARGET_COUNT = 25;
+/**
+ * How many frames the world holds.
+ *
+ * Twenty-four is two clean passes over the twelve real photographs. An odd
+ * target would leave the last pass partial, so some frames would appear twice
+ * and others three times for no reason the reader could see.
+ */
+const TARGET_COUNT = 24;
 
 export const galleryPhotos: GalleryPhoto[] = Array.from(
   { length: TARGET_COUNT },
-  (_, index) => {
-    const source = REAL[index % REAL.length];
-    return {
-      ...source,
-      id: index,
-      // Only the first pass through the real set is genuine; everything after
-      // it is the same frame appearing again.
-      placeholder: index >= REAL.length,
-    };
-  },
+  (_, index) => ({
+    ...REAL[index % REAL.length],
+    id: index,
+    repeat: index >= REAL.length,
+  }),
 );

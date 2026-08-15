@@ -47,23 +47,40 @@ const CANVAS_PADDING = 100;
 /**
  * Starting world size before any growth.
  *
- * Set generously on purpose. Growth is what makes the finished world's size
- * unpredictable — an unlucky packing run grows twice and lands 50% wider than a
- * lucky one, and the reader gets a noticeably emptier gallery for no reason
- * they can see. Starting wide enough that growth effectively never fires makes
- * the result consistent, and shrink-wrap then pulls the world back to whatever
- * the photographs actually occupy.
+ * Set so growth effectively never fires. Growth is what makes the finished
+ * world's size unpredictable — an unlucky run grows twice and lands far wider
+ * than a lucky one, and the reader gets a noticeably emptier gallery for no
+ * reason they can see. Shrink-wrap then pulls the world back to whatever the
+ * photographs actually occupy, so starting wide costs nothing.
+ *
+ * Held just above what twenty-four frames need. Packing is random, so the
+ * result still varies a little run to run; this is the floor that keeps that
+ * variation from ever emptying the screen.
  */
-const INITIAL_WORLD = 3400;
+const INITIAL_WORLD = 2500;
 
-/** How much the world grows when a photo cannot find a home. */
-const WORLD_GROWTH = 1200;
+/**
+ * How much the world grows when a photo cannot find a home.
+ *
+ * Small, and deliberately so. A coarse step overshoots — one failed pass on a
+ * world that needed a little more room lands it far wider than necessary, and
+ * shrink-wrap cannot recover that because the photographs have genuinely been
+ * scattered across the larger space. Several small steps cost a few more
+ * packing passes and settle much closer to the true minimum.
+ */
+const WORLD_GROWTH = 220;
 
 /** Random positions tried per photo before the world grows. */
 const PLACEMENT_TRIES = 800;
 
-/** Growth rounds allowed before giving up, so a bad config cannot hang. */
-const MAX_ATTEMPTS = 15;
+/**
+ * Growth rounds allowed before giving up, so a bad config cannot hang.
+ *
+ * Higher than the brief's fifteen because the growth step is much finer here —
+ * the cap has to allow enough small steps to cover the same distance a few
+ * coarse ones would. Each round is a few milliseconds of arithmetic.
+ */
+const MAX_ATTEMPTS = 60;
 
 export type PlacedPhoto = GalleryPhoto & {
   /** World coordinates, centred on the origin. */

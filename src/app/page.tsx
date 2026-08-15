@@ -4,11 +4,13 @@ import { HiveCarousel } from "@/components/home/HiveCarousel";
 import { Lore } from "@/components/home/Lore";
 import { Services } from "@/components/home/Services";
 import { Team } from "@/components/home/Team";
+import { PortraitPanel } from "@/components/testimonials/PortraitPanel";
+// import { SpotlightGrid } from "@/components/testimonials/SpotlightGrid";
 import {} from // EventsGrid,
 // JoinCta,
 // Partners,
 "@/components/home/Sections";
-import { PodcastSection } from "@/components/home/PodcastSection";
+// import { PodcastSection } from "@/components/home/PodcastSection";
 import { StatCounters } from "@/components/home/StatCounters";
 import { site } from "@/content/site";
 import { formatEventDate, getEpisodes, getEvents } from "@/lib/content";
@@ -80,6 +82,13 @@ export default function Home() {
           then the people behind it. */}
       <Services />
       <Team />
+      {/* The crew, then what people who have worked with them say. Third-party
+          voice lands hardest directly after the faces it is talking about.
+
+          TODO(client): every quote in content/testimonials.ts is a placeholder
+          and none of these people have said these words. Replace them before
+          this page goes live. */}
+      <PortraitPanel />
       {/* <PodcastSection
         featured={featuredEpisode}
         episodes={restEpisodes}

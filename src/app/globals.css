@@ -48,6 +48,22 @@
   --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   /* Script face. Crew names only — the one place the site leaves Inter. */
   --font-script: var(--font-sacramento), ui-serif, cursive;
+  /* The letter pair, scoped to the testimonial scrolls. A flourished hand for
+     salutation and signature, a period serif for the body — a real letter is
+     written in two hands, and the flourished one is unreadable at paragraph
+     length. */
+  --font-hand: var(--font-italianno), ui-serif, cursive;
+  --font-letter: var(--font-cormorant), ui-serif, Georgia, serif;
+
+  /* ---- Parchment ---------------------------------------------------------
+     Scoped to the testimonial scrolls; nothing else on the site uses these.
+     Aged paper needs three tones — the flat field, the shadow that pools in
+     the curl, and the ink, which is brown-black rather than the site's ink
+     because a true black on cream reads as printed rather than written.
+  -------------------------------------------------------------------------- */
+  --color-parchment: #f2e8d5;
+  --color-parchment-deep: #dcc9a4;
+  --color-iron-gall: #2e2113;
 
   /* ---- Type scale (fluid, clamp-based) -----------------------------------
      Floors are set for 360px, ceilings so 2560px does not become absurd.
@@ -154,6 +170,16 @@
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+  }
+
+  /* The letter pair. Scoped to the testimonial scrolls — no other section on
+     the site leaves Inter for body copy. */
+  .font-hand {
+    font-family: var(--font-hand);
+  }
+
+  .font-letter {
+    font-family: var(--font-letter);
   }
 
   /* Horizontal page rhythm. */

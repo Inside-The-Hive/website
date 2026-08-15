@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { CombWall } from "@/components/testimonials/CombWall";
 import { FreezeMarquee } from "@/components/testimonials/FreezeMarquee";
-import { PressWall } from "@/components/testimonials/PressWall";
 import { QuoteStack } from "@/components/testimonials/QuoteStack";
 import { SpotlightGrid } from "@/components/testimonials/SpotlightGrid";
 import { StageQuote } from "@/components/testimonials/StageQuote";
@@ -41,12 +40,9 @@ const CONCEPTS = [
     note: "Two rows drifting opposite ways. Hovering any card stops both rows dead and lifts that card.",
     Component: FreezeMarquee,
   },
-  {
-    n: 4,
-    name: "The press wall",
-    note: "Quotes as taped-up clippings at slight angles. Hover straightens and lifts. No JavaScript at all.",
-    Component: PressWall,
-  },
+  // Concept 4, the press wall, was cut after review — too quiet against the
+  // rest of the site. Numbering is left as it was so the remaining concepts
+  // keep the labels they were reviewed under.
   {
     n: 5,
     name: "The stage",

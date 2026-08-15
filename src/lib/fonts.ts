@@ -1,4 +1,10 @@
-import { Inter, Inter_Tight, Sacramento } from "next/font/google";
+import {
+  Cormorant_Garamond,
+  Inter,
+  Inter_Tight,
+  Italianno,
+  Sacramento,
+} from "next/font/google";
 
 /**
  * Inter carries the site. Hierarchy comes from weight and size, not from
@@ -34,4 +40,30 @@ export const sacramento = Sacramento({
   variable: "--font-sacramento",
 });
 
-export const fontVariables = `${inter.variable} ${interTight.variable} ${sacramento.variable}`;
+/**
+ * The letter pair, used only by the testimonial section.
+ *
+ * A handwritten letter is set in two hands, not one: the salutation and the
+ * signature are flourished, and the body of the letter is written plainly so it
+ * can actually be read. Italianno is the flourished hand; Cormorant Garamond is
+ * a period serif standing in for the plain one.
+ *
+ * Italianno is never used for body copy. It is a single-weight display script
+ * with very low x-height — a paragraph set in it is decorative, not legible.
+ */
+export const italianno = Italianno({
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+  variable: "--font-italianno",
+});
+
+export const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
+  display: "swap",
+  variable: "--font-cormorant",
+});
+
+export const fontVariables = `${inter.variable} ${interTight.variable} ${sacramento.variable} ${italianno.variable} ${cormorant.variable}`;

@@ -14,6 +14,17 @@ export type TeamMember = {
   /** Optional. Rendered as a link on the name when present. */
   url?: string;
   /**
+   * Personal accounts, shown as icons under the role on hover.
+   *
+   * Every field is optional and each icon only renders when its value is
+   * present, so a member with one account shows one icon rather than a row of
+   * dead links. These are individual handles, not the brand's — `socials` in
+   * site.ts holds Inside The Hive's own.
+   */
+  x?: string;
+  telegram?: string;
+  email?: string;
+  /**
    * Which corner the hover label occupies.
    *
    * Alternates down the row so the labels do not stack into one horizontal
@@ -55,7 +66,7 @@ export const team: TeamMember[] = [
   },
   {
     name: "Cynthia",
-    role: "Content Writer",
+    role: "Content Lead",
     labelAt: "bottom",
     photo: "/cynthia-trim.png",
   },

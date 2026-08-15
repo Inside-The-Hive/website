@@ -1,5 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import {
+  EmailIcon,
+  TelegramIcon,
+  XIcon,
+} from "@/components/SocialIcons";
 import { team } from "@/content/team";
 import { cn } from "@/lib/cn";
 
@@ -118,7 +123,7 @@ export function Team() {
       <div className="u-gutter">
         <div className="flex flex-wrap items-baseline justify-between gap-4">
           <h2 id="team-heading" className="text-(length:--text-h2) font-normal">
-            The Dream Team
+            The <span className="font-script">Dream</span> Team
           </h2>
         </div>
 
@@ -281,6 +286,55 @@ export function Team() {
                       <p className="mt-1.5 text-base leading-tight font-normal text-ink/55">
                         {member.role}
                       </p>
+
+                      {/* Personal accounts. Only the ones a member actually
+                          has render, so nobody gets a row of dead links, and
+                          the whole strip disappears when they have none.
+
+                          `pointer-events-auto` overrides the label's own
+                          `pointer-events-none` — the label must not intercept
+                          the hover that reveals it, but these do need to be
+                          clickable once it is showing. */}
+                      {(member.x || member.telegram || member.email) && (
+                        <div
+                          className={cn(
+                            "pointer-events-auto mt-3 flex items-center gap-3.5",
+                            member.labelAt === "top" && "justify-end",
+                          )}
+                        >
+                          {member.x && (
+                            <Link
+                              href={member.x}
+                              target="_blank"
+                              rel="noopener"
+                              aria-label={`${member.name} on X`}
+                              className="text-ink/45 transition-colors duration-(--dur-fast) hover:text-ink"
+                            >
+                              <XIcon className="size-[18px]" />
+                            </Link>
+                          )}
+                          {member.telegram && (
+                            <Link
+                              href={member.telegram}
+                              target="_blank"
+                              rel="noopener"
+                              aria-label={`${member.name} on Telegram`}
+                              className="text-ink/45 transition-colors duration-(--dur-fast) hover:text-ink"
+                            >
+                              <TelegramIcon className="size-[19px]" />
+                            </Link>
+                          )}
+                          {member.email && (
+                            <a
+                              href={`mailto:${member.email}`}
+                              aria-label={`Email ${member.name}`}
+                              className="text-ink/45 transition-colors duration-(--dur-fast) hover:text-ink"
+                            >
+                              <EmailIcon className="size-[19px]" />
+                            </a>
+                          )}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

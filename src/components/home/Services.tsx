@@ -111,11 +111,8 @@ export function Services() {
           {/* Weight 400 against the global heading rule's 800. Overridden here
               rather than in globals.css because other sections still want the
               heavier display setting. */}
-          <h2
-            id="services-heading"
-            className="text-(length:--text-h2) font-normal"
-          >
-            What we do
+          <h2 id="services-heading" className="text-(length:--text-h2) font-normal">
+            What <span className="font-script">we do</span>
           </h2>
           <p className="u-label max-w-sm text-ink/55">
             Media partner, event partner, or both

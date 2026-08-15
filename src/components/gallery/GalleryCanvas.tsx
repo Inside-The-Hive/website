@@ -105,8 +105,8 @@ function StaticHero() {
   ];
 
   return (
-    <div className="relative h-[100svh] overflow-hidden bg-ink">
-      <h1 className="pointer-events-none absolute inset-0 z-50 flex items-center justify-center text-(length:--text-h1) font-extrabold tracking-[-0.03em] text-white">
+    <div className="relative h-[100svh] overflow-hidden bg-white">
+      <h1 className="pointer-events-none absolute inset-0 z-50 flex items-center justify-center text-(length:--text-h1) font-extrabold tracking-[-0.03em] text-ink">
         Gallery
       </h1>
 
@@ -173,6 +173,7 @@ export function GalleryCanvas() {
       generatePositions(
         galleryPhotos,
         typeof window === "undefined" ? 1440 : window.innerWidth,
+        typeof window === "undefined" ? 900 : window.innerHeight,
       ),
     [],
   );
@@ -188,9 +189,30 @@ export function GalleryCanvas() {
   const cameraYSpring = useSpring(cameraY, springConfig);
 
   const frameRef = useRef(0);
+  /** Latest pointer position, read by the frame callback when it fires. */
+  const pointerRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     if (!isDesktop) return;
+
+    const apply = () => {
+      frameRef.current = 0;
+
+      // Exactly half the overflow: the pointer at a screen edge lands the
+      // world precisely at its own edge, never past it and never short.
+      const maxX = Math.max(0, (world.width - window.innerWidth) / 2);
+      const maxY = Math.max(0, (world.height - window.innerHeight) / 2);
+
+      // Normalised from the centre, so screen centre is rest at zero.
+      const nx = (pointerRef.current.x / window.innerWidth - 0.5) * 2;
+      const ny = (pointerRef.current.y / window.innerHeight - 0.5) * 2;
+
+      // Negated, and that is what makes it a camera: pointer right slides
+      // the world left, which reads as panning right. Without the minus it
+      // inverts into dragging the world around.
+      cameraX.set(-nx * maxX);
+      cameraY.set(-ny * maxY);
+    };
 
     const onMove = (event: MouseEvent) => {
       // Reaching for a photograph must not move it. Without this the camera
@@ -198,23 +220,14 @@ export function GalleryCanvas() {
       // out from under it.
       if (hoveringImage) return;
 
-      if (frameRef.current) cancelAnimationFrame(frameRef.current);
-      frameRef.current = requestAnimationFrame(() => {
-        // Exactly half the overflow: the pointer at a screen edge lands the
-        // world precisely at its own edge, never past it and never short.
-        const maxX = Math.max(0, (world.width - window.innerWidth) / 2);
-        const maxY = Math.max(0, (world.height - window.innerHeight) / 2);
-
-        // Normalised from the centre, so screen centre is rest at zero.
-        const nx = (event.clientX / window.innerWidth - 0.5) * 2;
-        const ny = (event.clientY / window.innerHeight - 0.5) * 2;
-
-        // Negated, and that is what makes it a camera: pointer right slides
-        // the world left, which reads as panning right. Without the minus it
-        // inverts into dragging the world around.
-        cameraX.set(-nx * maxX);
-        cameraY.set(-ny * maxY);
-      });
+      pointerRef.current = { x: event.clientX, y: event.clientY };
+      // Schedule only when no frame is pending — never cancel-and-reschedule.
+      // Mousemove fires faster than frames render, so cancelling the pending
+      // frame on every event means it never runs while the pointer is moving:
+      // the camera then only updates when the mouse pauses, which reads as the
+      // pan hanging and then skipping. The coords live in a ref, so the frame
+      // that does run always uses the newest position.
+      if (!frameRef.current) frameRef.current = requestAnimationFrame(apply);
     };
 
     window.addEventListener("mousemove", onMove);
@@ -246,13 +259,12 @@ export function GalleryCanvas() {
   }, []);
 
   // Nothing rendered until the viewport has been measured.
-  if (isDesktop === null) return <div className="h-[100svh] bg-ink" />;
+  if (isDesktop === null) return <div className="h-[100svh] bg-white" />;
   if (!isDesktop) return <StaticHero />;
 
   return (
     <div
-      data-nav-invert
-      className="fixed inset-0 overflow-hidden bg-ink"
+      className="fixed inset-0 overflow-hidden bg-white"
       style={{
         opacity: fade,
         // A fully faded layer must stop swallowing clicks meant for the page
@@ -263,12 +275,16 @@ export function GalleryCanvas() {
       {/* Pinned, and deliberately outside the transformed node — inside it the
           headline would pan with the photographs and the parallax would read
           as flat. */}
-      {/* Plain white with a shadow rather than a blend mode. Difference
-          blending inverts against whatever passes behind, so a light
-          photograph drifting under the type erased it mid-pan. */}
+      {/* Ink on the white ground, with a white glow rather than a blend mode
+          or a dark shadow. The glow is what keeps the type legible when a dark
+          photograph drifts behind it — it lightens the area under the glyphs
+          without inverting them, which is where difference blending failed. */}
       <h1
-        className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center text-(length:--text-mega) font-extrabold tracking-[-0.04em] text-white"
-        style={{ textShadow: "0 2px 40px rgba(0,0,0,0.55)" }}
+        className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center text-(length:--text-mega) font-extrabold tracking-[-0.04em] text-ink"
+        style={{
+          textShadow:
+            "0 0 18px rgba(255,255,255,0.95), 0 0 48px rgba(255,255,255,0.8), 0 0 110px rgba(255,255,255,0.6)",
+        }}
       >
         Gallery
       </h1>

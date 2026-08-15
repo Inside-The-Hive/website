@@ -45,19 +45,21 @@ const MARGIN_MAX = 80;
 const CANVAS_PADDING = 100;
 
 /**
- * Starting world size before any growth.
+ * How far the camera should be able to travel past the viewport on each side,
+ * per axis, before scaling.
  *
- * Set so growth effectively never fires. Growth is what makes the finished
- * world's size unpredictable — an unlucky run grows twice and lands far wider
- * than a lucky one, and the reader gets a noticeably emptier gallery for no
- * reason they can see. Shrink-wrap then pulls the world back to whatever the
- * photographs actually occupy, so starting wide costs nothing.
+ * The world is sized from the viewport rather than as an absolute, and this is
+ * why: pan range per axis is (world − viewport) / 2, so a fixed-size world
+ * silently loses an axis on a large screen. A 2600px world on a 2560px display
+ * leaves 20px of horizontal travel — the camera "only goes up and down" — while
+ * the same world on a laptop pans both ways fine. Deriving the world from the
+ * viewport plus a guaranteed range makes the pan feel the same everywhere.
  *
- * Held just above what twenty-four frames need. Packing is random, so the
- * result still varies a little run to run; this is the floor that keeps that
- * variation from ever emptying the screen.
+ * Shrink-wrap can still pull the extent in a little where the random scatter
+ * does not reach the very edge, so the realised range lands slightly under
+ * this. That loss is bounded and small; the guarantee is what matters.
  */
-const INITIAL_WORLD = 2500;
+const CAMERA_RANGE = 620;
 
 /**
  * How much the world grows when a photo cannot find a home.
@@ -121,12 +123,17 @@ function shuffle<T>(items: T[]) {
 export function generatePositions(
   data: GalleryPhoto[],
   viewportWidth: number,
+  viewportHeight: number,
 ): World {
   const scale = scaleFor(viewportWidth);
   const padding = CANVAS_PADDING * scale;
 
-  let worldWidth = INITIAL_WORLD * scale;
-  let worldHeight = INITIAL_WORLD * scale;
+  // Viewport plus guaranteed travel on each side, per axis. The world is
+  // therefore rectangular in the viewport's own aspect, not square — a square
+  // world on a wide screen is what kills the horizontal pan.
+  const range = CAMERA_RANGE * scale;
+  let worldWidth = viewportWidth + range * 2;
+  let worldHeight = viewportHeight + range * 2;
 
   for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt += 1) {
     const placed: PlacedPhoto[] = [];
@@ -185,7 +192,11 @@ export function generatePositions(
 
   // Every attempt exhausted. Returning the last world unpacked would overlap
   // photographs, so the set is thinned instead: fewer frames, still correct.
-  return generatePositions(data.slice(0, Math.max(1, data.length - 4)), viewportWidth);
+  return generatePositions(
+    data.slice(0, Math.max(1, data.length - 4)),
+    viewportWidth,
+    viewportHeight,
+  );
 }
 
 /**

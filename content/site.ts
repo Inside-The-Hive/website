@@ -29,9 +29,10 @@ export const site = {
   twitterHandle: "@InsideDHive",
 } as const;
 
-/** Primary navigation. Four links, no dropdowns. */
+/** Primary navigation. Five links, no dropdowns. */
 export const navLinks = [
   { label: "Events", href: "/events" },
+  { label: "Gallery", href: "/gallery" },
   { label: "Podcast", href: "/podcast" },
   { label: "About", href: "/about" },
   { label: "Partner", href: "/partner" },

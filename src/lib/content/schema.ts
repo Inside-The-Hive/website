@@ -149,6 +149,14 @@ export const episodeSchema = z.object({
       message: "An episode needs at least one platform link.",
     }),
   coverImage: imageSchema.optional(),
+  /**
+   * Self-hosted audio for the on-site player, as a path under /public.
+   *
+   * Optional because the catalogue also lives on external platforms; an
+   * episode without a file is browsable on the page but plays elsewhere.
+   * Placeholder tones stand in until the real exports land.
+   */
+  audio: z.string().optional(),
   featured: z.boolean().default(false),
   draft: z.boolean().default(false),
 });

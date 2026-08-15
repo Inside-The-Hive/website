@@ -203,6 +203,44 @@
   .u-rule {
     border-color: var(--color-line);
   }
+
+  /* Range input as a broadcast-console rail: a hairline track whose played
+     portion fills honey, with a small white cap. Used by the podcast seek and
+     volume controls, which live on ink — the colours assume a dark ground.
+     The fill is painted into the track via --fill because a native range
+     cannot otherwise show played-vs-remaining. */
+  .hive-rail {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(
+      to right,
+      var(--color-honey) var(--fill, 0%),
+      rgba(255, 255, 255, 0.18) var(--fill, 0%)
+    );
+    cursor: pointer;
+  }
+
+  .hive-rail::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--color-white);
+    border: none;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .hive-rail::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--color-white);
+    border: none;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  }
 }
 
 /* ==========================================================================
@@ -324,6 +362,27 @@
   to {
     transform: translateX(100%);
   }
+}
+
+/* The three-bar meter marking the episode currently on air. Height, not
+   scale: at 2px wide a scaled bar shimmers. Stands still under reduced
+   motion via the global media query above. */
+@keyframes hive-eq {
+  0%,
+  100% {
+    height: 30%;
+  }
+  35% {
+    height: 100%;
+  }
+  70% {
+    height: 55%;
+  }
+}
+
+.hive-eq {
+  animation: hive-eq 0.9s ease-in-out infinite;
+  height: 30%;
 }
 
 /* Partner marquee. One row, one instance per page. */

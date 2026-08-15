@@ -53,30 +53,30 @@ export const team: TeamMember[] = [
     photo: "/feezy-trim.png",
   },
   {
-    name: "Divine",
-    role: "Social Media",
+    name: "Anya The Brand",
+    role: "Brand & Design",
     labelAt: "bottom",
-    photo: "/divine-trim.png",
-  },
-  {
-    name: "DannyYak",
-    role: "Marketing",
-    labelAt: "top",
-    photo: "/danny-trim.png",
+    // Used as supplied — already cut out and framed like the others, so it
+    // needs no trimming pass.
+    photo: "/anya.png",
   },
   {
     name: "Cynthia",
     role: "Content Lead",
-    labelAt: "bottom",
+    labelAt: "top",
     photo: "/cynthia-trim.png",
   },
   {
-    name: "Anya The Brand",
-    role: "Brand & Design",
+    name: "DannyYak",
+    role: "Marketing",
+    labelAt: "bottom",
+    photo: "/danny-trim.png",
+  },
+  {
+    name: "Divine",
+    role: "Social Media",
     labelAt: "top",
-    // Used as supplied — already cut out and framed like the others, so it
-    // needs no trimming pass.
-    photo: "/anya.png",
+    photo: "/divine-trim.png",
   },
 ];
 

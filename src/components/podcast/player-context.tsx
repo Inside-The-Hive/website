@@ -38,6 +38,9 @@ export type PlayerEpisode = {
   dateLabel: string;
   /** Stated runtime from the catalogue, shown before metadata loads. */
   duration?: string;
+  /** On record only — surfaces render nothing while these are TODO. */
+  guest?: string;
+  guestRole?: string;
   /** Path under /public. Absent means the episode plays elsewhere. */
   audio?: string;
   summary: string;

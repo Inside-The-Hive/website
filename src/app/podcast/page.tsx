@@ -72,53 +72,6 @@ export default function PodcastPage() {
       <div className="pb-28">
         <Dashboard total={catalogueTotal} />
 
-        {/* What the show is. */}
-        <section
-          aria-labelledby="about-show-heading"
-          className="u-section u-rule relative z-10 border-t bg-ash text-ink"
-        >
-          <div className="u-gutter">
-            <h2 id="about-show-heading" className="text-(length:--text-h2) font-normal">
-              What this is
-            </h2>
-
-            <div className="mt-[clamp(2.5rem,6vh,4rem)] grid grid-cols-1 gap-x-[clamp(2rem,4vw,4rem)] gap-y-10 md:grid-cols-3">
-              <div>
-                <h3 className="text-sm font-medium text-ink/50">The show</h3>
-                <p className="mt-4 max-w-prose text-ink/80">
-                  Not soundbites — the actual argument. An hour with someone who
-                  is building, long enough to get past the pitch and into how it
-                  really works.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-sm font-medium text-ink/50">The guests</h3>
-                <p className="mt-4 max-w-prose text-ink/80">
-                  The people doing the work: founders shipping products, creators
-                  getting paid onchain, artists and organisers holding the scene
-                  together across the continent.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-sm font-medium text-ink/50">The listen</h3>
-                <p className="mt-4 max-w-prose text-ink/80">
-                  Audio first, by design. Take it on a commute, in a queue, over
-                  a build — the conversation holds without a screen.
-                </p>
-              </div>
-            </div>
-
-            <div className="u-rule mt-[clamp(2.5rem,6vh,4rem)] flex flex-wrap items-baseline gap-x-6 gap-y-3 border-t pt-8">
-              <span className="text-sm text-ink/45">On the dial</span>
-              {episodeCategories.map((category) => (
-                <span key={category.slug} className="text-ink/70">
-                  {category.label}
-                </span>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* Where else the show lives. */}
         <section
           aria-labelledby="platforms-heading"
@@ -135,7 +88,9 @@ export default function PodcastPage() {
 
             <ul className="u-rule mt-[clamp(2rem,5vh,3rem)] grid grid-cols-1 border-t sm:grid-cols-2 lg:grid-cols-3">
               {podcastPlatforms.map((platform) => {
-                const live = platform.href !== "TODO";
+                // `confirmed` is the switch, not the presence of a URL: a
+                // placeholder link is worse than an honest "coming soon".
+                const live = platform.confirmed;
                 return (
                   <li key={platform.label} className="u-rule border-b">
                     {live ? (
@@ -160,7 +115,7 @@ export default function PodcastPage() {
                         <span className="text-(length:--text-h3) font-normal">
                           {platform.label}
                         </span>
-                        <span className="text-sm">Soon</span>
+                        <span className="text-sm">Coming soon</span>
                       </span>
                     )}
                   </li>

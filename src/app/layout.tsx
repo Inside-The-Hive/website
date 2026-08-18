@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import { site } from "@/content/site";
 import { fontVariables } from "@/lib/fonts";
+import { Analytics } from "@/components/Analytics";
+import { CornerStack } from "@/components/CornerStack";
 import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
 import { ScrollProgress } from "@/components/ScrollProgress";
@@ -62,7 +63,12 @@ export default function RootLayout({
           <Footer />
         </SmoothScroll>
 
-        {gaId && <GoogleAnalytics gaId={gaId} />}
+        {/* Both corner cards, stacked rather than overlapping. */}
+        <CornerStack />
+
+        {/* Rendered only once consent is granted — declining means the script
+            never loads at all. */}
+        {gaId && <Analytics gaId={gaId} />}
       </body>
     </html>
   );

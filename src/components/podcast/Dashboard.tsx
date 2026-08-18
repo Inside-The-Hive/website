@@ -1,6 +1,6 @@
 "use client";
 
-import { EpisodeCover, themeFor } from "./EpisodeCover";
+import { EpisodeCover } from "./EpisodeCover";
 import { usePlayer } from "./player-context";
 
 /**
@@ -47,8 +47,6 @@ export function Dashboard({ total }: { total: number }) {
     (_, i) => episodes[(index + 1 + i) % episodes.length],
   );
 
-  const theme = themeFor(latest.category);
-
   return (
     <section
       aria-label="Episodes"
@@ -57,21 +55,23 @@ export function Dashboard({ total }: { total: number }) {
       <div className="mx-auto grid max-w-[90rem] grid-cols-1 items-start gap-[clamp(1.5rem,2.5vw,2.5rem)] lg:grid-cols-[1fr_minmax(17rem,21rem)]">
         {/* ---------------- main column ---------------- */}
         <div className="min-w-0">
-          {/* The poster: the newest episode, full width, in its own
-              colourway. This is the "just dropped" slot. */}
-          <article
-            className="relative overflow-hidden rounded-2xl"
-            style={{ background: theme.ground, color: theme.art }}
-          >
+          {/* The poster: the newest episode, full width. The "just dropped"
+              slot.
+
+              Ink ground with white type, fixed — not the cover's own
+              colourway. Those put honey on ink, which rendered the whole
+              poster yellow: headline, summary and all. Yellow is a mark and a
+              fill on this site, never the voice of a paragraph. */}
+          <article className="relative overflow-hidden rounded-2xl bg-ink text-white">
             <div className="grid grid-cols-1 gap-6 p-[clamp(1.5rem,3.5vw,3rem)] sm:grid-cols-[1fr_auto] sm:items-center">
               <div className="min-w-0">
-                <p className="text-sm font-medium opacity-70">
+                <p className="text-sm font-medium text-honey">
                   New episode · just dropped
                 </p>
-                <h1 className="mt-3 max-w-[20ch] text-[clamp(1.6rem,3.1vw,2.6rem)] leading-[1.08] font-normal tracking-[-0.015em] text-balance">
+                <h1 className="mt-3 max-w-[20ch] text-[clamp(1.6rem,3.1vw,2.6rem)] leading-[1.08] font-normal tracking-[-0.015em] text-white text-balance">
                   {latest.title}
                 </h1>
-                <p className="mt-4 max-w-prose text-[0.95rem] leading-relaxed opacity-80">
+                <p className="mt-4 max-w-prose text-[0.95rem] leading-relaxed text-white/65">
                   {latest.summary}
                 </p>
                 <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
@@ -80,7 +80,7 @@ export function Dashboard({ total }: { total: number }) {
                     onClick={() =>
                       latestAt === index ? toggle() : tune(latestAt)
                     }
-                    className="inline-flex min-h-11 items-center gap-2.5 rounded-full bg-ink px-6 text-sm font-medium text-white transition-transform duration-(--dur-fast) hover:scale-[1.03] active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
+                    className="inline-flex min-h-11 items-center gap-2.5 rounded-full bg-white px-6 text-sm font-medium text-ink transition-transform duration-(--dur-fast) hover:scale-[1.03] active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     {latestAt === index && playing ? (
                       <>
@@ -103,7 +103,7 @@ export function Dashboard({ total }: { total: number }) {
                       own numbering printed on the artwork (Ep 92). The art
                       carries the number; the metadata sticks to facts that
                       cannot contradict it. */}
-                  <p className="text-sm opacity-70">
+                  <p className="text-sm text-white/55">
                     {latest.duration ?? "—"} · {latest.dateLabel}
                   </p>
                 </div>

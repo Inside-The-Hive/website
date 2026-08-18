@@ -39,18 +39,27 @@ export type TeamMember = {
  * against an angled colour panel, so a photo with its original background
  * would sit as a rectangle on top of that panel and lose the effect entirely.
  *
- * Cutting out happens before the file lands here; it is not something the site
- * can do to an arbitrary photograph. Each file is then trimmed to its
- * subject's alpha bounding box (the `-trim` suffix) so the image's edges are
- * the person's edges — without that, two portraits exported on different
- * canvases render at different scales and sit off their panels.
+ * Every file here comes from `scripts/build-crew.mjs`, which cuts the studio
+ * background where one is still present, trims to the subject, and then pads
+ * each portrait onto one shared aspect ratio anchored to the bottom edge.
+ *
+ * The shared ratio is what keeps the row even. The layout gives each person an
+ * identical box and fits the image with `object-contain`, which scales to
+ * whichever axis runs out first — so a portrait trimmed to a narrower box than
+ * its neighbours renders smaller, and one cropped at a different height stands
+ * at a different level. Normalising at the source removes both problems
+ * instead of correcting them per person in the component.
+ *
+ * Originals stay in /public untouched; the processed files live in
+ * /public/crew. To add or replace someone: drop the photograph in /public,
+ * add it to the SET in the script, run it, and point `photo` at the result.
  */
 export const team: TeamMember[] = [
   {
     name: "Feezy",
     role: "Founder",
     labelAt: "top",
-    photo: "/feezy-trim.png",
+    photo: "/crew/feezy.png",
   },
   {
     name: "Anya The Brand",
@@ -58,41 +67,37 @@ export const team: TeamMember[] = [
     labelAt: "bottom",
     // Used as supplied — already cut out and framed like the others, so it
     // needs no trimming pass.
-    photo: "/anya.png",
+    photo: "/crew/anya.png",
   },
   {
     name: "Cynthia",
     role: "Content Lead",
     labelAt: "top",
-    photo: "/cynthia-trim.png",
+    photo: "/crew/cynthia.png",
   },
   {
     name: "DannyYak",
     role: "Marketing",
     labelAt: "bottom",
-    photo: "/danny-trim.png",
+    photo: "/crew/danny.png",
   },
   {
     name: "Divine",
     role: "Social Media",
     labelAt: "top",
-    photo: "/divine-trim.png",
+    photo: "/crew/divine.png",
   },
   {
     name: "Snazzy",
     role: "Legal",
     labelAt: "bottom",
-    // TODO(client): supplied with its background intact, unlike the other
-    // portraits. It seats on the panel as a rectangle rather than as a
-    // figure standing against it. Replace with a cut-out on a transparent
-    // ground, trimmed to the subject, and the row reads consistently.
-    photo: "/snazzy.png",
+    photo: "/crew/snazzy.png",
   },
   {
     name: "Deon",
     role: "Tech",
     labelAt: "top",
-    photo: "/Deon.png",
+    photo: "/crew/deon.png",
   },
 ];
 

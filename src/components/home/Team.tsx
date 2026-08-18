@@ -170,6 +170,41 @@ const FIGURE_SCALE = 1;
  */
 const SLANT = "polygon(30% 0, 100% 0, 70% 100%, 0 100%)";
 
+/**
+ * How far each item overlaps its neighbour on each side, as a share of its own
+ * width. Mirrors the `-mx-[5%]` on the item.
+ */
+const OVERLAP = 0.05;
+
+/**
+ * How much of the track the row is allowed to occupy.
+ *
+ * Over 100 by design. Two things pull the visible composition inward from its
+ * own box: the panels are cut on a slant, so the outermost ones taper away
+ * from the row's edges, and each portrait is fitted with `object-contain`
+ * inside a box wider than the person. A row sized to exactly fill the track
+ * therefore reads as floating in the middle of the section. The section clips
+ * horizontally, so the excess trims cleanly at the gutter — which is also what
+ * gives the row its cropped, continuous look.
+ */
+const TRACK_FILL = 138;
+
+/**
+ * Item width for a row of `count` people, as a percentage of the track.
+ *
+ * Each item overlaps its neighbours by OVERLAP on both sides, so a row of n
+ * spans n x w x (1 - 2 x OVERLAP) + 2 x OVERLAP x w rather than n x w.
+ * Solving that for w at the target fill gives a row that stays the same width
+ * whatever the headcount — only the figures get narrower as people are added.
+ *
+ * Derived rather than hardcoded because the fixed 26% this replaces was sized
+ * for five people: at seven the row ran past both gutters, pushing the first
+ * figure off the left edge and the last past the right.
+ */
+function crewWidth(count: number) {
+  return (TRACK_FILL / (count * (1 - 2 * OVERLAP) + 2 * OVERLAP)).toFixed(3);
+}
+
 export function Team() {
   const members = team.filter((member) => member.photo);
   if (members.length === 0) return null;
@@ -183,7 +218,7 @@ export function Team() {
       <div className="u-gutter">
         <div className="flex flex-wrap items-baseline justify-between gap-4">
           <h2 id="team-heading" className="text-(length:--text-h2) font-normal">
-            The <span className="font-script">Dream</span> Team
+            <span className="font-script">Meet </span>The <span className="font-script">Dream</span> Team
           </h2>
         </div>
 
@@ -200,7 +235,17 @@ export function Team() {
         {/* Centred once the row fits: the items overlap heavily, so the group
             is far narrower than four full-width columns and would otherwise
             sit hard against the left gutter with its first figure clipped. */}
-        <ul className="-mx-[var(--spacing-gutter)] flex items-start overflow-x-auto px-[var(--spacing-gutter)] pt-[7%] pb-2 [scrollbar-width:none] md:mx-0 md:justify-center md:overflow-visible md:px-0 md:pb-0">
+        <ul
+          className="-mx-[var(--spacing-gutter)] flex items-start overflow-x-auto px-[var(--spacing-gutter)] pt-[7%] pb-2 [scrollbar-width:none] md:mx-0 md:justify-center md:overflow-visible md:px-0 md:pb-0"
+          // Item width is derived from how many people are in the row, not
+          // fixed. Each item overlaps its neighbours by OVERLAP on both sides,
+          // so n items occupy n x (w - 2 x OVERLAP) + 2 x OVERLAP of track. Solving
+          // that for the full width and capping it keeps the row inside the
+          // gutter at any headcount: at the hardcoded 26% the sixth and
+          // seventh people pushed the first off the left edge and the last
+          // past the right.
+          style={{ ["--crew-w" as string]: `${crewWidth(members.length)}%` }}
+        >
           {members.map((member, index) => {
             const pending = isPending(member.name);
 
@@ -214,7 +259,7 @@ export function Team() {
                 // front of their neighbour, which is what the ascending
                 // z-index resolves. Hover jumps above every static value so
                 // the scaling portrait is never clipped.
-                className="group relative -mx-[5%] w-[62%] shrink-0 hover:z-20 sm:w-[38%] md:w-[26%]"
+                className="group relative -mx-[5%] w-[62%] shrink-0 hover:z-20 sm:w-[38%] md:w-(--crew-w)"
                 // `translateY`, not `top`: a percentage `top` on a relative
                 // item resolves against the containing block's height, and the
                 // flex row's height is derived from these items — so the

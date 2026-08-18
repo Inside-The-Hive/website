@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { EpisodeLedger } from "@/components/podcast/EpisodeLedger";
-import { NowPlaying } from "@/components/podcast/NowPlaying";
+import { Dashboard } from "@/components/podcast/Dashboard";
 import { PlayerBar } from "@/components/podcast/PlayerBar";
 import {
   PlayerProvider,
@@ -10,14 +9,13 @@ import { episodeCategories, podcastPlatforms } from "@/content/site";
 import { formatEventDate, getEpisodes } from "@/lib/content";
 
 /**
- * The podcast — a full-screen now-playing experience.
+ * The podcast — a listening dashboard.
  *
- * The page opens straight onto the stage: the current episode's cover art on
- * a flat tint taken from its own colourway, the way a fullscreen player gives
- * the whole viewport to the record. Detail panels — about, credits, up next —
- * scroll over the art; the ledger and the platform index follow on white; the
- * transport is docked to the foot of the page throughout, so pause is never
- * more than one reach away.
+ * One screen carries the whole catalogue: the latest episode as a poster, the
+ * popular row, every episode as rows, and a now-playing rail with the queue.
+ * The transport floats in a docked pill at the foot of the page, so pause is
+ * never more than one reach away. The about band and the platform index
+ * follow below.
  *
  * The blog deliberately does not live here. No written catalogue exists in
  * the repo yet; when articles exist they get their own destination.
@@ -54,9 +52,8 @@ export default function PodcastPage() {
     <PlayerProvider episodes={episodes}>
       {/* Padded at the foot so the docked bar never sits over the last of the
           page's own content. */}
-      <div className="pb-24">
-        <NowPlaying />
-        <EpisodeLedger />
+      <div className="pb-28">
+        <Dashboard />
 
         {/* What the show is. */}
         <section

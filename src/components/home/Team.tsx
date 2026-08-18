@@ -171,38 +171,48 @@ const FIGURE_SCALE = 1;
 const SLANT = "polygon(30% 0, 100% 0, 70% 100%, 0 100%)";
 
 /**
- * How far each item overlaps its neighbour on each side, as a share of its own
- * width. Mirrors the `-mx-[5%]` on the item.
+ * How deep each junction interlocks, as a share of an item's own width.
+ *
+ * This is the reference composition's defining ratio. The original five-person
+ * layout set items at 26% of the track with a -5% track margin per side, so
+ * neighbouring boxes overlapped by 10% of the track — about 38% of an item's
+ * width — and every figure genuinely passed in front of the next panel.
+ * Held slightly under that here so the interlock reads without the outermost
+ * panels burying each other.
+ *
+ * Both the item width and the margin derive from this one number, so the
+ * interlock stays identical at any headcount: adding people shrinks everything
+ * proportionally instead of changing how the row fits together.
  */
-const OVERLAP = 0.05;
+const INTERLOCK = 0.19;
 
 /**
  * How much of the track the row is allowed to occupy.
  *
- * Over 100 by design. Two things pull the visible composition inward from its
- * own box: the panels are cut on a slant, so the outermost ones taper away
- * from the row's edges, and each portrait is fitted with `object-contain`
- * inside a box wider than the person. A row sized to exactly fill the track
- * therefore reads as floating in the middle of the section. The section clips
- * horizontally, so the excess trims cleanly at the gutter — which is also what
- * gives the row its cropped, continuous look.
+ * A little over 100, because the panels are cut on a slant and the outermost
+ * ones taper away from the row's own edges — sized to exactly 100 the
+ * composition reads as inset from the gutter even when its boxes are flush.
+ * The section clips horizontally, so the small excess trims at the gutter.
+ *
+ * Kept modest: pushed far past this the first and last figures themselves get
+ * cut by the gutter rather than just their panels.
  */
-const TRACK_FILL = 138;
+const TRACK_FILL = 100;
 
 /**
  * Item width for a row of `count` people, as a percentage of the track.
  *
- * Each item overlaps its neighbours by OVERLAP on both sides, so a row of n
- * spans n x w x (1 - 2 x OVERLAP) + 2 x OVERLAP x w rather than n x w.
- * Solving that for w at the target fill gives a row that stays the same width
- * whatever the headcount — only the figures get narrower as people are added.
+ * Each item's flow footprint is its width minus the two interlocks it shares,
+ * so a row of n spans n x w x (1 - 2 x INTERLOCK) of track. Solving that for
+ * w at the target fill keeps the row the same overall width whatever the
+ * headcount — only the figures scale as people are added.
  *
  * Derived rather than hardcoded because the fixed 26% this replaces was sized
  * for five people: at seven the row ran past both gutters, pushing the first
  * figure off the left edge and the last past the right.
  */
 function crewWidth(count: number) {
-  return (TRACK_FILL / (count * (1 - 2 * OVERLAP) + 2 * OVERLAP)).toFixed(3);
+  return TRACK_FILL / (count * (1 - 2 * INTERLOCK));
 }
 
 export function Team() {
@@ -244,7 +254,13 @@ export function Team() {
           // gutter at any headcount: at the hardcoded 26% the sixth and
           // seventh people pushed the first off the left edge and the last
           // past the right.
-          style={{ ["--crew-w" as string]: `${crewWidth(members.length)}%` }}
+          // The margin is a track percentage (CSS margins resolve against the
+          // containing block), so the item-relative INTERLOCK is converted
+          // through the item's own width here.
+          style={{
+            ["--crew-w" as string]: `${crewWidth(members.length).toFixed(3)}%`,
+            ["--crew-overlap" as string]: `${(-INTERLOCK * crewWidth(members.length)).toFixed(3)}%`,
+          }}
         >
           {members.map((member, index) => {
             const pending = isPending(member.name);
@@ -259,7 +275,7 @@ export function Team() {
                 // front of their neighbour, which is what the ascending
                 // z-index resolves. Hover jumps above every static value so
                 // the scaling portrait is never clipped.
-                className="group relative -mx-[5%] w-[62%] shrink-0 hover:z-20 sm:w-[38%] md:w-(--crew-w)"
+                className="group relative mx-(--crew-overlap) w-[62%] shrink-0 hover:z-20 sm:w-[38%] md:w-(--crew-w)"
                 // `translateY`, not `top`: a percentage `top` on a relative
                 // item resolves against the containing block's height, and the
                 // flex row's height is derived from these items — so the

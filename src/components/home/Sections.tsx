@@ -71,7 +71,7 @@ export function EventsGrid({ events, total }: { events: Event[]; total: number }
           {/* Count in the link label, the way Stodio does it. Honest, and it
               gets more convincing as the archive grows. */}
           <Link
-            href="/events"
+            href="/gallery"
             className="u-label inline-flex min-h-11 items-center text-ink"
           >
             All events ({String(total).padStart(2, "0")}) →

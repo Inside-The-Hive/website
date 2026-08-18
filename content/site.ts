@@ -29,13 +29,18 @@ export const site = {
   twitterHandle: "@InsideDHive",
 } as const;
 
-/** Primary navigation. Five links, no dropdowns. */
+/**
+ * Primary navigation. Two links, no dropdowns.
+ *
+ * Deliberately short. Events are already the gallery's own subject — every
+ * event has a set there — so a separate Events entry pointed at a second view
+ * of the same catalogue. Partnering is an ask rather than a destination, and
+ * it belongs on the homepage where the argument for it has just been made.
+ * About has no page yet and is not worth a link that leads nowhere.
+ */
 export const navLinks = [
-  { label: "Events", href: "/events" },
   { label: "Gallery", href: "/gallery" },
   { label: "Podcast", href: "/podcast" },
-  { label: "About", href: "/about" },
-  { label: "Partner", href: "/partner" },
 ] as const;
 
 /** Real, recovered from the live site. */
@@ -82,9 +87,8 @@ export const footerGroups = [
   {
     title: "Explore",
     links: [
-      { label: "Events", href: "/events" },
-      { label: "About", href: "/about" },
-      { label: "Team", href: "/team" },
+      { label: "Gallery", href: "/gallery" },
+      { label: "Podcast", href: "/podcast" },
     ],
   },
   {
@@ -97,9 +101,10 @@ export const footerGroups = [
   {
     title: "Company",
     links: [
-      { label: "Partner with us", href: "/partner" },
-      { label: "Join the Hive", href: "/join" },
-      { label: "Contact", href: "/contact" },
+      // Mail rather than routes: /partner, /join and /contact do not exist,
+      // and a live address beats three dead links.
+      { label: "Partner with us", href: "mailto:contact@insidedhive.com", external: true },
+      { label: "Contact", href: "mailto:contact@insidedhive.com", external: true },
     ],
   },
   {

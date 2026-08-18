@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ContactSheet } from "@/components/gallery/ContactSheet";
 import { PartnerCta } from "@/components/gallery/PartnerCta";
-import { galleryEventSlugs, photosForEvent } from "@/content/gallery";
+import { photosForEvent } from "@/content/gallery";
 import { formatEventDate, getEvent, getEvents } from "@/lib/content";
 
 /**
@@ -22,9 +22,9 @@ import { formatEventDate, getEvent, getEvents } from "@/lib/content";
 
 type Params = { params: Promise<{ slug: string }> };
 
-/** Only the four events that actually have frames get a route. */
+/** Every event in the catalogue gets a route, frames or not. */
 export function generateStaticParams() {
-  return galleryEventSlugs().map((slug) => ({ slug }));
+  return getEvents().map((event) => ({ slug: event.slug }));
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
@@ -43,13 +43,14 @@ export default async function GalleryEventPage({ params }: Params) {
   const photos = photosForEvent(slug);
   const event = getEvent(slug);
 
-  // A slug with no frames is a 404 even if the event exists — this route is
-  // the photographs, and an empty contact sheet is not a page.
-  if (!event || photos.length === 0) notFound();
+  // Only a slug with no event behind it is a 404. An event whose photographs
+  // have not been supplied yet is still a night ITH covered, and the page says
+  // so rather than pretending the event does not exist.
+  if (!event) notFound();
 
-  // Neighbouring events with frames, so the page has somewhere to go next.
+  // Neighbouring events, so the page has somewhere to go next.
   const others = getEvents()
-    .filter((item) => item.slug !== slug && galleryEventSlugs().includes(item.slug))
+    .filter((item) => item.slug !== slug)
     .slice(0, 3);
 
   return (
@@ -86,7 +87,13 @@ export default async function GalleryEventPage({ params }: Params) {
       </header>
 
       <section aria-label="Photographs" className="u-gutter">
-        <ContactSheet frames={photos} eventTitle={event.title} />
+        {photos.length > 0 ? (
+          <ContactSheet frames={photos} eventTitle={event.title} />
+        ) : (
+          <p className="u-rule border-y py-[clamp(3rem,8vh,5rem)] text-center text-ink/50">
+            Photographs from this night are still being edited.
+          </p>
+        )}
       </section>
 
       {/* Back into the site rather than a dead end. */}

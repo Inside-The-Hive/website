@@ -3,6 +3,7 @@ import { Hero } from "@/components/home/Hero";
 import { HiveCarousel } from "@/components/home/HiveCarousel";
 import { Lore } from "@/components/home/Lore";
 import { Services } from "@/components/home/Services";
+import { ShowReel } from "@/components/home/ShowReel";
 import { Team } from "@/components/home/Team";
 import { PortraitPanel } from "@/components/testimonials/PortraitPanel";
 // import { SpotlightGrid } from "@/components/testimonials/SpotlightGrid";
@@ -82,6 +83,10 @@ export default function Home() {
           then the people behind it. */}
       <Services />
       <Team />
+      {/* The crew, then the crew's work moving. A scroll-scrubbed zoom: the
+          reel swells to full screen as it crosses the viewport's centre and
+          recedes as the reader scrolls on. */}
+      <ShowReel />
       {/* The crew, then what people who have worked with them say. Third-party
           voice lands hardest directly after the faces it is talking about.
 

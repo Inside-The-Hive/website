@@ -57,7 +57,8 @@ export const socials = [
  */
 export const podcastPlatforms = [
   { label: "YouTube", href: "https://youtube.com/@insidethehive", confirmed: false },
-  { label: "Spotify", href: "TODO", confirmed: false },
+  // Supplied by the client and matching the show's own feed.
+  { label: "Spotify", href: "https://open.spotify.com/show/0wOOX8mdQUoRP1adnxV9VD", confirmed: true },
   { label: "Apple Podcasts", href: "TODO", confirmed: false },
   { label: "Pocket Casts", href: "TODO", confirmed: false },
   { label: "Audiomack", href: "TODO", confirmed: false },
@@ -131,7 +132,8 @@ export const footerGroups = [
 export const stats = [
   { label: "Events hosted", value: 20, suffix: "+" },
   { label: "Memories captured", value: 2000, suffix: "" },
-  { label: "Podcast episodes", value: 38, suffix: "" },
+  // Counted from the show's own RSS feed (see content/podcast/feed.json).
+  { label: "Podcast episodes", value: 94, suffix: "" },
   { label: "Spotify listeners", value: 589, suffix: "" },
   { label: "Partnerships secured", value: 8, suffix: "" },
 ] as const;

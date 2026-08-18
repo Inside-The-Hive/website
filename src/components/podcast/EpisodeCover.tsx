@@ -1,24 +1,20 @@
 import type { PlayerEpisode } from "./player-context";
 
 /**
- * Episode cover art, generated rather than uploaded.
+ * Episode cover art.
  *
- * No artwork files exist for the catalogue yet, and a grid of grey squares
- * would make the whole page feel unfinished. Instead each episode gets a
- * typographic cover built from the brand's own palette — a duotone per
- * category, the episode numeral as the artwork, the title as the caption.
- * Five categories, five colourways, so the shelf reads as one series with
- * distinct spines.
- *
- * When real cover art lands (the schema's `coverImage` field), this component
- * becomes the fallback rather than the default.
+ * Real artwork first: the catalogue's own per-episode covers, pulled from the
+ * show's feed by scripts/fetch-podcast.mjs and served locally. The typographic
+ * duotone — episode numeral as the artwork, title as the caption — remains as
+ * the fallback for any entry that arrives without art, so a missing image
+ * degrades to something designed rather than to a grey square.
  */
 
 type Theme = {
   /** Cover ground and artwork ink. */
   ground: string;
   art: string;
-  /** The flat tint the now-playing stage takes behind this cover. */
+  /** A flat dark tint derived from the colourway, for surfaces behind it. */
   stage: string;
 };
 
@@ -33,13 +29,13 @@ export const CATEGORY_THEMES: Record<string, Theme> = {
 
 const FALLBACK: Theme = { ground: "#0a0a0a", art: "#f0a202", stage: "#121212" };
 
-export function themeFor(category: string) {
-  return CATEGORY_THEMES[category] ?? FALLBACK;
+export function themeFor(category?: string) {
+  return (category && CATEGORY_THEMES[category]) || FALLBACK;
 }
 
 export function EpisodeCover({
   episode,
-  /** Compact hides the caption row — the bar's thumbnail is too small for it. */
+  /** Compact drops the caption row — a thumbnail is too small for it. */
   compact = false,
   className = "",
 }: {
@@ -47,7 +43,31 @@ export function EpisodeCover({
   compact?: boolean;
   className?: string;
 }) {
+  // The real cover, when the catalogue supplies one. Sized by the caller's
+  // class; a plain img because the files are pre-resized local webp.
+  if (episode.cover) {
+    return (
+      <div
+        aria-hidden
+        className={`relative aspect-square overflow-hidden bg-ash ${className}`}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element -- pre-sized local asset */}
+        <img
+          src={episode.cover}
+          alt=""
+          loading="lazy"
+          className="size-full object-cover"
+          draggable={false}
+        />
+      </div>
+    );
+  }
+
   const theme = themeFor(episode.category);
+  const numeral =
+    episode.episodeNumber != null
+      ? String(episode.episodeNumber).padStart(2, "0")
+      : "—";
 
   return (
     <div
@@ -57,26 +77,30 @@ export function EpisodeCover({
     >
       {compact ? (
         <span className="grid size-full place-items-center font-display text-[2em] leading-none font-extrabold">
-          {String(episode.episodeNumber).padStart(2, "0")}
+          {numeral}
         </span>
       ) : (
         <>
           <div className="flex items-baseline justify-between p-[6%]">
             <span className="text-[0.6em] font-medium">Inside The Hive</span>
-            <span className="text-[0.55em] opacity-70">{episode.hiveId}</span>
+            {episode.hiveId && (
+              <span className="text-[0.55em] opacity-70">{episode.hiveId}</span>
+            )}
           </div>
 
           <span className="text-center font-display text-[5.2em] leading-[0.85] font-extrabold tracking-tighter">
-            {String(episode.episodeNumber).padStart(2, "0")}
+            {numeral}
           </span>
 
           <div className="flex items-end justify-between gap-[4%] p-[6%]">
             <span className="max-w-[70%] text-[0.7em] leading-snug font-medium text-balance">
               {episode.title}
             </span>
-            <span className="text-[0.55em] whitespace-nowrap opacity-70">
-              {episode.categoryLabel}
-            </span>
+            {episode.categoryLabel && (
+              <span className="text-[0.55em] whitespace-nowrap opacity-70">
+                {episode.categoryLabel}
+              </span>
+            )}
           </div>
         </>
       )}

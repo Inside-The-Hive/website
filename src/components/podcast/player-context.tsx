@@ -29,11 +29,14 @@ import {
 export type PlayerEpisode = {
   slug: string;
   title: string;
-  episodeNumber: number;
-  hiveId: string;
-  category: string;
+  /** The show's own numbering where its feed states one — never invented. */
+  episodeNumber?: number;
+  hiveId?: string;
+  category?: string;
   /** The category's display label — "Creator & SocialFi", not the slug. */
-  categoryLabel: string;
+  categoryLabel?: string;
+  /** Real cover art, as a local path. Absent falls back to generated art. */
+  cover?: string;
   /** Pre-formatted for display; the loader owns date formatting. */
   dateLabel: string;
   /** Stated runtime from the catalogue, shown before metadata loads. */
@@ -90,7 +93,9 @@ export function PlayerProvider({
   children: ReactNode;
 }) {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [index, setIndex] = useState(0);
+  // The deck opens on the newest episode — the queue is chronological, so the
+  // last entry is the latest drop, which is what a visitor came to hear.
+  const [index, setIndex] = useState(Math.max(0, episodes.length - 1));
   const [playing, setPlaying] = useState(false);
   const [time, setTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -113,6 +118,18 @@ export function PlayerProvider({
   const ensureGraph = useCallback(() => {
     const audio = audioRef.current;
     if (!audio || graphRef.current) return;
+
+    // Cross-origin audio cannot feed an analyser: without CORS headers the
+    // Web Audio graph reads silence, and routing the element through it can
+    // mute playback outright. The real catalogue streams from the show's CDN,
+    // which sends no CORS headers — so those episodes play as a plain media
+    // element and the meter falls back to its procedural mode.
+    try {
+      const source = new URL(audio.currentSrc, window.location.href);
+      if (source.origin !== window.location.origin) return;
+    } catch {
+      return;
+    }
 
     const context = new AudioContext();
     const source = context.createMediaElementSource(audio);

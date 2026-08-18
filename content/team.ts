@@ -144,7 +144,7 @@ export const services: Service[] = [
     title: "The podcast",
     description:
       "Long-form conversation with the people actually building. Africa's Web3 story told by the ones in it, on the record.",
-    note: "38 episodes",
+    note: "94 episodes",
     image: "/videos/movienight-poster.jpg",
   },
   {

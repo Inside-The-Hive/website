@@ -84,6 +84,35 @@ export function getFeaturedEpisode() {
   return episodes.find((episode) => episode.featured) ?? episodes[0] ?? null;
 }
 
+/**
+ * The real podcast catalogue, written by scripts/fetch-podcast.mjs from the
+ * show's own RSS feed. Null when the fetch has never been run — callers fall
+ * back to the provisional MDX entries so the page never renders empty.
+ */
+export type PodcastFeed = {
+  fetchedAt: string;
+  source: string;
+  show: { title: string | null; author: string | null; art?: string };
+  total: number;
+  episodes: {
+    slug: string;
+    title: string;
+    date: string | null;
+    duration?: string;
+    summary: string;
+    audio?: string;
+    cover?: string;
+    episodeNumber?: number;
+    spotifyUrl?: string;
+  }[];
+};
+
+export function getPodcastFeed(): PodcastFeed | null {
+  const file = path.join(CONTENT_ROOT, "podcast", "feed.json");
+  if (!fs.existsSync(file)) return null;
+  return JSON.parse(fs.readFileSync(file, "utf8")) as PodcastFeed;
+}
+
 /** Years present in the catalogue, newest first. Drives the /events filter. */
 export function getEventYears() {
   return [...new Set(getEvents().map((event) => event.date.getFullYear()))].sort(

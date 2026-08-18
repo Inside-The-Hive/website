@@ -29,7 +29,7 @@ function EqBars() {
   );
 }
 
-export function Dashboard() {
+export function Dashboard({ total }: { total: number }) {
   const { episodes, index, playing, tune, toggle } = usePlayer();
 
   // Latest drop leads the page; the list below reads newest first.
@@ -98,9 +98,13 @@ export function Dashboard() {
                       </>
                     )}
                   </button>
+                  {/* No "Episode N" here: the feed's itunes:episode is the
+                      host's upload counter (97) and disagrees with the show's
+                      own numbering printed on the artwork (Ep 92). The art
+                      carries the number; the metadata sticks to facts that
+                      cannot contradict it. */}
                   <p className="text-sm opacity-70">
-                    Episode {latest.episodeNumber} · {latest.duration ?? "—"} ·{" "}
-                    {latest.dateLabel}
+                    {latest.duration ?? "—"} · {latest.dateLabel}
                   </p>
                 </div>
               </div>
@@ -127,7 +131,7 @@ export function Dashboard() {
                     <button
                       type="button"
                       onClick={() => (active ? toggle() : tune(at))}
-                      aria-label={`Play episode ${episode.episodeNumber}: ${episode.title}`}
+                      aria-label={`Play ${episode.title}`}
                       className="group flex w-[clamp(5.5rem,9vw,7.5rem)] flex-col items-center gap-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
                     >
                       <span
@@ -156,9 +160,14 @@ export function Dashboard() {
           {/* The catalogue, newest first — the reference's "recently played"
               rows kept as they are: cover, title, presenter, duration. */}
           <div className="mt-[clamp(2rem,4vh,3rem)]">
-            <h2 className="font-display text-xl font-bold tracking-tight">
-              All episodes
-            </h2>
+            <div className="flex items-baseline justify-between gap-4">
+              <h2 className="font-display text-xl font-bold tracking-tight">
+                All episodes
+              </h2>
+              <p className="text-sm text-ink/50">
+                Latest {episodes.length} of {total}
+              </p>
+            </div>
             <ol className="mt-3">
               {rows.map((episode) => {
                 const at = episodes.indexOf(episode);
@@ -173,8 +182,8 @@ export function Dashboard() {
                       onClick={() => (active ? toggle() : tune(at))}
                       aria-label={
                         active && playing
-                          ? `Pause episode ${episode.episodeNumber}`
-                          : `Play episode ${episode.episodeNumber}: ${episode.title}`
+                          ? `Pause ${episode.title}`
+                          : `Play ${episode.title}`
                       }
                       className="group grid w-full grid-cols-[auto_1fr_auto] items-center gap-x-4 rounded-lg px-2 py-3.5 text-left transition-colors duration-(--dur-fast) hover:bg-ash sm:grid-cols-[auto_1fr_auto_auto_auto] sm:gap-x-6"
                     >
@@ -198,7 +207,7 @@ export function Dashboard() {
                         </span>
                       </span>
                       <span className="hidden text-sm text-ink/45 sm:block">
-                        {episode.categoryLabel}
+                        {episode.categoryLabel ?? episode.dateLabel}
                       </span>
                       <span className="text-sm text-ink/50 tabular-nums">
                         {episode.duration ?? "—"}
@@ -252,7 +261,7 @@ export function Dashboard() {
                     <button
                       type="button"
                       onClick={() => tune(at)}
-                      aria-label={`Play next: episode ${episode.episodeNumber}, ${episode.title}`}
+                      aria-label={`Play next: ${episode.title}`}
                       className="flex w-full items-center gap-3 rounded-lg p-1.5 text-left transition-colors duration-(--dur-fast) hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
                     >
                       <EpisodeCover

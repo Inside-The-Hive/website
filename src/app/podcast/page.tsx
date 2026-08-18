@@ -6,7 +6,7 @@ import {
   type PlayerEpisode,
 } from "@/components/podcast/player-context";
 import { episodeCategories, podcastPlatforms } from "@/content/site";
-import { formatEventDate, getEpisodes } from "@/lib/content";
+import { formatEventDate, getEpisodes, getPodcastFeed } from "@/lib/content";
 
 /**
  * The podcast — a listening dashboard.
@@ -28,32 +28,49 @@ export const metadata: Metadata = {
 };
 
 export default function PodcastPage() {
+  // The real catalogue, fetched from the show's own feed. The provisional MDX
+  // entries only render if the fetch has never been run.
+  const feed = getPodcastFeed();
+
   // Chronological for the player, so "next" moves through the season.
-  const episodes: PlayerEpisode[] = getEpisodes()
-    .sort((a, b) => a.date.getTime() - b.date.getTime())
-    .map((episode, position) => ({
-      slug: episode.slug,
-      title: episode.title,
-      episodeNumber: episode.episodeNumber ?? position + 1,
-      hiveId: episode.hiveId,
-      category: episode.category,
-      categoryLabel:
-        episodeCategories.find((c) => c.slug === episode.category)?.label ??
-        episode.category,
-      dateLabel: formatEventDate(episode.date),
-      duration: episode.duration,
-      audio: episode.audio,
-      guest: episode.guest,
-      guestRole: episode.guestRole,
-      summary: episode.summary,
-    }));
+  const episodes: PlayerEpisode[] = feed
+    ? [...feed.episodes].reverse().map((episode) => ({
+        slug: episode.slug,
+        title: episode.title,
+        episodeNumber: episode.episodeNumber,
+        cover: episode.cover,
+        dateLabel: episode.date ? formatEventDate(new Date(episode.date)) : "",
+        duration: episode.duration,
+        audio: episode.audio,
+        summary: episode.summary,
+      }))
+    : getEpisodes()
+        .sort((a, b) => a.date.getTime() - b.date.getTime())
+        .map((episode, position) => ({
+          slug: episode.slug,
+          title: episode.title,
+          episodeNumber: episode.episodeNumber ?? position + 1,
+          hiveId: episode.hiveId,
+          category: episode.category,
+          categoryLabel:
+            episodeCategories.find((c) => c.slug === episode.category)?.label ??
+            episode.category,
+          dateLabel: formatEventDate(episode.date),
+          duration: episode.duration,
+          audio: episode.audio,
+          guest: episode.guest,
+          guestRole: episode.guestRole,
+          summary: episode.summary,
+        }));
+
+  const catalogueTotal = feed?.total ?? episodes.length;
 
   return (
     <PlayerProvider episodes={episodes}>
       {/* Padded at the foot so the docked bar never sits over the last of the
           page's own content. */}
       <div className="pb-28">
-        <Dashboard />
+        <Dashboard total={catalogueTotal} />
 
         {/* What the show is. */}
         <section

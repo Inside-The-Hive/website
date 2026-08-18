@@ -76,7 +76,7 @@ export function EpisodeCover({
       style={{ background: theme.ground, color: theme.art }}
     >
       {compact ? (
-        <span className="grid size-full place-items-center font-display text-[2em] leading-none font-extrabold">
+        <span className="grid size-full place-items-center font-display text-[2em] leading-none font-semibold">
           {numeral}
         </span>
       ) : (
@@ -88,7 +88,7 @@ export function EpisodeCover({
             )}
           </div>
 
-          <span className="text-center font-display text-[5.2em] leading-[0.85] font-extrabold tracking-tighter">
+          <span className="text-center font-display text-[5.2em] leading-[0.85] font-semibold tracking-tight">
             {numeral}
           </span>
 

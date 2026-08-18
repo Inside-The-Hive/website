@@ -68,7 +68,7 @@ export function Dashboard({ total }: { total: number }) {
                 <p className="text-sm font-medium opacity-70">
                   New episode · just dropped
                 </p>
-                <h1 className="mt-3 max-w-[18ch] font-display text-[clamp(1.75rem,3.6vw,3rem)] leading-[1.02] font-bold tracking-tight text-balance">
+                <h1 className="mt-3 max-w-[20ch] text-[clamp(1.6rem,3.1vw,2.6rem)] leading-[1.08] font-normal tracking-[-0.015em] text-balance">
                   {latest.title}
                 </h1>
                 <p className="mt-4 max-w-prose text-[0.95rem] leading-relaxed opacity-80">
@@ -119,7 +119,7 @@ export function Dashboard({ total }: { total: number }) {
           {/* Popular episodes — the reference's artist row, tuned to a
               catalogue. Round covers, one per episode. */}
           <div className="mt-[clamp(2rem,4vh,3rem)]">
-            <h2 className="font-display text-xl font-bold tracking-tight">
+            <h2 className="text-lg font-medium">
               Popular episodes
             </h2>
             <ul className="mt-5 flex flex-wrap gap-x-[clamp(1.25rem,3vw,3rem)] gap-y-6">
@@ -161,7 +161,7 @@ export function Dashboard({ total }: { total: number }) {
               rows kept as they are: cover, title, presenter, duration. */}
           <div className="mt-[clamp(2rem,4vh,3rem)]">
             <div className="flex items-baseline justify-between gap-4">
-              <h2 className="font-display text-xl font-bold tracking-tight">
+              <h2 className="text-lg font-medium">
                 All episodes
               </h2>
               <p className="text-sm text-ink/50">
@@ -299,7 +299,7 @@ function NowPlayingCard() {
         episode={current}
         className="w-full rounded-xl text-[clamp(1rem,1.4vw,1.4rem)]"
       />
-      <p className="mt-4 truncate font-display text-lg font-bold tracking-tight">
+      <p className="mt-4 truncate text-base font-medium">
         {current.title}
       </p>
       <p className="mt-0.5 text-sm text-ink/55">Hosted by {HOST}</p>

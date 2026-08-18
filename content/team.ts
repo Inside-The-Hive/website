@@ -78,6 +78,22 @@ export const team: TeamMember[] = [
     labelAt: "top",
     photo: "/divine-trim.png",
   },
+  {
+    name: "Snazzy",
+    role: "Legal",
+    labelAt: "bottom",
+    // TODO(client): supplied with its background intact, unlike the other
+    // portraits. It seats on the panel as a rectangle rather than as a
+    // figure standing against it. Replace with a cut-out on a transparent
+    // ground, trimmed to the subject, and the row reads consistently.
+    photo: "/snazzy.png",
+  },
+  {
+    name: "Deon",
+    role: "Tech",
+    labelAt: "top",
+    photo: "/Deon.png",
+  },
 ];
 
 /**

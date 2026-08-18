@@ -42,21 +42,6 @@ export function Nav() {
 
       setScrolled(y > 8);
 
-      // The bar has no fill, so its text sits directly on whatever is behind
-      // it. Over an inverted section that would be ink on near-black — 1:1,
-      // invisible. Sampling what is actually under the bar and flipping the
-      // text is what keeps a genuinely transparent bar readable.
-      //
-      // elementsFromPoint, not elementFromPoint: the header is itself the
-      // topmost element at that coordinate, so the single-element form only
-      // ever returns the bar and the test inverts.
-      const stack = document.elementsFromPoint(window.innerWidth / 2, 24);
-      setOnDark(
-        stack.some(
-          (el) => !el.closest("header") && el.closest("[data-nav-invert]"),
-        ),
-      );
-
       if (Math.abs(delta) >= DIRECTION_THRESHOLD) {
         // Never hide at the very top: the bar would vanish on the first
         // downward flick of a page the reader has not started yet.
@@ -76,6 +61,65 @@ export function Nav() {
       if (frame) cancelAnimationFrame(frame);
     };
   }, []);
+
+  /**
+   * Flips the bar's text to white while an inverted section sits behind it.
+   *
+   * The bar has no fill, so its text sits directly on whatever is under it.
+   * Over an inverted section that would be ink on near-black — invisible.
+   *
+   * This measures the marked sections rather than sampling a pixel. An earlier
+   * version called `elementsFromPoint` at the centre of the bar from inside the
+   * scroll handler, which failed twice over: it never ran on a page that loads
+   * dark and is never scrolled, and a section narrower than the viewport, or
+   * simply not crossing the centre line, was missed entirely.
+   *
+   * Rechecked on scroll, on resize, and whenever the DOM changes, so a section
+   * that mounts late — or a route that renders a different page under the same
+   * bar — is picked up without the reader having to move.
+   */
+  useEffect(() => {
+    let frame = 0;
+
+    const read = () => {
+      frame = 0;
+      const header = document.querySelector("header");
+      // Sample just below the bar's own bottom edge: the question is what the
+      // text is sitting on, not what the bar overlaps by a pixel.
+      const probe = (header?.getBoundingClientRect().height ?? 72) * 0.5;
+
+      const sections = document.querySelectorAll("[data-nav-invert]");
+      for (const section of sections) {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= probe && rect.bottom >= probe && rect.height > 0) {
+          setOnDark(true);
+          return;
+        }
+      }
+      setOnDark(false);
+    };
+
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(read);
+    };
+
+    read();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+
+    // Sections can mount after this effect runs — a client component that
+    // renders its dark branch only once the viewport has been measured, for
+    // one. Without this the bar keeps whatever colour it started with.
+    const observer = new MutationObserver(schedule);
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      observer.disconnect();
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [pathname]);
 
   // A route change can leave the bar hidden on a page the reader just opened.
   useEffect(() => setHidden(false), [pathname]);

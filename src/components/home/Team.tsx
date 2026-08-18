@@ -91,20 +91,30 @@ function SocialMark({
  * them and the row reads as a single receding line rather than a set of
  * arbitrary layer collisions.
  */
-const PANELS = [
-  { color: "var(--color-honey)", z: 1 },
-  { color: "var(--color-propolis)", z: 2 },
-  { color: "var(--color-honey)", z: 3 },
-  { color: "var(--color-propolis)", z: 4 },
-  { color: "var(--color-honey)", z: 5 },
-];
+/**
+ * Panel colour and stacking, derived from position rather than listed.
+ *
+ * A fixed list had to be edited every time the crew changed, and indexing it
+ * with a modulo silently broke the alternation once the row grew past its
+ * length — the sixth figure repeated the first's colour and lift. Deriving
+ * both from the index keeps the pattern correct at any size.
+ *
+ * Each panel stacks above the one before it, which is what makes the row read
+ * as overlapping cards rather than as a flat strip.
+ */
+function panelFor(index: number) {
+  return {
+    color: index % 2 === 0 ? "var(--color-honey)" : "var(--color-propolis)",
+    z: index + 1,
+  };
+}
 
 /**
  * Which positions sit lifted. Applied to the whole list item so the figure
  * and its panel move together, and alternating so the row rests on a broken
  * line rather than a flat one.
  */
-const LIFTED = [true, false, true, false, true];
+const isLifted = (index: number) => index % 2 === 0;
 
 /** Lift, as a share of the item's height. */
 const LIFT_PCT = 6;
@@ -148,7 +158,7 @@ const LIFT_COMP = (SLANT_RUN * PANEL_W * LIFT_PCT) / PANEL_H; // ~1.844
  * sit at 0.59–0.74, so every value is 1; a replacement cropped tighter or
  * wider would need correcting here.
  */
-const SCALES = [1, 1, 1, 1, 1];
+const FIGURE_SCALE = 1;
 
 /**
  * The slant, as a clip-path parallelogram.
@@ -213,8 +223,8 @@ export function Team() {
                 // element's own box, which is what makes the lift land.
                 //
                 style={{
-                  zIndex: PANELS[index % PANELS.length].z,
-                  translate: LIFTED[index % LIFTED.length]
+                  zIndex: panelFor(index).z,
+                  translate: isLifted(index)
                     ? `${LIFT_COMP.toFixed(3)}% -${LIFT_PCT}%`
                     : "0 0",
                 }}
@@ -249,7 +259,7 @@ export function Team() {
                     aria-hidden
                     className="absolute right-[8%] bottom-[4%] left-[8%] h-[82%]"
                     style={{
-                      background: PANELS[index % PANELS.length].color,
+                      background: panelFor(index).color,
                       clipPath: SLANT,
                     }}
                   />
@@ -280,7 +290,7 @@ export function Team() {
                       // would overwrite it. Bottom origin so a scaled figure
                       // stays on the shared ground line.
                       className="origin-bottom object-contain object-[35%_bottom] grayscale transition-[filter] duration-(--dur-base) group-hover:grayscale-0"
-                      style={{ scale: String(SCALES[index % SCALES.length]) }}
+                      style={{ scale: String(FIGURE_SCALE) }}
                     />
                   </div>
 

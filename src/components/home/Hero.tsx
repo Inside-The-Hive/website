@@ -1,4 +1,5 @@
 import { HiveMedia } from "@/components/HiveMedia";
+import { HeroPattern } from "@/components/home/HeroPattern";
 import type { Event } from "@/lib/content/schema";
 
 /**
@@ -38,13 +39,19 @@ export function Hero({ event }: { event: Event | null }) {
     <section
       className={
         hasMedia
-          ? "relative flex min-h-[92svh] flex-col justify-end overflow-hidden pt-[30svh]"
-          : "relative flex min-h-[82svh] flex-col justify-end overflow-hidden pt-[18svh]"
+          // `isolate` keeps the layering below local to the hero.
+          ? "relative isolate flex min-h-[92svh] flex-col justify-end overflow-hidden pt-[30svh]"
+          : "relative isolate flex min-h-[82svh] flex-col justify-end overflow-hidden pt-[18svh]"
       }
     >
-      {/* Media resolves in behind the type. */}
+      {/* Media resolves in behind the type.
+
+          Ordered before the pattern deliberately. This layer fills the hero
+          whether or not a media file exists, so with the pattern beneath it
+          the marks were covered and painted nothing — the layer rendered
+          correctly and was simply never on screen. */}
       <div
-        className="absolute inset-0 -z-10"
+        className="absolute inset-0 z-[1]"
         style={
           // Nothing to resolve in until real media lands; animating an empty
           // white frame just reads as a flash.
@@ -83,7 +90,14 @@ export function Hero({ event }: { event: Event | null }) {
         )}
       </div>
 
-      <div className="u-gutter pb-[clamp(3rem,10vh,7rem)]">
+      {/* Texture in the empty field beside the headline. Above the media
+          layer, because that layer fills the hero even with no media file and
+          would otherwise cover the marks entirely. Once real media lands its
+          own scrim still sits over these. */}
+      <HeroPattern />
+
+      {/* Above both the pattern and the media layer. */}
+      <div className="relative z-10 u-gutter pb-[clamp(3rem,10vh,7rem)]">
         {/* Weight 400 with looser tracking. At mega size the light weight is
             the statement — 800 read as shouting, and Inter Tight holds its
             shape at 400 far better than a grotesque would. Overrides the

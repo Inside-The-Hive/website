@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { DoodleField } from "@/components/DoodleField";
 import { HiveMedia } from "@/components/HiveMedia";
 import type { Event } from "@/lib/content/schema";
@@ -26,7 +27,20 @@ import type { Event } from "@/lib/content/schema";
  * is its own clipping mask for the stagger, so a line that wraps on its own
  * would break out of its mask — the split has to match what actually fits.
  */
-const LINES = ["Africa's biggest", "web3 media", "brand."];
+/**
+ * Each line is a list of parts so one of them can be artwork rather than type.
+ * `mark` renders the painted "Biggest" lockup in place of the word; everything
+ * else sets as text. The accessible sentence is assembled from `text` and read
+ * once, so the swap changes nothing for a screen reader or for search.
+ */
+const LINES: { text: string; mark?: boolean }[][] = [
+  [{ text: "Africa's " }, { text: "biggest", mark: true }],
+  [{ text: "web3 media" }],
+  [{ text: "brand." }],
+];
+
+/** The sentence, for assistive tech and for search. */
+const HEADLINE = LINES.map((parts) => parts.map((p) => p.text).join("")).join(" ");
 
 export function Hero({ event }: { event: Event | null }) {
   const src = event?.heroMedia.src;
@@ -126,23 +140,47 @@ export function Hero({ event }: { event: Event | null }) {
               concatenate without a space ("Africa's Biggestweb3 media brand.")
               for assistive tech and for search engines. The accessible sentence
               is provided once here and the decorative split is hidden. */}
-          <span className="sr-only">{LINES.join(" ")}</span>
+          <span className="sr-only">{HEADLINE}</span>
           <span aria-hidden>
-            {LINES.map((line, index) => (
+            {LINES.map((parts, index) => (
               // Each line is its own clipping mask so the rise reads as type
               // setting, not as a block sliding.
               //
               // The mask clips to the line box, which sits above the descender
               // depth, so without extra room below the baseline it cuts the
               // tails of "gg" in "biggest". 0.22em clears Inter's descender.
-              <span key={line} className="block overflow-hidden pb-[0.22em]">
+              <span
+                key={parts.map((part) => part.text).join("")}
+                className="block overflow-hidden pb-[0.22em]"
+              >
                 <span
                   className="block"
                   style={{
                     animation: `hive-line-rise var(--dur-base) var(--ease-out-expo) ${120 + index * 80}ms both`,
                   }}
                 >
-                  {line}
+                  {parts.map((part) =>
+                    part.mark ? (
+                      // Sized in em so the lockup tracks the headline at every
+                      // breakpoint rather than needing its own clamp. The
+                      // negative margins pull the brush's own transparent
+                      // padding back in, so the mark sits on the line where
+                      // the word did instead of pushing it wider.
+                      <Image
+                        key={part.text}
+                        src="/biggest.webp"
+                        alt=""
+                        width={1200}
+                        height={463}
+                        // Part of the largest element on the page, so it is
+                        // fetched with the document rather than lazily.
+                        priority
+                        className="-my-[0.14em] -mx-[0.04em] inline-block h-[1.02em] w-auto align-baseline"
+                      />
+                    ) : (
+                      part.text
+                    ),
+                  )}
                 </span>
               </span>
             ))}

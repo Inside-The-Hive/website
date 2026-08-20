@@ -1,28 +1,27 @@
-feat: scroll-tinted lore copy; larger mobile hero, tighter lore gap
+feat: painted "Biggest" lockup in the hero headline
 
-Three changes.
+Replaces the word with the supplied brush artwork.
 
-The hero fills more of a phone screen. --text-mega's middle term goes
-from 13vw to 16vw, taking the headline from 51px to 68px at 425px, and
-the carousel cells scale from 1.55 to 1.85, taking the first cell from
-153px to 183px. Together the headline and strip now reach 61% of the
-viewport rather than stopping well short of it. The 3.5rem floor and
-12rem ceiling are unchanged, so a 360px screen still wraps to three
-lines and a desktop is untouched.
+The headline was a list of three strings, one per line, so a single
+word could not be swapped without breaking the per-line stagger. Each
+line is now a list of parts, and a part can be marked as artwork rather
+than type — the mechanism is general, so any other word could be
+treated the same way later.
 
-The gap between the lore's opening statement and the narrative beneath
-it drops from clamp(3.5rem,9vh,7rem) to clamp(1.75rem,4vh,3rem), and
-the paragraph spacing from gap-8 to gap-6. At 425px the distance
-between the two blocks falls from about 130px to 41px.
+The mark is sized in em against the headline, not in its own clamp, so
+it tracks the type at every breakpoint automatically. Negative margins
+pull the brush's transparent padding back in, which keeps the lockup
+sitting on the line where the word did instead of pushing the line
+wider. At 1440 it renders 508px against a 68px cap height; at 425 the
+line wraps and the mark takes a row of its own, which reads better than
+squeezing it beside "Africa's".
 
-The narrative paragraphs now warm from grey to honey as they pass up
-the viewport. The tint is per word rather than per paragraph: a whole
-paragraph changing at one threshold reads as a state flip, where
-interpolating each word against its own position makes the colour
-arrive with the reader. Words are wrapped at runtime rather than in the
-markup, so the copy stays plain prose in the source and the effect
-follows the real line wrap at any width. Under reduced motion the
-passage simply sits at its resting colour with no scrub attached.
+The accessible sentence is assembled from the parts and read once, so
+"Africa's biggest web3 media brand." is unchanged for a screen reader
+and for search despite one word now being an image. The mark itself is
+alt="" — it is the word it replaces, not additional content.
 
-Measured mid-scroll: 9 distinct colours across the 169 words, ramping
-cleanly from honey at the top of the block to grey at the bottom.
+next/image with priority rather than a plain img: this is part of the
+largest element on the page, so it is fetched with the document. The
+asset is resized to 1200px and encoded as webp with alpha, 132KB
+against the 1.3MB png.

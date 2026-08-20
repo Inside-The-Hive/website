@@ -1,0 +1,31 @@
+feat: pack the hero pattern tighter and smaller
+
+The first pass read as scattered ornaments rather than texture: 39
+marks, most of them large, with wide gaps between them. This replaces
+it with 323 marks at roughly half the size, packed so only a few
+pixels separate neighbours.
+
+Most marks now sit at 7-14 units against the previous 18-46, with a
+scattering of larger ones around 19-26 left as focal points. The
+stroke drops from 3 to 1.6 to match: at this scale the old weight was
+nearly as thick as the smallest marks are wide, and every shape closed
+into a blob.
+
+Placement is grid-based with per-cell jitter, which keeps the spacing
+even without reading as a grid, and every candidate is collision-
+checked against what is already down so no two marks overlap. The
+density gradient is unchanged in intent — sparse behind the headline,
+filling in toward the right — but now expressed as a probability per
+cell rather than by hand-placing each mark.
+
+The vocabulary and the rules around it are unchanged: hexagons at
+roughly one in five, some partial, never tiled into honeycomb; the
+same nine mark types; dots as the only filled shapes, tucked into the
+gaps left over. Coordinates were generated once by a seeded pass and
+are frozen here as literals, so nothing random runs in the browser and
+the layout is identical on every load.
+
+Coverage in the empty field right of the headline rises from 5,830 to
+9,272 pixels. Below 640px the stroke thins to 1.3 and the 148 marks
+tagged dense are hidden, leaving 175 — half the density behind type
+that fills the screen.

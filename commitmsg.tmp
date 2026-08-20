@@ -1,21 +1,37 @@
-feat: doodle texture behind the gallery canvas
+fix: mobile nav, hero spacing, and the doodle layer's reach
 
-Carries the hero's treatment onto the gallery, which was a plain white
-field behind the scattered photographs.
+Four small-screen faults, one of them the cause of two others.
 
-The layer is extracted into a shared DoodleField rather than copied.
-Opacity and tile size are the whole treatment and both are easy to get
-subtly wrong in a duplicate, so the hero and the gallery now read from
-one definition.
+The mobile menu panel was rendering as an 80px strip with its content
+pushed above the fold, so only the first link was on screen and nothing
+below it could be reached. The panel is `fixed inset-0`, but it renders
+inside the nav bar, and the bar carries a translate for its
+hide-on-scroll — a transformed ancestor becomes the containing block for
+a fixed descendant, so `inset-0` resolved against the 80px bar rather
+than the viewport. The panel is now portaled to <body>, which puts it
+back on the viewport and makes it a full 844px.
 
-Three surfaces on the gallery carry it: the desktop canvas, the mobile
-static hero, and the placeholder that renders before the viewport has
-been measured — that last one so the texture is present from the first
-paint rather than appearing once the branch is picked.
+That also explains why there was no way out of the menu: the close
+control existed but sat off-screen with everything else. The panel now
+carries its own dismiss in the top right, and sits at z-60 above the
+nav's z-50 so the bar cannot paint over it.
 
-The desktop canvas gains its own stacking context and the texture sits
-at z-0 beneath the world, which is otherwise unlayered.
+The trigger becomes a hamburger rather than the word "Menu" — three
+rules that morph into a cross while the panel is open, so one control
+reads as both affordances.
 
-Verified at 1440 and 390: the layer spans the full viewport height on
-both, tiles at 547px and 340px, and paints at 34.7% and 25.2% coverage.
-No overflow, no console errors, no failed requests.
+The hero's mobile top padding drops from 18svh to 7rem: at 18svh the
+headline was pushed most of a screen down behind an apparently empty
+band. The section also goes full height on a phone, because the doodle
+layer fills the section and at 82svh it stopped short of the fold and
+left a bare white strip above the photographs. With the section now
+full height the type centres rather than sitting at the bottom, where
+it fell past the fold.
+
+The menu carries the texture too, so opening it does not drop the reader
+onto a plain white sheet.
+
+Verified at 390px on the home, gallery and podcast pages: the panel
+opens to full height, every link is reachable, the close control
+dismisses it, no page overflows, and no errors or failed requests. The
+hamburger stays hidden at 1440.

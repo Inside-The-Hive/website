@@ -40,8 +40,16 @@ export function Hero({ event }: { event: Event | null }) {
       className={
         hasMedia
           // `isolate` keeps the layering below local to the hero.
-          ? "relative isolate flex min-h-[92svh] flex-col justify-end overflow-hidden pt-[30svh]"
-          : "relative isolate flex min-h-[82svh] flex-col justify-end overflow-hidden pt-[18svh]"
+          // Top padding is generous on a wide screen, where the media carries
+          // the upper half, and modest on a phone, where the same share of the
+          // viewport reads as an empty band above the headline.
+          ? "relative isolate flex min-h-[92svh] flex-col justify-end overflow-hidden pt-[22svh] md:pt-[30svh]"
+          // Full height on a phone so the doodle layer reaches the fold — at
+          // 82svh it stopped short and left a bare white band above the
+          // photographs. The type centres rather than sitting at the bottom:
+          // pinned low on a full-height section it fell past the fold, and
+          // the screen opened on nothing but texture.
+          : "relative isolate flex min-h-svh flex-col justify-center overflow-hidden pt-[5rem] pb-[6rem] md:min-h-[82svh] md:justify-end md:pt-[18svh] md:pb-0"
       }
     >
       {/* Media resolves in behind the type.

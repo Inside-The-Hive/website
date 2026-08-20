@@ -62,7 +62,7 @@ export const team: TeamMember[] = [
     photo: "/crew/feezy.png",
   },
   {
-    name: "Anya The Brand",
+    name: "Anya",
     role: "Brand & Design",
     labelAt: "bottom",
     // Used as supplied — already cut out and framed like the others, so it

@@ -552,7 +552,7 @@ function Fact({ label, value }: { label: string; value: string }) {
           words; ours are phrases like "Media Partner", and at 40px those wrap
           into the poster. The label-to-value ratio is kept. */}
       <dt
-        className="shrink-0 font-display font-normal text-white/40 uppercase"
+        className="shrink-0 font-display font-normal text-white/40"
         style={{ fontSize: "calc(var(--u) * 1.7)", letterSpacing: "-0.03em" }}
       >
         {label}
@@ -660,7 +660,7 @@ function FeaturedEventsStatic({ events }: { events: FeaturedEvent[] }) {
         <ul className="grid gap-16">
           {events.map((event) => (
             <li key={event.slug}>
-              <h2 className="text-(length:--text-h2) text-honey uppercase">
+              <h2 className="text-(length:--text-h2) text-honey">
                 <Link href={`/events/${event.slug}`}>{event.title}</Link>
               </h2>
               <dl className="mt-6 grid gap-2">

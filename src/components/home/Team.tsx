@@ -44,13 +44,18 @@ function isPending(value: string) {
 function SocialMark({
   href,
   label,
+  onDark = false,
   children,
 }: {
   href?: string;
   label: string;
+  /** True when the mark sits on a propolis panel, where ink is unreadable. */
+  onDark?: boolean;
   children: React.ReactNode;
 }) {
-  const tone = "text-ink/45 transition-colors duration-(--dur-fast)";
+  const tone = onDark
+    ? "text-white/60 transition-colors duration-(--dur-fast)"
+    : "text-ink/45 transition-colors duration-(--dur-fast)";
 
   if (!href) {
     return (
@@ -66,7 +71,7 @@ function SocialMark({
       target={href.startsWith("mailto:") ? undefined : "_blank"}
       rel={href.startsWith("mailto:") ? undefined : "noopener"}
       aria-label={label}
-      className={cn(tone, "hover:text-ink")}
+      className={cn(tone, onDark ? "hover:text-white" : "hover:text-ink")}
     >
       {children}
     </Link>
@@ -288,6 +293,13 @@ export function Team() {
                   translate: isLifted(index)
                     ? `${LIFT_COMP.toFixed(3)}% -${LIFT_PCT}%`
                     : "0 0",
+                  // The item is a size container so the hover label can be
+                  // set in cqw. The label used to be fixed-size type pinned
+                  // to percentage offsets: the wedge it aimed for scaled with
+                  // the item while the text did not, so on mid-size screens
+                  // the words overflowed the item and landed on the
+                  // neighbouring figures.
+                  containerType: "inline-size",
                 }}
               >
                 {/* Panel and figure share one box and one bottom line.
@@ -366,23 +378,28 @@ export function Team() {
                   {!pending && (
                     <div
                       className={cn(
-                        // Sits in the white wedge the slant leaves beside the
-                        // panel, aligned to the actual cut rather than to a
-                        // guessed percentage.
+                        // In the white, never on the colour. Top labels
+                        // anchor their bottom edge just above the panel's top
+                        // (y 14%) and grow upward into the row's own padding;
+                        // bottom labels anchor their top just below the
+                        // panel's bottom (y 96%) and grow downward. Both
+                        // bands are provably clear of every panel: the
+                        // top-labelled items are the lifted ones, so their
+                        // unlifted neighbours' colour starts 20% down in
+                        // these coordinates, and the lifted neighbours of a
+                        // bottom label end at 90% — the strips cannot collide
+                        // with anyone's panel at any width.
                         //
-                        // The panel spans 8%–92% of the item and the clip runs
-                        // 30%–100% along its top, 0%–70% along its bottom. In
-                        // item coordinates that puts the colour's top edge at
-                        // 33.2% and its bottom edge at 66.8% — so the free
-                        // wedges are 0–33.2% above the lean and 66.8–100%
-                        // below it. Anything else overlaps the colour.
-                        // `whitespace-nowrap` so a two-word name keeps to one
-                        // line — wrapping pushes the role down onto the
-                        // colour, and the wedge is wide enough to hold it.
-                        "pointer-events-none absolute z-30 translate-y-1 whitespace-nowrap opacity-0 transition-[opacity,transform] duration-(--dur-base) ease-(--ease-out-expo) group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:transition-none",
+                        // Every measure is in cqw — 1% of this item's own
+                        // width — so the label scales with the row exactly,
+                        // and horizontal fit at one breakpoint is fit at all
+                        // of them. Aligned to the panel's own corner (x 8% /
+                        // 92%), the text grows inward, so nothing can spill
+                        // into the neighbouring slot.
+                        "pointer-events-none absolute z-30 translate-y-1 whitespace-nowrap text-ink opacity-0 transition-[opacity,transform] duration-(--dur-base) ease-(--ease-out-expo) group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:transition-none",
                         member.labelAt === "top"
-                          ? "-top-[6%] right-[68%] text-right"
-                          : "-bottom-[9%] left-[68%] text-left",
+                          ? "bottom-[88%] right-[8%] text-right"
+                          : "top-[97%] left-[8%] text-left",
                       )}
                     >
                       {/* Sacramento, the one place the site leaves Inter — a
@@ -390,7 +407,7 @@ export function Team() {
                           portrait rather than as a caption. Script faces run
                           small for their point size, so this sits well above
                           the role beneath it. */}
-                      <p className="font-script text-4xl leading-none font-normal text-ink">
+                      <p className="font-script text-[7.5cqw] leading-none font-normal">
                         {member.url ? (
                           <Link
                             href={member.url}
@@ -404,7 +421,7 @@ export function Team() {
                           member.name
                         )}
                       </p>
-                      <p className="mt-1.5 text-base leading-tight font-normal text-ink/55">
+                      <p className="mt-[1.1cqw] text-[3.6cqw] leading-tight font-normal text-ink/55">
                         {member.role}
                       </p>
 
@@ -419,27 +436,24 @@ export function Team() {
                           clickable once it is showing. */}
                       <div
                         className={cn(
-                          "pointer-events-auto mt-3 flex items-center gap-3.5",
+                          "pointer-events-auto mt-[1.8cqw] flex items-center gap-[2.4cqw]",
                           member.labelAt === "top" && "justify-end",
                         )}
                       >
-                        <SocialMark
-                          href={member.x}
-                          label={`${member.name} on X`}
-                        >
-                          <XIcon className="size-[18px]" />
+                        <SocialMark href={member.x} label={`${member.name} on X`}>
+                          <XIcon className="size-[4cqw]" />
                         </SocialMark>
                         <SocialMark
                           href={member.telegram}
                           label={`${member.name} on Telegram`}
                         >
-                          <TelegramIcon className="size-[19px]" />
+                          <TelegramIcon className="size-[4.2cqw]" />
                         </SocialMark>
                         <SocialMark
                           href={member.email && `mailto:${member.email}`}
                           label={`Email ${member.name}`}
                         >
-                          <EmailIcon className="size-[19px]" />
+                          <EmailIcon className="size-[4.2cqw]" />
                         </SocialMark>
                       </div>
                     </div>

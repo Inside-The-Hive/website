@@ -42,7 +42,7 @@
      switching typefaces.
        display — Inter Tight 800, tight negative tracking, very large
        body    — Inter 400
-       label   — Inter 500/600, uppercase, tracked
+       label   — Inter 500/600, tracked
   -------------------------------------------------------------------------- */
   --font-display: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -171,9 +171,9 @@
   .u-label {
     font-family: var(--font-body);
     font-size: var(--text-label);
-    font-weight: 600;
+    font-weight: 400;
     letter-spacing: 0.08em;
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
   }
 
   /* The letter pair. Scoped to the testimonial scrolls — no other section on

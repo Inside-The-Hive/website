@@ -1,0 +1,16 @@
+fix: tighter headline leading on large screens
+
+Line height is a multiple of font size, so one ratio cannot serve every
+viewport: 0.8 reads tight at 68px on a phone and opens into a visible
+band at 192px, wider still on an ultrawide. The leading now steps down
+with the breakpoint — 0.8 below lg, 0.76 at lg, 0.74 at 2xl.
+
+Mobile keeps 0.8 deliberately. The headline wraps to four lines there
+and needs the room; tightening it would close the gap the wrap depends
+on.
+
+The floor is set by the descenders — the "gg" of "biggest" has to clear
+the ascenders of "Web3 Media" beneath it. Measured at every breakpoint
+after the change, the gap between adjacent line boxes is 0 at all of
+them, so nothing collides. The headline block drops from 718px to 561px
+at 1600 and above.

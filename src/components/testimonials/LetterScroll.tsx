@@ -230,7 +230,7 @@ export function LetterScroll() {
                     <div className="mt-[clamp(1rem,3vh,2rem)] flex items-end justify-between gap-4">
                       <div className="min-w-0">
                         <p
-                          className="font-letter text-[clamp(0.7rem,1.1vw,0.85rem)] tracking-wide uppercase"
+                          className="font-letter text-[clamp(0.7rem,1.1vw,0.85rem)] tracking-wide"
                           style={{ color: "rgba(46,33,19,0.6)" }}
                         >
                           {item.role}

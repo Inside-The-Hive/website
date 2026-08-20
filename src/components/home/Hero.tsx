@@ -33,9 +33,9 @@ import type { Event } from "@/lib/content/schema";
  * once, so the swap changes nothing for a screen reader or for search.
  */
 const LINES: { text: string; mark?: boolean }[][] = [
-  [{ text: "Africa's " }, { text: "biggest", mark: true }],
-  [{ text: "web3 media" }],
-  [{ text: "brand." }],
+  [{ text: "Africa's " }, { text: "Biggest", mark: true }],
+  [{ text: "Web3 Media" }],
+  [{ text: "Brand." }],
 ];
 
 /** The sentence, for assistive tech and for search. */
@@ -130,11 +130,19 @@ export function Hero({ event }: { event: Event | null }) {
             the statement — 800 read as shouting, and Inter Tight holds its
             shape at 400 far better than a grotesque would. Overrides the
             weight-800 base rule for h1/h2/h3 in globals.css. */}
-        {/* Tighter than the global 0.92 for h1 — at mega size the three-line
-            stack wants to read as a block. 0.88 is about as tight as it goes:
-            measured clearance between the "biggest" descenders and the "web3
-            media" ascenders is 0.107em at 360px, and 0.84 halves that. */}
-        <h1 className="text-mega font-normal leading-[0.8] tracking-[-0.02em] text-ink">
+        {/* Tighter than the global 0.92 for h1 — at mega size the stack wants
+            to read as a block.
+
+            The leading steps down with the viewport rather than holding one
+            value. Line height is a multiple of font size, so the same ratio
+            that looks tight at 68px opens into a visible band at 192px and
+            wider still on an ultrawide. 0.8 stays on a phone, where the
+            headline wraps to four lines and needs the room; large screens
+            take 0.76 and 2xl 0.74.
+
+            The floor is set by the descenders: "gg" in biggest has to clear
+            the ascenders of "Web3 Media" on the line beneath. */}
+        <h1 className="text-mega font-normal leading-[0.8] tracking-[-0.02em] text-ink lg:leading-[0.76] 2xl:leading-[0.74]">
           {/* The visible lines are split for the stagger, which would otherwise
               concatenate without a space ("Africa's Biggestweb3 media brand.")
               for assistive tech and for search engines. The accessible sentence

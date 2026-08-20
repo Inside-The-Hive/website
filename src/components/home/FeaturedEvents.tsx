@@ -477,7 +477,7 @@ function Captions({
                 line lengths, which at this size pushes a long word past the
                 measure instead of breaking it. */}
             <h2
-              className="font-display font-semibold text-honey/85 uppercase"
+              className="font-display font-semibold text-honey/85"
               style={{
                 fontSize: "var(--u-title)",
                 width: "calc(var(--u) * var(--u-title-w))",
@@ -558,7 +558,7 @@ function Fact({ label, value }: { label: string; value: string }) {
         {label}
       </dt>
       <dd
-        className="font-display font-medium text-white/80 uppercase"
+        className="font-display font-medium text-white/80"
         style={{ fontSize: "calc(var(--u) * 2.3)", letterSpacing: "-0.04em" }}
       >
         {value}

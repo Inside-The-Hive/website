@@ -97,7 +97,7 @@ const TYPE = [
     token: "--text-label",
     label: "Label / Inter 600 tracked",
     sample: "Media partner",
-    font: "font-body font-semibold uppercase tracking-[0.08em]",
+    font: "font-body font-semibold tracking-[0.08em]",
   },
 ];
 

@@ -22,19 +22,19 @@
        ink on white ......... 19.80:1  AAA   (all body and display text)
        white on ink ......... 19.80:1  AAA   (inverted sections, CTAs)
        ink on ash ........... 17.98:1  AAA   (text on a raised surface)
-       ink on honey .......... 9.31:1  AAA   (buttons, hive ID chip on hover)
+       ink on honey ......... 12.69:1  AAA   (buttons, hive ID chip on hover)
        propolis on white .... 10.46:1  AAA   (warm emphasis, used sparingly)
        ink/70 on white ....... 8.45:1  AAA   (secondary copy)
        ink/55 on white ....... 4.74:1  AA    (lightest permitted text)
 
      Yellow NEVER carries text:
-       honey on white ........ 2.13:1  FAIL  — fills, marks and the logo only
+       honey on white ........ 1.56:1  FAIL  — fills, marks and the logo only
   -------------------------------------------------------------------------- */
   --color-white: #ffffff;
   --color-ink: #0a0a0a; /* body + display text, inverted section base */
   --color-ash: #f4f4f2; /* light raised surface, skeletons, hover fills */
   --color-line: #e2e0dc; /* hairline rules */
-  --color-honey: #f0a202; /* logo, small accents, fills. Never text. */
+  --color-honey: #fbc903; /* logo, small accents, fills. Never text. */
   --color-propolis: #6b2d0e; /* warm emphasis, used sparingly */
 
   /* ---- Type --------------------------------------------------------------

@@ -28,7 +28,7 @@ export function Meter({ className = "" }: { className?: string }) {
     if (!context) return;
 
     const styles = getComputedStyle(canvas);
-    const honey = styles.getPropertyValue("--color-honey").trim() || "#f0a202";
+    const honey = styles.getPropertyValue("--color-honey").trim() || "#fbc903";
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let frame = 0;

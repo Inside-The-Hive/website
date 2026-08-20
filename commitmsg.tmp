@@ -1,27 +1,30 @@
-feat: painted "Biggest" lockup in the hero headline
+feat: horizontal brush stroke behind "biggest"; new brand yellow
 
-Replaces the word with the supplied brush artwork.
+The word goes back to being live type at the headline's own size — the
+previous lockup was an image of the word, so it rendered at a different
+size to its neighbours. The brush now sits behind it as a background
+instead, and the word measures 192px at 1440 and 68px at 425, matching
+the lines around it exactly.
 
-The headline was a list of three strings, one per line, so a single
-word could not be swapped without breaking the per-line stagger. Each
-line is now a list of parts, and a part can be marked as artwork rather
-than type — the mechanism is general, so any other word could be
-treated the same way later.
+The stroke is rotated in the asset rather than in CSS. The source art
+runs diagonally, and levelling it with a transform would rotate the
+box along with the paint, tilting the word. The angle was measured off
+the artwork rather than guessed — the covariance of its opaque pixels
+puts the principal axis at -55.5 degrees, so the asset is rotated
+55.5 degrees once at build time, trimmed to the paint, and the box
+stays square to the line. A first attempt at -52 degrees left it
+portrait, which is what prompted measuring it properly.
 
-The mark is sized in em against the headline, not in its own clamp, so
-it tracks the type at every breakpoint automatically. Negative margins
-pull the brush's transparent padding back in, which keeps the lockup
-sitting on the line where the word did instead of pushing the line
-wider. At 1440 it renders 508px against a 68px cap height; at 425 the
-line wraps and the mark takes a row of its own, which reads better than
-squeezing it beside "Africa's".
+Background-size is 100% 100% rather than contain: contain preserves the
+art's ratio, and against a short wide word that collapsed the stroke to
+the line height and read as a smudge behind two letters. The white
+ground is flood-filled from the edges, so the dry-brush gaps inside the
+stroke stay transparent instead of filling in.
 
-The accessible sentence is assembled from the parts and read once, so
-"Africa's biggest web3 media brand." is unchanged for a screen reader
-and for search despite one word now being an image. The mark itself is
-alt="" — it is the word it replaces, not additional content.
-
-next/image with priority rather than a plain img: this is part of the
-largest element on the page, so it is fetched with the document. The
-asset is resized to 1200px and encoded as webp with alpha, 132KB
-against the 1.3MB png.
+The brand yellow moves from #f0a202 to #fbc903 across the site. The
+token drives almost everything, so this is one value in globals.css
+plus four hardcoded uses in the podcast cover themes and the meter.
+Contrast improves: ink on honey goes from 9.31:1 to 12.69:1, and the
+recorded figures in the token comment are updated to match. Yellow
+still never carries text — at 1.56:1 on white it is fills, marks and
+the logo only.

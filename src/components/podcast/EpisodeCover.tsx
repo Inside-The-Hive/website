@@ -20,14 +20,14 @@ type Theme = {
 
 /** All values are drawn from the site palette or darkened versions of it. */
 export const CATEGORY_THEMES: Record<string, Theme> = {
-  web3: { ground: "#f0a202", art: "#0a0a0a", stage: "#241903" },
-  crypto: { ground: "#0a0a0a", art: "#f0a202", stage: "#121212" },
+  web3: { ground: "#fbc903", art: "#0a0a0a", stage: "#241903" },
+  crypto: { ground: "#0a0a0a", art: "#fbc903", stage: "#121212" },
   nft: { ground: "#6b2d0e", art: "#f2e8d5", stage: "#1a0b04" },
   "creator-and-socialfi": { ground: "#f2e8d5", art: "#6b2d0e", stage: "#191308" },
   blockchain: { ground: "#141414", art: "#ffffff", stage: "#101010" },
 };
 
-const FALLBACK: Theme = { ground: "#0a0a0a", art: "#f0a202", stage: "#121212" };
+const FALLBACK: Theme = { ground: "#0a0a0a", art: "#fbc903", stage: "#121212" };
 
 export function themeFor(category?: string) {
   return (category && CATEGORY_THEMES[category]) || FALLBACK;

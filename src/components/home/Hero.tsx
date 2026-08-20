@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { DoodleField } from "@/components/DoodleField";
 import { HiveMedia } from "@/components/HiveMedia";
 import type { Event } from "@/lib/content/schema";
@@ -161,22 +160,42 @@ export function Hero({ event }: { event: Event | null }) {
                 >
                   {parts.map((part) =>
                     part.mark ? (
-                      // Sized in em so the lockup tracks the headline at every
-                      // breakpoint rather than needing its own clamp. The
-                      // negative margins pull the brush's own transparent
-                      // padding back in, so the mark sits on the line where
-                      // the word did instead of pushing it wider.
-                      <Image
+                      // The word stays live type at the headline's own size —
+                      // an image of the word rendered at a different size to
+                      // its neighbours, which is what the previous lockup did.
+                      // The brush sits behind it as a background instead.
+                      //
+                      // `inline-block` so the background box wraps the word
+                      // rather than the whole line, and padding gives the
+                      // stroke room to extend past the glyphs the way a real
+                      // brush mark would.
+                      <span
                         key={part.text}
-                        src="/biggest.webp"
-                        alt=""
-                        width={1200}
-                        height={463}
-                        // Part of the largest element on the page, so it is
-                        // fetched with the document rather than lazily.
-                        priority
-                        className="-my-[0.14em] -mx-[0.04em] inline-block h-[1.02em] w-auto align-baseline"
-                      />
+                        className="relative inline-block px-[0.12em] py-[0.02em]"
+                      >
+                        <span
+                          aria-hidden
+                          className="absolute -z-10 bg-no-repeat"
+                          style={{
+                            // The stroke is pre-rotated to horizontal in the
+                            // asset itself. The source art runs diagonally at
+                            // about 55 degrees; levelling it in CSS would
+                            // rotate the box too, so the paint is turned once
+                            // at build time and the box stays square to the
+                            // line.
+                            backgroundImage: "url(/stroke-h.webp)",
+                            // Stretched to the box rather than fitted inside
+                            // it: `contain` preserves the art's ratio, and
+                            // against a short wide word that collapsed the
+                            // stroke to the line height and read as a smudge.
+                            backgroundSize: "100% 100%",
+                            // Bled past the glyphs on every side, the way a
+                            // real brush mark overruns the word it marks.
+                            inset: "-0.12em -0.16em -0.16em -0.16em",
+                          }}
+                        />
+                        {part.text}
+                      </span>
                     ) : (
                       part.text
                     ),

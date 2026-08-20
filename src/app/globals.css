@@ -123,7 +123,12 @@
      (media queries resolve against the initial 16px, not this). */
   @media (min-width: 64rem) {
     html {
-      font-size: clamp(12px, 4px + 0.625vw, 16px);
+      /* Pure proportion: 16px × width/1920. This is exactly the transform
+         browser zoom applies — a 1280px laptop renders every rem measure at
+         two-thirds of the 1920 design, which is the 67% zoom that looked
+         right. The earlier eased curve (12px at 1280) still left the type
+         reading large on small laptops; true proportion does not. */
+      font-size: clamp(10.5px, 0.83333vw, 16px);
     }
   }
 

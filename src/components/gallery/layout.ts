@@ -111,7 +111,7 @@ export function scaleFor(viewportWidth: number) {
   // ultrawide's — the same correction the root font-size makes for the rest
   // of the site, applied here because this canvas is laid out in px.
   if (viewportWidth >= 1024)
-    return Math.min(1, Math.max(0.72, viewportWidth / 1920));
+    return Math.min(1, Math.max(0.66, viewportWidth / 1920));
   return 0.6;
 }
 

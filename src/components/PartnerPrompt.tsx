@@ -32,6 +32,7 @@ export function PartnerPrompt() {
 
   const dismiss = useCallback(() => {
     window.localStorage.setItem(SEEN_KEY, "1");
+    delete document.body.dataset.ithPrompt;
     setOpen(false);
   }, []);
 
@@ -47,7 +48,14 @@ export function PartnerPrompt() {
       const scrollable = document.body.scrollHeight - window.innerHeight;
       // A page too short to scroll has no "deep" to reach.
       if (scrollable < window.innerHeight * 0.5) return;
+      // The corner is single-occupancy: if the Spotify prompt (or any other)
+      // holds it, keep listening and take a later scroll instead. The flag is
+      // claimed synchronously before render so two prompts whose thresholds
+      // are both behind the reader cannot open in the same frame — see
+      // SpotifyPrompt for the shared contract.
+      if (document.body.dataset.ithPrompt) return;
       if (window.scrollY / scrollable >= TRIGGER) {
+        document.body.dataset.ithPrompt = "partner";
         returnFocusRef.current = document.activeElement as HTMLElement;
         setOpen(true);
         window.removeEventListener("scroll", schedule);

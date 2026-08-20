@@ -3,6 +3,7 @@
 import { motion, useMotionValue, useSpring } from "motion/react";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { DoodleField } from "@/components/DoodleField";
 import { galleryPhotos } from "@/content/gallery";
 import { generatePositions, type PlacedPhoto } from "./layout";
 
@@ -119,6 +120,8 @@ function StaticHero() {
 
   return (
     <div className="relative h-[100svh] overflow-hidden bg-white">
+      {/* Same texture the home hero carries, behind the scattered frames. */}
+      <DoodleField />
       <h1 className="pointer-events-none absolute inset-0 z-50 flex items-center justify-center text-(length:--text-h1) font-extrabold tracking-[-0.03em] text-ink">
         Gallery
       </h1>
@@ -291,12 +294,17 @@ export function GalleryCanvas() {
   }, []);
 
   // Nothing rendered until the viewport has been measured.
-  if (isDesktop === null) return <div className="h-[100svh] bg-white" />;
+  if (isDesktop === null)
+    return (
+      <div className="relative h-[100svh] overflow-hidden bg-white">
+        <DoodleField />
+      </div>
+    );
   if (!isDesktop) return <StaticHero />;
 
   return (
     <div
-      className="fixed inset-0 overflow-hidden bg-white"
+      className="fixed inset-0 isolate overflow-hidden bg-white"
       style={{
         opacity: fade,
         // Recedes as it goes: shrinking slightly and lifting, so the canvas
@@ -313,6 +321,9 @@ export function GalleryCanvas() {
       {/* Pinned, and deliberately outside the transformed node — inside it the
           headline would pan with the photographs and the parallax would read
           as flat. */}
+      {/* The texture, behind the photographs and the headline. */}
+      <DoodleField className="z-0" />
+
       {/* Ink on the white ground, with a white glow rather than a blend mode
           or a dark shadow. The glow is what keeps the type legible when a dark
           photograph drifts behind it — it lightens the area under the glyphs

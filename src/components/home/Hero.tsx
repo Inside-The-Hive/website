@@ -1,3 +1,4 @@
+import { DoodleField } from "@/components/DoodleField";
 import { HiveMedia } from "@/components/HiveMedia";
 import type { Event } from "@/lib/content/schema";
 
@@ -89,30 +90,10 @@ export function Hero({ event }: { event: Event | null }) {
         )}
       </div>
 
-      {/* Doodle texture behind the headline.
-
-          A tiled background image rather than the hand-drawn SVG that stood
-          here before. The source art is solid black line work at full density,
-          which would swamp the type outright, so two things tame it: the layer
-          sits at low opacity, and it is tiled rather than stretched, because
-          the artwork is portrait and the hero is landscape — scaling one to
-          the other would distort every mark.
-
-          Above the media layer, which fills the hero even when no media file
-          exists and would otherwise cover this entirely. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-[2] opacity-[0.07]"
-        style={{
-          backgroundImage: "url(/hero-doodle.webp)",
-          backgroundRepeat: "repeat",
-          // Tile size. Held near the source's own 736px width: drawn much
-          // smaller, every mark shrinks with it and the field reads far
-          // denser than the artwork actually is — at 300px the marks were a
-          // third of their drawn size and the density roughly tripled.
-          backgroundSize: "clamp(340px, 38vw, 620px) auto",
-        }}
-      />
+      {/* Doodle texture behind the headline. Above the media layer, which
+          fills the hero even when no media file exists and would otherwise
+          cover this entirely; the content sits above both at z-10. */}
+      <DoodleField className="z-[2]" />
 
       {/* Above both the pattern and the media layer. */}
       <div className="relative z-10 u-gutter pb-[clamp(3rem,10vh,7rem)]">

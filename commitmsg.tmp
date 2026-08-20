@@ -1,27 +1,21 @@
-feat: tiled doodle image behind the hero
+feat: doodle texture behind the gallery canvas
 
-Replaces the hand-authored SVG mark pattern with the supplied doodle
-artwork as a tiled background. Several rounds of tuning the generated
-marks never got the field to read as texture; the artwork does it
-directly, and it is the client's own.
+Carries the hero's treatment onto the gallery, which was a plain white
+field behind the scattered photographs.
 
-Two things tame the source. It is solid black line work at close to full
-density, so the layer sits at 7% opacity: measured, the darkest the
-ground reaches is about #ededed, leaving the ink headline at 16.9:1. And
-it is tiled rather than stretched, because the artwork is portrait
-(736x977) and the hero is landscape — fitting one to the other would
-distort every mark.
+The layer is extracted into a shared DoodleField rather than copied.
+Opacity and tile size are the whole treatment and both are easy to get
+subtly wrong in a duplicate, so the hero and the gallery now read from
+one definition.
 
-Tile size is held near the source's own width, clamped 340-620px. Drawn
-much smaller than the source, every mark shrinks with it and the field
-reads far denser than the artwork actually is: at the 300px first tried,
-marks were about a third of their drawn size and the density roughly
-tripled.
+Three surfaces on the gallery carry it: the desktop canvas, the mobile
+static hero, and the placeholder that renders before the viewport has
+been measured — that last one so the texture is present from the first
+paint rather than appearing once the branch is picked.
 
-The asset is resized to 560px wide and encoded as webp, 71KB against the
-200KB jpeg. The layer sits above the hero's media layer, which fills the
-section whether or not a media file exists and would otherwise cover
-this entirely, and below the content at z-10. HeroPattern.tsx, the
---hero-mark token and the pattern's responsive rules are removed.
+The desktop canvas gains its own stacking context and the texture sits
+at z-0 beneath the world, which is otherwise unlayered.
 
-Verified: no failed requests, no console errors, no overflow at 390px.
+Verified at 1440 and 390: the layer spans the full viewport height on
+both, tiles at 547px and 340px, and paints at 34.7% and 25.2% coverage.
+No overflow, no console errors, no failed requests.

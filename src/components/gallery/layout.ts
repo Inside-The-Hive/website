@@ -106,8 +106,12 @@ export type World = {
  * than the size.
  */
 export function scaleFor(viewportWidth: number) {
-  if (viewportWidth >= 1280) return 1;
-  if (viewportWidth >= 1024) return 0.75;
+  // Continuous on desktop rather than stepped: full size is earned at 1920,
+  // and a 1280–1536 laptop gets proportionally smaller frames instead of the
+  // ultrawide's — the same correction the root font-size makes for the rest
+  // of the site, applied here because this canvas is laid out in px.
+  if (viewportWidth >= 1024)
+    return Math.min(1, Math.max(0.72, viewportWidth / 1920));
   return 0.6;
 }
 

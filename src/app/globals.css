@@ -109,6 +109,24 @@
     scroll-behavior: auto;
   }
 
+  /* Fluid rem on desktop widths.
+     The scale was tuned on large screens, and every clamp() ceiling engages by
+     ~1200px — so a 1280px laptop rendered the same 192px headline and 16px
+     body as a 1920px monitor with a third less room, and only Ctrl-minus to
+     ~67% (which fakes a wider viewport) made it sit right. Scaling the root
+     instead builds that correction in: 1rem runs 12px at 1280 up to 16px at
+     1920, so every rem-based measure on every page — type, spacing, cards,
+     modals, and the rem ceilings inside the clamp() tokens above — shrinks in
+     proportion on smaller laptops. Below 1024px the phone/tablet tuning
+     already fits and the root stays at 100%; past 1920 the cap keeps
+     ultrawide exactly as designed. Tailwind breakpoints are unaffected
+     (media queries resolve against the initial 16px, not this). */
+  @media (min-width: 64rem) {
+    html {
+      font-size: clamp(12px, 4px + 0.625vw, 16px);
+    }
+  }
+
   body {
     background: var(--color-white);
     color: var(--color-ink);

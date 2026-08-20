@@ -328,6 +328,21 @@
 }
 
 /* ==========================================================================
+   Hive carousel
+   --------------------------------------------------------------------------
+   Cell widths are shares of the row, calibrated so six sit comfortably across
+   a desktop. On a phone that same share leaves each around eighty pixels, so
+   they scale up here — the row already overflows and scrolls, so wider cells
+   just mean fewer visible at once.
+   ========================================================================== */
+
+@media (max-width: 767px) {
+  .hive-carousel {
+    --cell-scale: 1.55;
+  }
+}
+
+/* ==========================================================================
    Keyframes
    ========================================================================== */
 

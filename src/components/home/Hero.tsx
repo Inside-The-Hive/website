@@ -49,7 +49,15 @@ export function Hero({ event }: { event: Event | null }) {
           // photographs. The type centres rather than sitting at the bottom:
           // pinned low on a full-height section it fell past the fold, and
           // the screen opened on nothing but texture.
-          : "relative isolate flex min-h-svh flex-col justify-center overflow-hidden pt-[5rem] pb-[6rem] md:min-h-[82svh] md:justify-end md:pt-[18svh] md:pb-0"
+          // On a phone the type sits just under the bar rather than centred:
+          // centring left a band of empty texture above the headline and a
+          // larger one below it, and the carousel was pushed off the fold.
+          // The section also stops filling the whole screen, so the strip
+          // below sits directly under the words.
+          // No height floor on a phone: the section is as tall as the type
+          // plus its padding, so the strip below sits directly under the
+          // words. A floor here left a band of empty texture between them.
+          : "relative isolate flex flex-col justify-start overflow-hidden pt-[6.5rem] pb-[1.75rem] md:min-h-[82svh] md:justify-end md:pt-[18svh] md:pb-0"
       }
     >
       {/* Media resolves in behind the type.
@@ -104,7 +112,7 @@ export function Hero({ event }: { event: Event | null }) {
       <DoodleField className="z-[2]" />
 
       {/* Above both the pattern and the media layer. */}
-      <div className="relative z-10 u-gutter pb-[clamp(3rem,10vh,7rem)]">
+      <div className="relative z-10 u-gutter pb-[1.25rem] md:pb-[clamp(3rem,10vh,7rem)]">
         {/* Weight 400 with looser tracking. At mega size the light weight is
             the statement — 800 read as shouting, and Inter Tight holds its
             shape at 400 far better than a grotesque would. Overrides the

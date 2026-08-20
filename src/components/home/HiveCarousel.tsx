@@ -96,8 +96,17 @@ const CELLS = [
  * Each cell's width is its share of the row once the four gaps between the five
  * visible cells are taken out.
  */
+/**
+ * The share is calibrated for a wide screen, where six cells across a desktop
+ * row are each comfortably large. The same share on a phone leaves every cell
+ * around eighty pixels — too small to read as a photograph.
+ *
+ * `--cell-scale` widens them there. The row is already wider than the viewport
+ * and scrolls, so overshooting the container simply means fewer cells visible
+ * at once, which is the right trade on a narrow screen.
+ */
 function cellWidth(share: number) {
-  return `calc((100cqw - ${GAP_REM * 4}rem) * ${share})`;
+  return `calc((100cqw - ${GAP_REM * 4}rem) * ${share} * var(--cell-scale, 1))`;
 }
 
 function Cell({
@@ -172,7 +181,7 @@ export function HiveCarousel() {
 
   return (
     <section
-      className="relative overflow-hidden pt-[clamp(0.75rem,2vh,1.5rem)]"
+      className="hive-carousel relative overflow-hidden pt-[clamp(0.5rem,1.5vh,1rem)]"
       aria-label="From the room"
       // Fade both edges so the strip reads as continuous rather than clipped.
       // The fade is tight because at five-across the cells are large, and a

@@ -6,16 +6,19 @@
  * opacity and tile size are the whole treatment, and both are easy to get
  * subtly wrong in a copy.
  *
- * Two things tame the source. It is solid black at close to full density, so
- * the layer sits very low: at 7% the darkest the ground reaches is about
- * #ededed, which leaves ink type over it at roughly 17:1. And it is tiled
- * rather than stretched, because the artwork is portrait (736x977) and the
- * surfaces it sits behind are landscape — fitting one to the other would
- * distort every mark.
+ * The artwork is landscape (1448x1086), close enough to the shape of the
+ * surfaces it sits behind that one tile covers most of a screen on its own —
+ * the portrait source it replaces had to repeat several times across a wide
+ * hero, and every seam was a visible break in the field.
  *
- * Tile size is held near the source's own width. Drawn much smaller, every
- * mark shrinks with it and the field reads far denser than the artwork
- * actually is.
+ * It is still `repeat` rather than `cover`, because `cover` would scale the
+ * tile to the tallest surface and blow the marks up on a phone. Tiling at a
+ * fixed width keeps every mark the same size everywhere and simply repeats
+ * further down a long page.
+ *
+ * The source is solid black line work, so the layer sits very low: at 7% the
+ * darkest the ground reaches is about #ededed, leaving ink type over it at
+ * roughly 17:1.
  */
 export function DoodleField({
   /** Stacking order within the parent. Callers own their own layering. */
@@ -28,9 +31,13 @@ export function DoodleField({
       aria-hidden
       className={`pointer-events-none absolute inset-0 opacity-[0.07] ${className}`}
       style={{
-        backgroundImage: "url(/hero-doodle.webp)",
+        backgroundImage: "url(/doodle-field.webp)",
         backgroundRepeat: "repeat",
-        backgroundSize: "clamp(340px, 38vw, 620px) auto",
+        // Near the artwork's own proportions at each end of the range: one
+        // tile spans a phone and about two-thirds of a desktop hero, so the
+        // marks read at their drawn size rather than shrunk into a denser
+        // field.
+        backgroundSize: "clamp(560px, 82vw, 1400px) auto",
       }}
     />
   );

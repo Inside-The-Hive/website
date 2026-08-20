@@ -1,31 +1,29 @@
-feat: pack the hero pattern tighter and smaller
+fix: hero marks keep their shape, stay small, and fill the section
 
-The first pass read as scattered ornaments rather than texture: 39
-marks, most of them large, with wide gaps between them. This replaces
-it with 323 marks at roughly half the size, packed so only a few
-pixels separate neighbours.
+Three faults, one of them a real bug.
 
-Most marks now sit at 7-14 units against the previous 18-46, with a
-scattering of larger ones around 19-26 left as focal points. The
-stroke drops from 3 to 1.6 to match: at this scale the old weight was
-nearly as thick as the smallest marks are wide, and every shape closed
-into a blob.
+The marks looked pressed flat, and that was `preserveAspectRatio="none"`
+on the SVG. It stretched a 1200x800 box to the hero's own 1440x825,
+squashing every mark horizontally — they were not just small, they were
+the wrong shape. The viewbox is now 1600x900, close to the hero's own
+proportion, and the SVG is fitted with `slice`, which scales to cover
+and crops the overflow instead of distorting it. Every mark keeps its
+true geometry at any viewport.
 
-Placement is grid-based with per-cell jitter, which keeps the spacing
-even without reading as a grid, and every candidate is collision-
-checked against what is already down so no two marks overlap. The
-density gradient is unchanged in intent — sparse behind the headline,
-filling in toward the right — but now expressed as a probability per
-cell rather than by hand-placing each mark.
+Size is now one tight band, 7 to 11.5 units, with no exceptions. The
+previous pass kept a scattering of 19-26 unit marks as focal points;
+among several hundred small ones those read as mistakes rather than as
+accents, so they are gone. Mark count rises from 323 to 669.
 
-The vocabulary and the rules around it are unchanged: hexagons at
-roughly one in five, some partial, never tiled into honeycomb; the
-same nine mark types; dots as the only filled shapes, tucked into the
-gaps left over. Coordinates were generated once by a seeded pass and
-are frozen here as literals, so nothing random runs in the browser and
-the layout is identical on every load.
+The pattern reaches the foot of the hero. A mask was fading the bottom
+third to nothing on the assumption it would otherwise collide with the
+photo row — but that row is a sibling section below the hero in normal
+flow, so it already covers the marks where the two meet. The mask was
+only leaving the hero's lower half bare. The density floor also rises,
+so the left side carries texture rather than trailing off behind the
+headline.
 
-Coverage in the empty field right of the headline rises from 5,830 to
-9,272 pixels. Below 640px the stroke thins to 1.3 and the 148 marks
-tagged dense are hidden, leaving 175 — half the density behind type
-that fills the screen.
+Verified: 669 marks in the DOM, the lowest sitting at 827px against a
+hero ending at 825 with the carousel starting there, 3,229 pattern
+pixels measured near the foot where there were none before. Below 640px
+the stroke thins to 1.3 and 325 dense marks are hidden, leaving 344.

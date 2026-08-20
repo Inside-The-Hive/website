@@ -5,7 +5,7 @@ import {
   TelegramIcon,
   XIcon,
 } from "@/components/SocialIcons";
-import { team } from "@/content/team";
+import { team, type TeamMember } from "@/content/team";
 import { cn } from "@/lib/cn";
 
 /**
@@ -45,21 +45,30 @@ function SocialMark({
   href,
   label,
   onDark = false,
+  touch = false,
   children,
 }: {
   href?: string;
   label: string;
   /** True when the mark sits on a propolis panel, where ink is unreadable. */
   onDark?: boolean;
+  /**
+   * True on the stacked mobile card, where the mark is padded out to a 44px
+   * tap target. The desktop row keeps the bare glyph — it is revealed by a
+   * pointer that is already on it, and padding would break the tight cqw
+   * spacing the label is measured in.
+   */
+  touch?: boolean;
   children: React.ReactNode;
 }) {
   const tone = onDark
     ? "text-white/60 transition-colors duration-(--dur-fast)"
     : "text-ink/45 transition-colors duration-(--dur-fast)";
+  const box = touch ? "grid size-11 place-items-center" : "";
 
   if (!href) {
     return (
-      <span aria-hidden className={cn(tone, "opacity-55")}>
+      <span aria-hidden className={cn(tone, box, "opacity-55")}>
         {children}
       </span>
     );
@@ -71,7 +80,7 @@ function SocialMark({
       target={href.startsWith("mailto:") ? undefined : "_blank"}
       rel={href.startsWith("mailto:") ? undefined : "noopener"}
       aria-label={label}
-      className={cn(tone, onDark ? "hover:text-white" : "hover:text-ink")}
+      className={cn(tone, box, onDark ? "hover:text-white" : "hover:text-ink")}
     >
       {children}
     </Link>
@@ -220,6 +229,87 @@ function crewWidth(count: number) {
   return TRACK_FILL / (count * (1 - 2 * INTERLOCK));
 }
 
+/**
+ * One person, stacked — the small-screen card.
+ *
+ * The desktop row is a hover composition, and hover does not exist on a
+ * touch screen: below md the names, roles and social marks were unreachable,
+ * so the section rendered as anonymous photographs. Here each person gets
+ * their own block with the label always showing beneath them, which is the
+ * only arrangement that carries the same information without a pointer.
+ *
+ * The panel, slant, greyscale and bottom-anchored figure are all kept, so
+ * this reads as the same design rather than a different section on a phone.
+ * What changes is that the panels no longer interlock: at two columns on a
+ * 390px screen an overlap would put each figure across their neighbour's
+ * label rather than their neighbour's panel.
+ */
+function CrewCard({ member, index }: { member: TeamMember; index: number }) {
+  const pending = isPending(member.name);
+
+  return (
+    <li className="flex flex-col">
+      <div className="relative aspect-[3/3.2]">
+        <span
+          aria-hidden
+          className="absolute right-[6%] bottom-[4%] left-[6%] h-[82%]"
+          style={{ background: panelFor(index).color, clipPath: SLANT }}
+        />
+        <div className="absolute inset-x-0 top-0 bottom-[4%]">
+          <Image
+            src={member.photo!}
+            alt=""
+            fill
+            sizes="50vw"
+            className="object-contain object-[35%_bottom] grayscale"
+          />
+        </div>
+      </div>
+
+      {!pending && (
+        // Under the figure, not over it: on a phone the label is the point of
+        // the card, and laying it over the panel would put small type on
+        // honey and propolis at the one size where it is least readable.
+        <div className="mt-3">
+          <p className="font-script text-[1.6rem] leading-none font-normal">
+            {member.url ? (
+              <Link href={member.url} target="_blank" rel="noopener">
+                {member.name}
+              </Link>
+            ) : (
+              member.name
+            )}
+          </p>
+          <p className="mt-1 text-sm leading-tight font-normal text-ink/55">
+            {member.role}
+          </p>
+          {/* Marks are 44px touch targets here rather than the desktop row's
+              bare glyphs — a 16px icon is not tappable. */}
+          <div className="mt-1 -ml-2.5 flex items-center">
+            <SocialMark href={member.x} label={`${member.name} on X`} touch>
+              <XIcon className="size-[1.05rem]" />
+            </SocialMark>
+            <SocialMark
+              href={member.telegram}
+              label={`${member.name} on Telegram`}
+              touch
+            >
+              <TelegramIcon className="size-[1.1rem]" />
+            </SocialMark>
+            <SocialMark
+              href={member.email && `mailto:${member.email}`}
+              label={`Email ${member.name}`}
+              touch
+            >
+              <EmailIcon className="size-[1.1rem]" />
+            </SocialMark>
+          </div>
+        </div>
+      )}
+    </li>
+  );
+}
+
 export function Team() {
   const members = team.filter((member) => member.photo);
   if (members.length === 0) return null;
@@ -237,13 +327,21 @@ export function Team() {
           </h2>
         </div>
 
+        {/* Below md: one block per person, label always visible.
+            The interlocking row is a hover composition and a touch screen has
+            no hover, so on a phone it rendered as unnamed photographs that
+            had to be swiped past. Two columns keep each portrait large enough
+            to read while the whole crew stays on one screen's scroll. */}
+        <ul className="mt-8 grid grid-cols-2 gap-x-5 gap-y-9 md:hidden">
+          {members.map((member, index) => (
+            <CrewCard key={index} member={member} index={index} />
+          ))}
+        </ul>
+
+        {/* md and up: the interlocking row. */}
         {/* The row. Items overlap by a negative margin so the portraits break
             across each other's panels — that interlock is the composition, and
             an even gap would read as four separate cards. */}
-        {/* Scrolls horizontally below md. Four overlapping figures across a
-            390px screen leaves each about 90px wide, which is not a portrait
-            — swiping keeps them at a readable size and suits a row that is
-            already one continuous composition rather than a grid. */}
         {/* `items-start`, not `items-end`: bottom-aligning would pin every
             item to one line and cancel the per-item lift. Top padding is the
             room the lifted items rise into. */}
@@ -251,7 +349,7 @@ export function Team() {
             is far narrower than four full-width columns and would otherwise
             sit hard against the left gutter with its first figure clipped. */}
         <ul
-          className="-mx-[var(--spacing-gutter)] flex items-start overflow-x-auto px-[var(--spacing-gutter)] pt-[7%] pb-2 [scrollbar-width:none] md:mx-0 md:justify-center md:overflow-visible md:px-0 md:pb-0"
+          className="hidden items-start pt-[7%] md:flex md:justify-center"
           // Item width is derived from how many people are in the row, not
           // fixed. Each item overlaps its neighbours by OVERLAP on both sides,
           // so n items occupy n x (w - 2 x OVERLAP) + 2 x OVERLAP of track. Solving
@@ -280,7 +378,7 @@ export function Team() {
                 // front of their neighbour, which is what the ascending
                 // z-index resolves. Hover jumps above every static value so
                 // the scaling portrait is never clipped.
-                className="group relative mx-(--crew-overlap) w-[62%] shrink-0 hover:z-20 sm:w-[38%] md:w-(--crew-w)"
+                className="group relative mx-(--crew-overlap) w-(--crew-w) shrink-0 hover:z-20"
                 // `translateY`, not `top`: a percentage `top` on a relative
                 // item resolves against the containing block's height, and the
                 // flex row's height is derived from these items — so the

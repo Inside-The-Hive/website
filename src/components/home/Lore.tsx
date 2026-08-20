@@ -25,7 +25,11 @@ export function Lore() {
   return (
     <section
       aria-labelledby="lore-heading"
-      className="py-[clamp(6rem,18vh,14rem)] text-ink"
+      // The 6rem floor was set for desktop and applied everywhere: on a phone
+      // the 18vh middle term never wins, so the section opened and closed with
+      // a near-empty screen either side of the copy. Held to 3rem below the
+      // breakpoint, where the reader has far less height to spend.
+      className="py-12 text-ink md:py-[clamp(6rem,18vh,14rem)]"
     >
       <div className="u-gutter">
         <h2 id="lore-heading" className="sr-only">

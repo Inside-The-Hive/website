@@ -69,7 +69,12 @@ export default function PodcastPage() {
     <PlayerProvider episodes={episodes}>
       {/* Padded at the foot so the docked bar never sits over the last of the
           page's own content. */}
-      <div className="pb-28">
+      {/* Clearance for the docked player, which floats over the page. Sized to
+          the bar rather than generously: at pb-28 the gap read as a section of
+          empty page between the last platform and the footer, which is what it
+          looked like on a phone where the section padding above it had already
+          done the same. */}
+      <div className="pb-20 md:pb-28">
         <Dashboard total={catalogueTotal} />
 
         {/* Where else the show lives. */}

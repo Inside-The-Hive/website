@@ -55,7 +55,7 @@ export default async function GalleryEventPage({ params }: Params) {
 
   return (
     <>
-      <header className="u-gutter pt-[9rem] pb-[clamp(2.5rem,6vh,4rem)]">
+      <header className="u-gutter pt-24 pb-[clamp(2.5rem,6vh,4rem)] md:pt-[9rem]">
         <Link
           href="/gallery"
           className="u-label inline-flex items-center gap-2 text-ink/55 transition-colors duration-(--dur-fast) hover:text-ink"

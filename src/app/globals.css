@@ -87,6 +87,12 @@
      from containers.
   -------------------------------------------------------------------------- */
   --spacing-gutter: clamp(1.5rem, 5vw, 5.5rem);
+  /* The 5rem floor was chosen on a desktop, where 12vh clears it comfortably.
+     On a phone the middle term never wins, so every section on the site
+     opened and closed with the floor — roughly a fifth of the screen spent on
+     blank space above and below each block. The floor is dropped below the
+     breakpoint (see the override in the base layer) rather than lowered
+     outright, because on a large screen 5rem is not generous, it is correct. */
   --spacing-section: clamp(5rem, 12vh, 10rem);
 
   /* ---- Motion ------------------------------------------------------------
@@ -107,6 +113,15 @@
     -webkit-font-smoothing: antialiased;
     /* Lenis drives scrolling; native smooth would fight it. */
     scroll-behavior: auto;
+  }
+
+  /* Section rhythm on small screens.
+     See the token's own note: the desktop floor spent about a fifth of a
+     phone screen on empty space at each section boundary. */
+  @media (max-width: 47.99rem) {
+    :root {
+      --spacing-section: 3rem;
+    }
   }
 
   /* Fluid rem on desktop widths.

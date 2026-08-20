@@ -30,7 +30,12 @@ export default function GalleryPage() {
           a full screen of white between them, which is exactly what made the
           transition feel broken. At this height the event index begins rising
           into frame while the canvas is still receding behind it. */}
-      <div className="h-[100svh]" aria-hidden />
+      {/* Desktop only. Below the breakpoint the canvas is not fixed — it is
+          the static hero, which stands in the flow and carries its own
+          viewport of height — so this spacer added a second, entirely blank
+          screen between the hero and the event index. There is no fade to
+          interpolate there either, so it reserved runway for nothing. */}
+      <div className="hidden h-[100svh] md:block" aria-hidden />
 
       <EventIndex />
 

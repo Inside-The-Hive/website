@@ -6,7 +6,26 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { navLinks, site, socials } from "@/content/site";
 import { DoodleField } from "@/components/DoodleField";
+import {
+  EmailIcon,
+  InstagramIcon,
+  TelegramIcon,
+  XIcon,
+} from "@/components/SocialIcons";
 import { cn } from "@/lib/cn";
+
+/**
+ * The menu's social row is marks rather than words.
+ *
+ * Keyed by the label in site.ts, so adding an account there without an icon
+ * here falls back to its name instead of rendering nothing.
+ */
+const SOCIAL_ICONS: Record<string, (props: { className?: string }) => React.ReactElement> = {
+  X: XIcon,
+  Instagram: InstagramIcon,
+  Telegram: TelegramIcon,
+  Email: EmailIcon,
+};
 
 /**
  * Full-screen overlay menu, items set in display type at --text-h2, in the
@@ -157,7 +176,7 @@ export function MobileMenu() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="block py-2 font-display text-(length:--text-h2) leading-[0.92] font-extrabold tracking-[-0.03em] text-ink transition-colors duration-(--dur-fast) hover:text-ink"
+                  className="block py-2 font-display text-(length:--text-h2) leading-[0.92] font-medium tracking-[-0.02em] text-ink transition-colors duration-(--dur-fast) hover:text-ink"
                 >
                   {link.label}
                 </Link>
@@ -169,7 +188,7 @@ export function MobileMenu() {
                 target="_blank"
                 rel="noopener"
                 data-analytics="merch-outbound"
-                className="block py-2 font-display text-(length:--text-h2) leading-[0.92] font-extrabold tracking-[-0.03em] text-ink transition-colors duration-(--dur-fast) hover:text-ink"
+                className="block py-2 font-display text-(length:--text-h2) leading-[0.92] font-medium tracking-[-0.02em] text-ink transition-colors duration-(--dur-fast) hover:text-ink"
               >
                 Merch <span aria-hidden>↗</span>
                 <span className="sr-only">(opens in a new tab)</span>
@@ -185,19 +204,35 @@ export function MobileMenu() {
               Join the Hive
             </Link>
 
-            <ul className="flex flex-wrap gap-x-6 gap-y-2">
-              {socials.map((social) => (
-                <li key={social.href}>
-                  <a
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener"
-                    className="u-label inline-flex min-h-11 items-center text-ink/70 hover:text-ink"
-                  >
-                    {social.label}
-                  </a>
-                </li>
-              ))}
+            {/* Marks, not words. Four labels set as text ran the width of the
+                panel and read as a second navigation list competing with the
+                real one; the glyphs say the same thing in a quarter of the
+                space. The 44px box is the tap target — the icon inside it is
+                sized for reading, not for touching. */}
+            <ul className="-ml-3 flex items-center gap-1">
+              {socials.map((social) => {
+                const Icon = SOCIAL_ICONS[social.label];
+                return (
+                  <li key={social.href}>
+                    <a
+                      href={social.href}
+                      target={
+                        social.href.startsWith("mailto:") ? undefined : "_blank"
+                      }
+                      rel={
+                        social.href.startsWith("mailto:") ? undefined : "noopener"
+                      }
+                      aria-label={social.label}
+                      className={cn(
+                        "grid min-h-11 min-w-11 place-items-center text-ink/70 transition-colors duration-(--dur-fast) hover:text-ink",
+                        !Icon && "u-label w-auto px-2",
+                      )}
+                    >
+                      {Icon ? <Icon className="size-5" /> : social.label}
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           </div>
           </div>

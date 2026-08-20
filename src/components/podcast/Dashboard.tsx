@@ -50,7 +50,7 @@ export function Dashboard({ total }: { total: number }) {
   return (
     <section
       aria-label="Episodes"
-      className="u-gutter pt-[8.5rem] pb-[clamp(2rem,5vh,4rem)]"
+      className="u-gutter pt-24 pb-[clamp(2rem,5vh,4rem)] md:pt-[8.5rem]"
     >
       <div className="mx-auto grid max-w-[90rem] grid-cols-1 items-start gap-[clamp(1.5rem,2.5vw,2.5rem)] lg:grid-cols-[1fr_minmax(17rem,21rem)]">
         {/* ---------------- main column ---------------- */}

@@ -35,12 +35,6 @@
   --color-ash: #f4f4f2; /* light raised surface, skeletons, hover fills */
   --color-line: #e2e0dc; /* hairline rules */
   --color-honey: #f0a202; /* logo, small accents, fills. Never text. */
-  /* Hero pattern marks. A warm sand at full opacity rather than ink thinned
-     down — black at low alpha goes grey and dirty against white, where a light
-     warm stroke stays clean.
-     Ink over this sits at 16.1:1, far above AA, so no mark falling behind a
-     letter can pull the headline below it. */
-  --hero-mark: #efe7d6;
   --color-propolis: #6b2d0e; /* warm emphasis, used sparingly */
 
   /* ---- Type --------------------------------------------------------------
@@ -330,24 +324,6 @@
     /* Full measure here: the poster is centred and nearly the width of the
        screen, so there is no column beside it to stop short of. */
     --u-caption-w: calc(100vw - var(--u) * var(--u-inset) * 2);
-  }
-}
-
-/* ==========================================================================
-   Hero pattern
-   --------------------------------------------------------------------------
-   On a phone the hero is nearly all headline, so the pattern steps back: the
-   marks shrink and the half of them tagged `dense` are dropped entirely,
-   leaving texture without clutter behind type that now fills the screen.
-   ========================================================================== */
-
-@media (max-width: 639px) {
-  .hive-hero-pattern {
-    stroke-width: 1.3;
-  }
-
-  .hive-hero-pattern .hive-hero-dense {
-    display: none;
   }
 }
 

@@ -1,3 +1,4 @@
+import { ScrollTintText } from "@/components/home/ScrollTintText";
 import { site } from "@/content/site";
 
 /**
@@ -49,7 +50,7 @@ export function Lore() {
             Left-aligned inside that block: centring every line of a
             multi-paragraph passage leaves both edges ragged and slows reading
             for no gain. */}
-        <div className="mx-auto mt-[clamp(3.5rem,9vh,7rem)] grid max-w-[65ch] gap-8 text-left text-[clamp(1.125rem,2.08vw,1.5rem)] leading-[1.42] text-ink/55">
+        <ScrollTintText className="mx-auto mt-[clamp(1.75rem,4vh,3rem)] grid max-w-[65ch] gap-6 text-left text-[clamp(1.125rem,2.08vw,1.5rem)] leading-[1.42]">
           <p>
             There was no studio and no budget. There was a phone, a borrowed
             camera, and a suspicion that African Web3 was being covered by
@@ -75,12 +76,14 @@ export function Lore() {
           </p>
 
           {/* Darker than the paragraphs above — it is the closing statement,
-              not another beat of the story. */}
-          <p className="mt-2 text-ink/85">
+              not another beat of the story. It tints with the rest: stopping
+              the ramp one paragraph short would read as the effect breaking
+              rather than as emphasis. */}
+          <p className="mt-2">
             That is still the whole method. Be in the room. Bring a camera.
             Make something the room is proud of.
           </p>
-        </div>
+        </ScrollTintText>
       </div>
     </section>
   );

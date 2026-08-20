@@ -70,7 +70,11 @@
      --text-mega floors at 3.5rem because a four-word headline must wrap to
      three lines at 360px without overflowing.
   -------------------------------------------------------------------------- */
-  --text-mega: clamp(3.5rem, 13vw, 12rem); /* hero only, once per site */
+  /* Hero only, once per site. The 16vw middle term is what sizes it on a
+     phone: at 13vw the headline left the hero short of the fold, and the
+     block reads better filling that height. The 3.5rem floor stands so a
+     360px screen still wraps to three lines without overflowing. */
+  --text-mega: clamp(3.5rem, 16vw, 12rem);
   --text-h1: clamp(2.75rem, 7vw, 6rem);
   --text-h2: clamp(2rem, 4.5vw, 3.75rem);
   --text-h3: clamp(1.5rem, 2.5vw, 2.25rem);
@@ -338,7 +342,7 @@
 
 @media (max-width: 767px) {
   .hive-carousel {
-    --cell-scale: 1.55;
+    --cell-scale: 1.85;
   }
 }
 

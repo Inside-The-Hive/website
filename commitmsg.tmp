@@ -1,27 +1,28 @@
-fix: tighten the mobile hero and enlarge its carousel
+feat: scroll-tinted lore copy; larger mobile hero, tighter lore gap
 
-The headline sat low with a band of empty texture above and below it,
-and the photo strip was pushed toward the fold at a size where the
-images read as thumbnails.
+Three changes.
 
-Three things were holding the space. The section centred its type
-against a full-screen height, so the words floated in the middle; it
-now starts from the top with no height floor on a phone, so the section
-is only as tall as the type and its padding. And the content wrapper
-carried pb-[clamp(3rem,10vh,7rem)] — on a tall phone that 10vh resolved
-to 102px, which was most of the gap on its own. That padding is now
-scoped to md and up, where it was designed for.
+The hero fills more of a phone screen. --text-mega's middle term goes
+from 13vw to 16vw, taking the headline from 51px to 68px at 425px, and
+the carousel cells scale from 1.55 to 1.85, taking the first cell from
+153px to 183px. Together the headline and strip now reach 61% of the
+viewport rather than stopping well short of it. The 3.5rem floor and
+12rem ceiling are unchanged, so a 360px screen still wraps to three
+lines and a desktop is untouched.
 
-Measured at 425px, the distance from the headline to the strip falls
-from 355px to 48px.
+The gap between the lore's opening statement and the narrative beneath
+it drops from clamp(3.5rem,9vh,7rem) to clamp(1.75rem,4vh,3rem), and
+the paragraph spacing from gap-8 to gap-6. At 425px the distance
+between the two blocks falls from about 130px to 41px.
 
-The carousel cells are shares of the row calibrated for six across a
-desktop; the same shares left each around 80px on a phone. A
---cell-scale multiplier widens them below md, taking the first cell from
-80px to 153px. The row already overflows and scrolls, so wider cells
-simply mean fewer visible at once, which is the right trade on a narrow
-screen. Scale was set to 2.1 first and eased to 1.55 — at 2.1 the cells
-were large enough to crop faces badly.
+The narrative paragraphs now warm from grey to honey as they pass up
+the viewport. The tint is per word rather than per paragraph: a whole
+paragraph changing at one threshold reads as a state flip, where
+interpolating each word against its own position makes the colour
+arrive with the reader. Words are wrapped at runtime rather than in the
+markup, so the copy stays plain prose in the source and the effect
+follows the real line wrap at any width. Under reduced motion the
+passage simply sits at its resting colour with no scrub attached.
 
-Desktop is untouched: the wrapper keeps its 90px padding and the cells
-their original shares.
+Measured mid-scroll: 9 distinct colours across the 169 words, ramping
+cleanly from honey at the top of the block to grey at the bottom.

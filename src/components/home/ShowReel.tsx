@@ -22,7 +22,22 @@ const MIN_SCALE = 0.72;
 /** Corner radius at the smallest scale, in px. Grows to 0 at full bleed. */
 const MAX_RADIUS = 28;
 
-const CLIP = { src: "/videos/ITH.mp4" };
+/**
+ * The clip, named to the `-loop` convention.
+ *
+ * That naming is not cosmetic: .gitignore ignores /public/videos/* wholesale
+ * and un-ignores only the encoded outputs, so a master dropped in under any
+ * other name is never committed and never reaches the deploy. The original
+ * ITH.mp4 sat untracked for exactly that reason — it played locally and 404ed
+ * in production.
+ *
+ * The poster holds the first frame while the video loads, so the section is
+ * never an empty box, and it is what shows if the file fails to load at all.
+ */
+const CLIP = {
+  src: "/videos/showreel-loop.mp4",
+  poster: "/videos/showreel-poster.jpg",
+};
 
 export function ShowReel() {
   const frameRef = useRef<HTMLDivElement>(null);
@@ -111,6 +126,7 @@ export function ShowReel() {
             ref={videoRef}
             className="size-full object-cover"
             src={CLIP.src}
+            poster={CLIP.poster}
             muted
             loop
             playsInline

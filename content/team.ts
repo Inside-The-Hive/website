@@ -131,14 +131,14 @@ export const services: Service[] = [
     description:
       "We host and produce — dinners, screenings, summits. From the room list to the run of show to what it looks like afterwards.",
     note: "20+ hosted",
-    image: "/redot%20x%20ith%20x%20dinner.jpg",
+    image: "/redot-x-ith-x-dinner.webp",
   },
   {
     title: "Coverage",
     description:
       "On the ground with a camera, not watching a livestream. Photography and video that treats an event as something that happened to people.",
     note: "2,000+ frames",
-    image: "/unchainsummer.jpg",
+    image: "/unchainsummer.webp",
   },
   {
     title: "The podcast",
@@ -152,6 +152,6 @@ export const services: Service[] = [
     description:
       "Media partner, event partner, or both. Brands come to us when they need a room filled and the result documented properly.",
     note: "8 partners",
-    image: "/Technova.jpg",
+    image: "/Technova.webp",
   },
 ];

@@ -18,7 +18,7 @@ export type Partner = {
 export const partners: Partner[] = [
   // Recovered from the live site and its linked X posts.
   { name: "Redots Club", url: "https://x.com/RedotsClub", logo: null },
-  { name: "RedotPay", logo: null },
+  { name: "RedotClub", logo: null },
   { name: "TechNova Summit", url: "https://x.com/TechNovasummit", logo: null },
   // Named in the brief as events ITH has covered on the ground.
   { name: "ETHDenver", logo: null },

@@ -50,21 +50,9 @@ const SCROLL_PER_EVENT = 1.1;
 const HOLD_VH = 1;
 
 /**
- * A partnership always reads as ITH alongside the other party, never as the
- * partner alone — the section's claim is that we were in the room with them.
- *
- * Applied here rather than typed into each content file: it is a presentation
- * rule that holds for every event, and baking it into frontmatter would mean
- * re-typing the brand name on every entry and hard-coding it into the data.
- */
-function partnership(partner: string) {
-  return `Inside The Hive x ${partner}`;
-}
-
-/**
  * Splits a title into two lines.
  *
- * Breaks on the collaboration separator when there is one — "Redotpay x Inside
+ * Breaks on the collaboration separator when there is one — "RedotClub x Inside
  * The Hive Dinner Night" divides at the `x`, which is where the name divides
  * in meaning too. That also keeps each line short enough to set at display
  * size; a purely balanced split puts too many words on the first line and it
@@ -77,7 +65,7 @@ function splitTitle(title: string): [string, string] {
   if (words.length < 2) return [title, ""];
 
   // Break at the separator only when it leaves both halves a similar length.
-  // "Redotpay | x Inside The Hive Dinner Night" splits at the right place in
+  // "RedotClub | x Inside The Hive Dinner Night" splits at the right place in
   // meaning but strands 30 characters on the second line, which wraps again
   // into a third — so a lopsided separator break is rejected in favour of the
   // balanced one.
@@ -531,7 +519,7 @@ function Captions({
             >
               <Fact label="Role" value={event.role} />
               {event.partner && (
-                <Fact label="Partner" value={partnership(event.partner)} />
+                <Fact label="Partner" value={event.partner} />
               )}
               <Fact label="Location" value={event.location} />
             </dl>
@@ -671,7 +659,7 @@ function FeaturedEventsStatic({ events }: { events: FeaturedEvent[] }) {
                 {event.partner && (
                   <div className="flex flex-wrap items-baseline gap-x-3">
                     <dt className="u-label w-20 shrink-0 text-white/45">Partner</dt>
-                    <dd className="text-white">{partnership(event.partner)}</dd>
+                    <dd className="text-white">{event.partner}</dd>
                   </div>
                 )}
                 <div className="flex flex-wrap items-baseline gap-x-3">

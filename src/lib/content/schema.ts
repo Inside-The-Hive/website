@@ -53,6 +53,7 @@ export const eventRoles = [
   "Host",
   "Media Partner",
   "Media & Event Partner",
+  "Sponsor & Community Partner",
   "Coverage",
 ] as const;
 

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { navLinks, site, socials } from "@/content/site";
+import { navLinks, socials } from "@/content/site";
 import { DoodleField } from "@/components/DoodleField";
 import {
   EmailIcon,
@@ -182,17 +182,14 @@ export function MobileMenu() {
                 </Link>
               </li>
             ))}
+            {/* Internal while the store is being built — see Nav.tsx. */}
             <li>
-              <a
-                href={site.storeUrl}
-                target="_blank"
-                rel="noopener"
-                data-analytics="merch-outbound"
+              <Link
+                href="/merch"
                 className="block py-2 font-display text-(length:--text-h2) leading-[0.92] font-medium tracking-[-0.02em] text-ink transition-colors duration-(--dur-fast) hover:text-ink"
               >
-                Merch <span aria-hidden>↗</span>
-                <span className="sr-only">(opens in a new tab)</span>
-              </a>
+                Merch
+              </Link>
             </li>
           </ul>
 

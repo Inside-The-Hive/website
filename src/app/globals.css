@@ -451,3 +451,15 @@
     transform: translateX(-50%);
   }
 }
+
+/* The hive mark on the merch page, turning slowly while the store is built.
+   Rotation only — one composited property, and the mark is radially
+   symmetric enough that a full turn reads as a drift rather than a spin. */
+@keyframes hive-drift {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

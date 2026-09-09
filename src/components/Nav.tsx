@@ -200,18 +200,19 @@ export function Nav() {
             })}
           </ul>
 
-          {/* Merch is external and visually separated by the rule. */}
+          {/* Merch, visually separated by the rule.
+              Internal while the store is being built: site.storeUrl points at
+              a subdomain that does not resolve, so on the live domain this was
+              a 404 in the primary navigation. /merch says the same thing
+              honestly. Restore the outbound link — target, rel, arrow and the
+              merch-outbound analytics hook — when the store exists. */}
           <div className="flex items-center gap-4 border-l border-(--nav-line) pl-8">
-            <a
-              href={site.storeUrl}
-              target="_blank"
-              rel="noopener"
-              data-analytics="merch-outbound"
+            <Link
+              href="/merch"
               className="u-label inline-flex min-h-11 items-center gap-1 opacity-60 transition-opacity duration-(--dur-fast) hover:opacity-100"
             >
-              Merch <span aria-hidden>↗</span>
-              <span className="sr-only">(opens in a new tab)</span>
-            </a>
+              Merch
+            </Link>
 
             {/* Yellow as a fill with ink text — 19.3:1, and the one loud
                 element in the bar. */}

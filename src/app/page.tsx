@@ -5,7 +5,7 @@ import { Lore } from "@/components/home/Lore";
 import { Services } from "@/components/home/Services";
 import { ShowReel } from "@/components/home/ShowReel";
 import { Team } from "@/components/home/Team";
-import { PortraitPanel } from "@/components/testimonials/PortraitPanel";
+// import { PortraitPanel } from "@/components/testimonials/PortraitPanel";
 // import { SpotlightGrid } from "@/components/testimonials/SpotlightGrid";
 import {} from // EventsGrid,
 // JoinCta,
@@ -90,10 +90,13 @@ export default function Home() {
       {/* The crew, then what people who have worked with them say. Third-party
           voice lands hardest directly after the faces it is talking about.
 
-          TODO(client): every quote in content/testimonials.ts is a placeholder
-          and none of these people have said these words. Replace them before
-          this page goes live. */}
-      <PortraitPanel />
+          Unmounted for the production launch. Every quote in
+          content/testimonials.ts is a placeholder attributed to a named real
+          person who never said those words, and the domain now points here —
+          invented endorsements are not something to ship and correct later.
+          Restore this line once real quotes are supplied and the section's
+          design is settled. */}
+      {/* <PortraitPanel /> */}
       {/* <PodcastSection
         featured={featuredEpisode}
         episodes={restEpisodes}

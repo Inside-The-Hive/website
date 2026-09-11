@@ -140,9 +140,14 @@ export function Nav() {
         // Text flips to white over inverted sections. Set as a CSS variable so
         // every link, the wordmark and the rule read from one value rather
         // than each carrying its own conditional.
+        // --nav-bg is the ground the bar sits on, and it is the counterpart to
+        // --nav-fg rather than a decorative value: anything that inverts on
+        // hover needs the background colour to put its text in, and without
+        // this token the Join button had nothing to name but ink — which on a
+        // white page meant ink text on an ink fill.
         onDark
-          ? "[--nav-fg:var(--color-white)] [--nav-line:rgba(255,255,255,0.18)]"
-          : "[--nav-fg:var(--color-ink)] [--nav-line:var(--color-line)]",
+          ? "[--nav-fg:var(--color-white)] [--nav-bg:var(--color-ink)] [--nav-line:rgba(255,255,255,0.18)]"
+          : "[--nav-fg:var(--color-ink)] [--nav-bg:var(--color-white)] [--nav-line:var(--color-line)]",
         "text-(--nav-fg)",
         // No bottom rule — the blur alone separates the bar from the page.
         scrolled && "backdrop-blur-xl",
@@ -168,7 +173,12 @@ export function Nav() {
             // Large for a nav mark, because the logo sets its own name in a
             // ring of small type — below this it stops resolving as words and
             // reads as a smudge. The bar's padding tightens to compensate.
-            className="h-16 w-auto md:h-[4.5rem]"
+            //
+            // Sized in px, not rem: the root scales with viewport width on
+            // desktop, so a rem height shrank the mark on exactly the laptops
+            // where it was already being called too small — 59px against the
+            // 72 it was set to.
+            className="h-16 w-auto max-w-[40vw] object-contain md:h-[86px]"
           />
         </Link>
 
@@ -183,7 +193,7 @@ export function Nav() {
                     href={link.href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "u-label inline-flex min-h-11 items-center",
+                      "u-label inline-flex min-h-11 items-center text-(length:--text-nav)",
                       "transition-colors duration-(--dur-fast) ease-(--ease-out-expo)",
                       // Active is full-strength ink with a honey underline;
                       // resting is muted. Yellow marks state without ever
@@ -209,7 +219,7 @@ export function Nav() {
           <div className="flex items-center gap-4 border-l border-(--nav-line) pl-8">
             <Link
               href="/merch"
-              className="u-label inline-flex min-h-11 items-center gap-1 opacity-60 transition-opacity duration-(--dur-fast) hover:opacity-100"
+              className="u-label inline-flex min-h-11 items-center gap-1 text-(length:--text-nav) opacity-60 transition-opacity duration-(--dur-fast) hover:opacity-100"
             >
               Merch
             </Link>
@@ -218,9 +228,11 @@ export function Nav() {
                 element in the bar. */}
             <Link
               href="/join"
-              // Hover inverts to the bar's own foreground, so the button stays
-              // visible whether the ground behind it is white or ink.
-              className="u-label inline-flex min-h-11 items-center bg-honey px-5 text-ink transition-colors duration-(--dur-fast) hover:bg-(--nav-fg) hover:text-ink"
+              // Hover inverts to the bar's own foreground, and the label takes
+              // the bar's background so it reads against it. It used to keep
+              // text-ink on both states: on a white page the hover painted an
+              // ink fill under ink text and the button went blank.
+              className="u-label inline-flex min-h-11 items-center bg-honey px-5 text-(length:--text-nav) text-ink transition-colors duration-(--dur-fast) hover:bg-(--nav-fg) hover:text-(--nav-bg)"
             >
               Join the Hive
             </Link>

@@ -49,7 +49,7 @@ export function PlayerBar() {
           />
           <div className="min-w-0">
             <p className="truncate text-sm font-medium">{current.title}</p>
-            <p className="truncate text-xs text-white/50">{HOST}</p>
+            <p className="truncate text-(length:--text-small) text-white/50">{HOST}</p>
           </div>
         </div>
 
@@ -100,7 +100,7 @@ export function PlayerBar() {
           />
         </div>
 
-        <p className="hidden shrink-0 text-xs text-white/50 tabular-nums md:block">
+        <p className="hidden shrink-0 text-(length:--text-small) text-white/50 tabular-nums md:block">
           {clock(time)} / {stated ? clock(stated) : (current.duration ?? "—")}
         </p>
 

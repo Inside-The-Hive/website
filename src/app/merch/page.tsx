@@ -56,7 +56,7 @@ const NOTES = [
 export default function MerchPage() {
   const email =
     socials.find((s) => s.label === "Email")?.href ??
-    "mailto:contact@insidedhive.com";
+    "mailto:insidethehivepod@gmail.com";
 
   return (
     <>

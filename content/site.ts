@@ -48,7 +48,7 @@ export const socials = [
   { label: "X", href: "https://x.com/InsideDHive" },
   { label: "Instagram", href: "https://instagram.com/insidedhive" },
   { label: "Telegram", href: "https://t.me/insidethehive" },
-  { label: "Email", href: "mailto:contact@insidedhive.com" },
+  { label: "Email", href: "mailto:insidethehivepod@gmail.com" },
 ] as const;
 
 /**
@@ -104,8 +104,8 @@ export const footerGroups = [
     links: [
       // Mail rather than routes: /partner, /join and /contact do not exist,
       // and a live address beats three dead links.
-      { label: "Partner with us", href: "mailto:contact@insidedhive.com", external: true },
-      { label: "Contact", href: "mailto:contact@insidedhive.com", external: true },
+      { label: "Partner with us", href: "mailto:insidethehivepod@gmail.com", external: true },
+      { label: "Contact", href: "mailto:insidethehivepod@gmail.com", external: true },
     ],
   },
   {

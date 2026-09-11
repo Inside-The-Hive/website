@@ -4,7 +4,7 @@ import { socials } from "@/content/site";
 /** Pulled from the site's own contact address rather than restated here. */
 const PARTNER_EMAIL =
   socials.find((s) => s.label === "Email")?.href.replace("mailto:", "") ??
-  "contact@insidedhive.com";
+  "insidethehivepod@gmail.com";
 
 /**
  * The ask, at the foot of the gallery.

@@ -78,9 +78,30 @@
   --text-h1: clamp(2.75rem, 7vw, 6rem);
   --text-h2: clamp(2rem, 4.5vw, 3.75rem);
   --text-h3: clamp(1.5rem, 2.5vw, 2.25rem);
-  --text-body: clamp(1rem, 1.1vw, 1.125rem);
-  --text-small: 0.875rem;
-  --text-label: 0.75rem; /* uppercase, tracked 0.08em */
+  /* Body, small and label all carry a px floor as their lower bound rather
+     than a rem one.
+     The root is scaled by viewport width on desktop (16px x width/1920), which
+     is what makes a 1280px laptop render the whole design at two-thirds — the
+     correct fix for layout, and the wrong one for the smallest type on the
+     site. A 0.75rem label became 8px there, and body copy 12px. A px floor is
+     immune to the root scaling, so these sizes stop shrinking at the point
+     they stop being comfortable while everything above them still scales. */
+  --text-body: clamp(1.0625rem, 1.1vw, 1.1875rem);
+  --text-small: max(0.9rem, 13.5px);
+  --text-label: max(0.8125rem, 12.5px); /* tracked 0.08em */
+  /* The bar's own size. The nav read at --text-label, so on a laptop it set
+     at 8px — the single smallest type on the site, in the one strip every
+     visitor uses. */
+  --text-nav: max(0.9375rem, 14.5px);
+
+  /* Tailwind's own small sizes, re-floored.
+     `text-sm` and `text-xs` are used in about forty places — secondary copy,
+     metadata, button labels — and both are plain rem values, so the fluid
+     root took them to 9px and 8px on a laptop. Redefining the scale is one
+     change against forty call sites, and it keeps the utilities meaning what
+     their names say at every width. */
+  --text-sm: max(0.875rem, 13.5px);
+  --text-xs: max(0.8125rem, 12.5px);
 
   /* ---- Spacing rhythm ----------------------------------------------------
      Two rhythms only. Separation comes from space and hairline rules, never

@@ -23,7 +23,7 @@ const TRIGGER = 0.62;
 
 const EMAIL =
   socials.find((s) => s.label === "Email")?.href.replace("mailto:", "") ??
-  "contact@insidedhive.com";
+  "insidethehivepod@gmail.com";
 
 export function PartnerPrompt() {
   const [open, setOpen] = useState(false);

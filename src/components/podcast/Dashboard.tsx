@@ -71,7 +71,7 @@ export function Dashboard({ total }: { total: number }) {
                 <h1 className="mt-3 max-w-[20ch] text-[clamp(1.6rem,3.1vw,2.6rem)] leading-[1.08] font-normal tracking-[-0.015em] text-white text-balance">
                   {latest.title}
                 </h1>
-                <p className="mt-4 max-w-prose text-[0.95rem] leading-relaxed text-white/65">
+                <p className="mt-4 max-w-prose text-[max(0.95rem,14px)] leading-relaxed text-white/65">
                   {latest.summary}
                 </p>
                 <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
@@ -273,9 +273,9 @@ export function Dashboard({ total }: { total: number }) {
                         <span className="block truncate text-sm font-medium text-ink/90">
                           {episode.title}
                         </span>
-                        <span className="block text-xs text-ink/50">{HOST}</span>
+                        <span className="block text-(length:--text-small) text-ink/50">{HOST}</span>
                       </span>
-                      <span className="text-xs text-ink/45 tabular-nums">
+                      <span className="text-(length:--text-small) text-ink/45 tabular-nums">
                         {episode.duration ?? "—"}
                       </span>
                     </button>
@@ -299,7 +299,7 @@ function NowPlayingCard() {
         episode={current}
         className="w-full rounded-xl text-[clamp(1rem,1.4vw,1.4rem)]"
       />
-      <p className="mt-4 truncate text-base font-medium">
+      <p className="mt-4 truncate text-[max(1rem,15px)] font-medium">
         {current.title}
       </p>
       <p className="mt-0.5 text-sm text-ink/55">Hosted by {HOST}</p>

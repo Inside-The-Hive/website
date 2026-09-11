@@ -519,7 +519,7 @@ export function Team() {
                           member.name
                         )}
                       </p>
-                      <p className="mt-[1.1cqw] text-[3.6cqw] leading-tight font-normal text-ink/55">
+                      <p className="mt-[1.1cqw] text-[max(3.6cqw,12.5px)] leading-tight font-normal text-ink/55">
                         {member.role}
                       </p>
 

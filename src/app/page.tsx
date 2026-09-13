@@ -59,6 +59,7 @@ export default function Home() {
       "https://x.com/InsideDHive",
       "https://instagram.com/insidedhive",
       "https://t.me/insidethehive",
+      "https://www.tiktok.com/@insidedhive",
     ],
   };
 

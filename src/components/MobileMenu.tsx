@@ -10,6 +10,7 @@ import {
   EmailIcon,
   InstagramIcon,
   TelegramIcon,
+  TikTokIcon,
   XIcon,
 } from "@/components/SocialIcons";
 import { cn } from "@/lib/cn";
@@ -24,6 +25,7 @@ const SOCIAL_ICONS: Record<string, (props: { className?: string }) => React.Reac
   X: XIcon,
   Instagram: InstagramIcon,
   Telegram: TelegramIcon,
+  TikTok: TikTokIcon,
   Email: EmailIcon,
 };
 

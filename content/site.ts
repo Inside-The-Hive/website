@@ -48,6 +48,7 @@ export const socials = [
   { label: "X", href: "https://x.com/InsideDHive" },
   { label: "Instagram", href: "https://instagram.com/insidedhive" },
   { label: "Telegram", href: "https://t.me/insidethehive" },
+  { label: "TikTok", href: "https://www.tiktok.com/@insidedhive" },
   { label: "Email", href: "mailto:insidethehivepod@gmail.com" },
 ] as const;
 
@@ -114,6 +115,7 @@ export const footerGroups = [
       { label: "X", href: "https://x.com/InsideDHive", external: true },
       { label: "Instagram", href: "https://instagram.com/insidedhive", external: true },
       { label: "Telegram", href: "https://t.me/insidethehive", external: true },
+      { label: "TikTok", href: "https://www.tiktok.com/@insidedhive", external: true },
     ],
   },
 ] as const;

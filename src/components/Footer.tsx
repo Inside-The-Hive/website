@@ -29,7 +29,7 @@ export function Footer() {
           >
             {footerGroups.map((group) => (
               <div key={group.title}>
-                <h2 className="u-label font-mono text-ink">{group.title}</h2>
+                <h2 className="u-label font-mono text-(length:--text-small) text-ink">{group.title}</h2>
                 <ul className="mt-4 flex flex-col gap-3">
                   {group.links.map((link) => (
                     <li key={link.href}>
@@ -38,14 +38,14 @@ export function Footer() {
                           href={link.href}
                           target="_blank"
                           rel="noopener"
-                          className="inline-flex min-h-11 items-center text-small text-ink/70 transition-colors duration-(--dur-fast) hover:text-ink"
+                          className="inline-flex min-h-11 items-center text-(length:--text-nav) text-ink/70 transition-colors duration-(--dur-fast) hover:text-ink"
                         >
                           {link.label}
                         </a>
                       ) : (
                         <Link
                           href={link.href}
-                          className="inline-flex min-h-11 items-center text-small text-ink/70 transition-colors duration-(--dur-fast) hover:text-ink"
+                          className="inline-flex min-h-11 items-center text-(length:--text-nav) text-ink/70 transition-colors duration-(--dur-fast) hover:text-ink"
                         >
                           {link.label}
                         </Link>

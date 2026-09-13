@@ -39,7 +39,7 @@ export default function JoinPage() {
       <DoodleField />
 
       <div className="u-gutter relative z-10 py-24">
-        <p className="u-label text-ink/55">Join the Hive</p>
+        <p className="u-label text-(length:--text-small) text-ink/55">Join the Hive</p>
 
         <h1 className="mt-6 max-w-[18ch] text-(length:--text-h1) leading-[0.95] font-normal tracking-[-0.03em]">
           No roles open{" "}
@@ -62,7 +62,7 @@ export default function JoinPage() {
         <div className="mt-10 flex flex-wrap items-center gap-4">
           <a
             href={`mailto:${address}?subject=${encodeURIComponent("Working with Inside The Hive")}`}
-            className="u-label inline-flex min-h-12 items-center bg-honey px-6 text-ink transition-colors duration-(--dur-fast) hover:bg-ink hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+            className="u-label inline-flex min-h-12 items-center bg-honey px-6 text-(length:--text-nav) text-ink transition-colors duration-(--dur-fast) hover:bg-ink hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
           >
             Send us your work
           </a>
@@ -76,19 +76,19 @@ export default function JoinPage() {
         <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3">
           <Link
             href="/gallery"
-            className="u-label inline-flex items-center gap-2 text-ink/55 transition-colors duration-(--dur-fast) hover:text-ink"
+            className="u-label inline-flex items-center gap-2 text-(length:--text-nav) text-ink/55 transition-colors duration-(--dur-fast) hover:text-ink"
           >
             See the work <span aria-hidden>→</span>
           </Link>
           <Link
             href="/podcast"
-            className="u-label inline-flex items-center gap-2 text-ink/55 transition-colors duration-(--dur-fast) hover:text-ink"
+            className="u-label inline-flex items-center gap-2 text-(length:--text-nav) text-ink/55 transition-colors duration-(--dur-fast) hover:text-ink"
           >
             Hear the podcast <span aria-hidden>→</span>
           </Link>
           <a
             href={`mailto:${address}?subject=${encodeURIComponent("Partnering with Inside The Hive")}`}
-            className="u-label inline-flex items-center gap-2 text-ink/55 transition-colors duration-(--dur-fast) hover:text-ink"
+            className="u-label inline-flex items-center gap-2 text-(length:--text-nav) text-ink/55 transition-colors duration-(--dur-fast) hover:text-ink"
           >
             Partner with us <span aria-hidden>→</span>
           </a>

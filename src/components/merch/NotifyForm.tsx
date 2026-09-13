@@ -35,7 +35,7 @@ export function NotifyForm({ mailto }: { mailto: string }) {
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-3">
-      <label htmlFor="merch-email" className="u-label text-ink/55">
+      <label htmlFor="merch-email" className="u-label text-(length:--text-small) text-ink/55">
         Hear about the drop
       </label>
 
@@ -54,7 +54,7 @@ export function NotifyForm({ mailto }: { mailto: string }) {
         />
         <button
           type="submit"
-          className="u-label inline-flex min-h-12 shrink-0 items-center justify-center bg-honey px-6 text-ink transition-colors duration-(--dur-fast) hover:bg-ink hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+          className="u-label inline-flex min-h-12 shrink-0 items-center justify-center bg-honey px-6 text-(length:--text-nav) text-ink transition-colors duration-(--dur-fast) hover:bg-ink hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
         >
           Notify me
         </button>
@@ -63,7 +63,7 @@ export function NotifyForm({ mailto }: { mailto: string }) {
       {/* Says what the button actually does. A reader who expects a stored
           signup and gets their mail client instead has been misled, however
           small the moment. */}
-      <p aria-live="polite" className="text-sm text-ink/50">
+      <p aria-live="polite" className="text-(length:--text-small) text-ink/50">
         {sent
           ? "Your mail app should be open — send the message and you are on the list."
           : "Opens an email to us. We will write once, when it drops."}

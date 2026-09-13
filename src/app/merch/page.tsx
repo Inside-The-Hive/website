@@ -73,7 +73,7 @@ export default function MerchPage() {
             nobody has made yet. */}
         <div className="u-gutter relative z-10 grid items-center gap-12 py-24 md:grid-cols-[1.15fr_1fr] md:py-0">
           <div>
-          <p className="u-label text-ink/55">Inside The Hive</p>
+          <p className="u-label text-(length:--text-small) text-ink/55">Inside The Hive</p>
 
           {/* The wordmark-scale statement. "soon" in the script face for the
               same reason the crew's names are: it is the one word doing the
@@ -112,13 +112,13 @@ export default function MerchPage() {
           <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3">
             <Link
               href="/gallery"
-              className="u-label inline-flex items-center gap-2 text-ink/55 transition-colors duration-(--dur-fast) hover:text-ink"
+              className="u-label inline-flex items-center gap-2 text-(length:--text-nav) text-ink/55 transition-colors duration-(--dur-fast) hover:text-ink"
             >
               See the gallery <span aria-hidden>→</span>
             </Link>
             <Link
               href="/podcast"
-              className="u-label inline-flex items-center gap-2 text-ink/55 transition-colors duration-(--dur-fast) hover:text-ink"
+              className="u-label inline-flex items-center gap-2 text-(length:--text-nav) text-ink/55 transition-colors duration-(--dur-fast) hover:text-ink"
             >
               Hear the podcast <span aria-hidden>→</span>
             </Link>
@@ -166,7 +166,7 @@ export default function MerchPage() {
                 key={note.label}
                 className="u-rule border-b px-0 py-8 md:border-r md:px-8 md:last:border-r-0 md:first:pl-0"
               >
-                <p className="u-label text-ink/55">{note.label}</p>
+                <p className="u-label text-(length:--text-small) text-ink/55">{note.label}</p>
                 <p className="mt-3 max-w-prose leading-relaxed text-ink/70">
                   {note.body}
                 </p>

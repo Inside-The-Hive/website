@@ -88,7 +88,7 @@ const TYPE = [
     font: "font-body",
   },
   {
-    token: "--text-small",
+    token: "--text-(length:--text-small)",
     label: "Small / Inter 400",
     sample: "Secondary copy, captions and meta.",
     font: "font-body",
@@ -125,7 +125,7 @@ export default function StyleGuide() {
               />
               <p className="u-label mt-4 text-ink">{token.name}</p>
               <p className="u-label mt-1 text-ink/55">{token.hex}</p>
-              <p className="mt-3 text-small text-ink/70">{token.use}</p>
+              <p className="mt-3 text-(length:--text-small) text-ink/70">{token.use}</p>
             </div>
           ))}
         </div>
@@ -155,7 +155,7 @@ export default function StyleGuide() {
                   </span>
                   <span>
                     <span className="u-label block text-ink">{pair.label}</span>
-                    <span className="mt-1 block text-small text-ink/60">{pair.note}</span>
+                    <span className="mt-1 block text-(length:--text-small) text-ink/60">{pair.note}</span>
                   </span>
                 </div>
                 <span className="u-label flex items-center gap-3">
@@ -249,7 +249,7 @@ export default function StyleGuide() {
               <HiveId id="HIVE/2026/007" className="absolute top-4 left-4" />
             </div>
             <h3 className="mt-5 text-(length:--text-h3)">Sample event</h3>
-            <p className="mt-2 text-small text-ink/70">
+            <p className="mt-2 text-(length:--text-small) text-ink/70">
               One kicker line, under 120 characters.
             </p>
             <p className="u-label mt-4 text-propolis">Media partner</p>
@@ -276,7 +276,7 @@ export default function StyleGuide() {
             >
               <span className="u-label min-w-40 text-ink">{token}</span>
               <span className="u-label text-ink/55">{value}</span>
-              <span className="text-small text-ink/70">{use}</span>
+              <span className="text-(length:--text-small) text-ink/70">{use}</span>
             </li>
           ))}
         </ul>

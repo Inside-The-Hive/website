@@ -50,7 +50,7 @@ export function EventCard({
           </span>
         </div>
 
-        <p className="mt-2 max-w-prose text-small text-ink/70">{event.summary}</p>
+        <p className="mt-2 max-w-prose text-(length:--text-small) text-ink/70">{event.summary}</p>
 
         <p className="u-label mt-4 flex gap-3 text-ink">
           <span>{event.role}</span>

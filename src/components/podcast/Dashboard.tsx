@@ -273,9 +273,9 @@ export function Dashboard({ total }: { total: number }) {
                         <span className="block truncate text-sm font-medium text-ink/90">
                           {episode.title}
                         </span>
-                        <span className="block text-(length:--text-small) text-ink/50">{HOST}</span>
+                        <span className="block text-(length:--text-(length:--text-small)) text-ink/50">{HOST}</span>
                       </span>
-                      <span className="text-(length:--text-small) text-ink/45 tabular-nums">
+                      <span className="text-(length:--text-(length:--text-small)) text-ink/45 tabular-nums">
                         {episode.duration ?? "—"}
                       </span>
                     </button>

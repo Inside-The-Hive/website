@@ -31,8 +31,13 @@ export function Footer() {
               <div key={group.title}>
                 <h2 className="u-label font-mono text-(length:--text-small) text-ink">{group.title}</h2>
                 <ul className="mt-4 flex flex-col gap-3">
+                  {/* Keyed by label, not href: two links in a group can share
+                      a destination — "Partner with us" and "Contact" are both
+                      the same mailto — and an href key collides there. Labels
+                      are unique within a group by definition, since two
+                      identically named links would be the same link. */}
                   {group.links.map((link) => (
-                    <li key={link.href}>
+                    <li key={link.label}>
                       {"external" in link && link.external ? (
                         <a
                           href={link.href}

@@ -226,15 +226,13 @@ const INTERLOCK = 0.04;
 /**
  * How much of the track the row is allowed to occupy.
  *
- * A little over 100, because the panels are cut on a slant and the outermost
- * ones taper away from the row's own edges — sized to exactly 100 the
- * composition reads as inset from the gutter even when its boxes are flush.
- * The section clips horizontally, so the small excess trims at the gutter.
- *
- * Kept modest: pushed far past this the first and last figures themselves get
- * cut by the gutter rather than just their panels.
+ * Past 100 on purpose. The row no longer has to hold the whole crew — it pages
+ * — so the track is free to run wider than the viewport and let the clip trim
+ * the ends. That is what keeps the figures large: a track sized to fit inside
+ * the screen divides the same width between the same slots and shrinks every
+ * one of them.
  */
-const TRACK_FILL = 92;
+const TRACK_FILL = 118;
 
 /**
  * Item width for a row of `count` people, as a percentage of the track.
@@ -255,13 +253,15 @@ function crewWidth(count: number) {
 /**
  * How many of the crew stand in the row at once.
  *
- * Seven, because that is the headcount the composition was built and measured
- * at — the item width, the interlock and the label geometry all derive from
- * it. Adding people to the row instead of paging through it would shrink
- * every figure to fit, which is the one thing this must not do. The row keeps
- * its size and the crew rotates through it.
+ * Five, and deliberately fewer than the crew. Item width is the track divided
+ * by this, so every extra slot shrinks every figure — fitting the whole roster
+ * on screen at once is what made the portraits small. At five the figures are
+ * large, about four read fully, and the ones at either end run off under the
+ * clip, which is what shows there is more row to reach.
+ *
+ * Odd, so a true middle exists for the focus to sit in.
  */
-const WINDOW = 7;
+const WINDOW = 5;
 
 /**
  * Index of the focused slot within the window.

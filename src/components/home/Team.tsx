@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import {
   EmailIcon,
   TelegramIcon,
@@ -230,6 +233,17 @@ function crewWidth(count: number) {
 }
 
 /**
+ * How many of the crew stand in the row at once.
+ *
+ * Seven, because that is the headcount the composition was built and measured
+ * at — the item width, the interlock and the label geometry all derive from
+ * it. Adding people to the row instead of paging through it would shrink
+ * every figure to fit, which is the one thing this must not do. The row keeps
+ * its size and the crew rotates through it.
+ */
+const WINDOW = 7;
+
+/**
  * One person, stacked — the small-screen card.
  *
  * The desktop row is a hover composition, and hover does not exist on a
@@ -312,7 +326,23 @@ function CrewCard({ member, index }: { member: TeamMember; index: number }) {
 
 export function Team() {
   const members = team.filter((member) => member.photo);
+
+  // Index of the crew member standing at the left of the row. The window is
+  // taken modulo the headcount, so paging past the end wraps to the start and
+  // the row loops in both directions without an end stop.
+  const [start, setStart] = useState(0);
+
   if (members.length === 0) return null;
+
+  const paged = members.length > WINDOW;
+  const size = paged ? WINDOW : members.length;
+  // Modulo on every read rather than clamping the state: `start` is free to
+  // run negative or past the length, and the window still resolves.
+  const visible = Array.from(
+    { length: size },
+    (_, i) => members[(((start + i) % members.length) + members.length) % members.length],
+  );
+  const step = (delta: number) => setStart((value) => value + delta);
 
   return (
     // Clips the panels where they run past the gutter.
@@ -361,16 +391,19 @@ export function Team() {
           // containing block), so the item-relative INTERLOCK is converted
           // through the item's own width here.
           style={{
-            ["--crew-w" as string]: `${crewWidth(members.length).toFixed(3)}%`,
-            ["--crew-overlap" as string]: `${(-INTERLOCK * crewWidth(members.length)).toFixed(3)}%`,
+            // Sized to the window, not the roster: the row holds seven
+            // whatever the headcount, so the figures never shrink as crew are
+            // added.
+            ["--crew-w" as string]: `${crewWidth(size).toFixed(3)}%`,
+            ["--crew-overlap" as string]: `${(-INTERLOCK * crewWidth(size)).toFixed(3)}%`,
           }}
         >
-          {members.map((member, index) => {
+          {visible.map((member, index) => {
             const pending = isPending(member.name);
 
             return (
               <li
-                key={index}
+                key={member.photo}
                 // Items overlap hard by a negative margin — the boxes are
                 // wider than the people inside them, so a small overlap leaves
                 // the visible figures separated and the row reads as pasted
@@ -561,6 +594,56 @@ export function Team() {
             );
           })}
         </ul>
+
+        {/* The controls. Only when there are more crew than the row holds —
+            with seven or fewer there is nothing to page to, and a pair of
+            dead arrows is worse than none.
+
+            Hidden below md: the small-screen branch is a grid that already
+            shows everyone at once, so there is nothing there to page. */}
+        {/* `relative z-30` and a deep top margin: the bottom-anchored hover
+            labels grow downward out of the row and their social marks carry
+            `pointer-events-auto`, so an overlapping label sat over these
+            buttons and swallowed the clicks. The margin clears the tallest
+            label; the stacking context keeps the controls above one if a wider
+            name ever reaches them. */}
+        {paged && (
+          <div className="relative z-30 mt-24 hidden items-center justify-center gap-3 md:flex">
+            <button
+              type="button"
+              onClick={() => step(-1)}
+              aria-label="Previous crew member"
+              className="u-rule grid size-11 place-items-center rounded-full border text-ink/60 transition-colors duration-(--dur-fast) hover:border-ink hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+            >
+              <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M15 5l-7 7 7 7" />
+              </svg>
+            </button>
+
+            {/* Position in the roster, as plain type rather than a row of
+                dots: nine dots at this size read as debris under a
+                composition this large. */}
+            <p
+              aria-live="polite"
+              className="u-label min-w-[5ch] text-center text-(length:--text-small) text-ink/55 tabular-nums"
+            >
+              {((start % members.length) + members.length) % members.length + 1}
+              {" / "}
+              {members.length}
+            </p>
+
+            <button
+              type="button"
+              onClick={() => step(1)}
+              aria-label="Next crew member"
+              className="u-rule grid size-11 place-items-center rounded-full border text-ink/60 transition-colors duration-(--dur-fast) hover:border-ink hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+            >
+              <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

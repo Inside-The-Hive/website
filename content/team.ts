@@ -99,6 +99,23 @@ export const team: TeamMember[] = [
     labelAt: "top",
     photo: "/crew/deon.png",
   },
+  // TODO(client): real names and roles for these two. The portraits are real
+  // and supplied; the identities are not known here and are deliberately left
+  // as TODO rather than invented — isPending() in Team.tsx hides the label
+  // entirely while a name starts with TODO, so the figure appears in the row
+  // without a caption until these are filled in.
+  {
+    name: "TODO",
+    role: "TODO",
+    labelAt: "bottom",
+    photo: "/crew/crew-8.png",
+  },
+  {
+    name: "TODO",
+    role: "TODO",
+    labelAt: "top",
+    photo: "/crew/crew-9.png",
+  },
 ];
 
 /**

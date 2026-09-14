@@ -221,7 +221,7 @@ const SLANT = "polygon(30% 0, 100% 0, 70% 100%, 0 100%)";
  * interlock stays identical at any headcount: adding people shrinks everything
  * proportionally instead of changing how the row fits together.
  */
-const INTERLOCK = 0.04;
+const INTERLOCK = 0.09;
 
 /**
  * How much of the track the row is allowed to occupy.
@@ -232,7 +232,7 @@ const INTERLOCK = 0.04;
  * the screen divides the same width between the same slots and shrinks every
  * one of them.
  */
-const TRACK_FILL = 118;
+const TRACK_FILL = 126;
 
 /**
  * Item width for a row of `count` people, as a percentage of the track.

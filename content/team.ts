@@ -109,17 +109,21 @@ export const team: TeamMember[] = [
   },
   {
     name: "Nycan",
-    /** TODO(client): role not supplied. */
-    role: "",
+    role: "Community Manager",
     labelAt: "top",
     photo: "/crew/nycan.png",
+    x: "https://x.com/NycanWeb3",
+    telegram: "https://t.me/Nycanweb3",
+    email: "nycanweb3@gmail.com",
   },
   {
     name: "Promise",
-    /** TODO(client): role not supplied. */
-    role: "",
+    role: "Brand & Motion Designer",
     labelAt: "bottom",
     photo: "/crew/promise.png",
+    x: "https://x.com/pro01mise",
+    telegram: "https://t.me/pro01mise",
+    email: "samatech542@gmail.com",
   },
   {
     name: "Michael",
@@ -127,6 +131,15 @@ export const team: TeamMember[] = [
     role: "",
     labelAt: "top",
     photo: "/crew/michael.png",
+  },
+  {
+    name: "Truth",
+    role: "Intern",
+    labelAt: "bottom",
+    photo: "/crew/truth.png",
+    x: "https://x.com/heistruthx",
+    telegram: "https://t.me/heistruthx",
+    email: "truth7824@gmail.com",
   },
 ];
 

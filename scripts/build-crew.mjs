@@ -98,6 +98,7 @@ const SET = [
   ["Promise.png", "promise.png", "light"],
   // Arrives already cut out against real transparency.
   ["Michael.png", "michael.png", "alpha"],
+  ["Truth.png", "truth.png", "alpha"],
 ];
 
 /** Clears an edge-connected light background, returning RGBA raw pixels. */

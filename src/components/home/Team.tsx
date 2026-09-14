@@ -119,7 +119,19 @@ function SocialMark({
  * Each panel stacks above the one before it, which is what makes the row read
  * as overlapping cards rather than as a flat strip.
  */
+/**
+ * Colour and stacking, derived from the member's place in the roster.
+ *
+ * The roster index, never the slot. Keyed to the slot, a figure changed colour
+ * as it slid — honey in one position, propolis in the next — so the panels
+ * appeared to repaint themselves under people who were merely moving. The
+ * panel belongs to the person; the row is what moves.
+ */
 function panelFor(index: number) {
+  // The member's own index, never the slot they occupy. Keyed to the slot a
+  // figure repainted itself as it slid — honey in one position, propolis in
+  // the next — so the panels appeared to change colour under people who were
+  // only moving. The panel belongs to the person; the row is what moves.
   return {
     color: index % 2 === 0 ? "var(--color-honey)" : "var(--color-propolis)",
     z: index + 1,
@@ -132,6 +144,14 @@ function panelFor(index: number) {
  * line rather than a flat one.
  */
 const isLifted = (index: number) => index % 2 === 0;
+
+/**
+ * Where a member sits in the roster, so their panel colour, lift and label
+ * corner travel with them rather than belonging to the slot they occupy.
+ */
+function rosterIndex(members: TeamMember[], member: TeamMember) {
+  return members.indexOf(member);
+}
 
 /** Lift, as a share of the item's height. */
 const LIFT_PCT = 6;
@@ -201,7 +221,7 @@ const SLANT = "polygon(30% 0, 100% 0, 70% 100%, 0 100%)";
  * interlock stays identical at any headcount: adding people shrinks everything
  * proportionally instead of changing how the row fits together.
  */
-const INTERLOCK = 0.19;
+const INTERLOCK = 0.04;
 
 /**
  * How much of the track the row is allowed to occupy.
@@ -214,7 +234,7 @@ const INTERLOCK = 0.19;
  * Kept modest: pushed far past this the first and last figures themselves get
  * cut by the gutter rather than just their panels.
  */
-const TRACK_FILL = 100;
+const TRACK_FILL = 92;
 
 /**
  * Item width for a row of `count` people, as a percentage of the track.
@@ -496,6 +516,15 @@ export function Team() {
             // scaled forward, label showing. Hover drives all three when
             // there is nothing to page through.
             const isFocus = index === focusSlot;
+            // Everything that describes the person — panel colour, lift,
+            // which corner their label takes — is keyed here, so it travels
+            // with them instead of belonging to the slot they pass through.
+            const seat = rosterIndex(members, member);
+            // NOTE: with an odd headcount two same-coloured panels necessarily
+            // meet at the wrap seam — alternating two colours cannot close an
+            // odd loop. The colour is fixed per member regardless; the seam is
+            // arithmetic, not a rendering fault, and it disappears at an even
+            // headcount.
 
             return (
               <li
@@ -521,8 +550,8 @@ export function Team() {
                 // element's own box, which is what makes the lift land.
                 //
                 style={{
-                  zIndex: isFocus ? 20 : panelFor(index).z,
-                  translate: isLifted(index)
+                  zIndex: isFocus ? 20 : panelFor(seat).z,
+                  translate: isLifted(seat)
                     ? `${LIFT_COMP.toFixed(3)}% -${LIFT_PCT}%`
                     : "0 0",
                   // The item is a size container so the hover label can be
@@ -564,7 +593,7 @@ export function Team() {
                     aria-hidden
                     className="absolute right-[8%] bottom-[4%] left-[8%] h-[82%]"
                     style={{
-                      background: panelFor(index).color,
+                      background: panelFor(seat).color,
                       clipPath: SLANT,
                     }}
                   />
@@ -582,11 +611,21 @@ export function Team() {
                   <div
                     className={cn(
                       "absolute inset-x-0 top-0 bottom-[4%] origin-bottom transition-transform duration-(--dur-base) ease-(--ease-out-expo) motion-reduce:transition-none",
-                      // Scaled harder than the old hover: this is the one
-                      // figure the row is pointing at, and 5% did not read as
-                      // a focal point so much as a wobble.
-                      isFocus ? "scale-[1.12]" : "group-hover:scale-[1.05]",
+                      !paged && "group-hover:scale-[1.05]",
                     )}
+                    // Scale as a style value, not a swapped class.
+                    //
+                    // Two classes cannot interpolate between each other: the
+                    // focused figure changed the moment the slot index moved,
+                    // so the growth landed in one step part-way through the
+                    // slide while the row was still travelling — which is the
+                    // choppiness. One animated property, transitioning from
+                    // whatever it currently is, moves smoothly with the row.
+                    style={
+                      paged
+                        ? { transform: `scale(${isFocus ? 1.12 : 1})` }
+                        : undefined
+                    }
                   >
                     <Image
                       src={member.photo!}
@@ -648,17 +687,14 @@ export function Team() {
                         isFocus
                           ? "translate-y-0 opacity-100"
                           : "translate-y-1 opacity-0 group-hover:translate-y-0 group-hover:opacity-100",
-                        // The hover label could sit wherever it liked — it
-                        // appeared under a pointer and vanished. The focused
-                        // one is permanently on screen and directly above the
-                        // controls, so a bottom-anchored label ran into them.
-                        // In focus both variants tuck against the panel's
-                        // lower left, inside the row's own footprint.
-                        isFocus
-                          ? "top-[99%] left-[8%] text-left"
-                          : member.labelAt === "top"
-                            ? "bottom-[88%] right-[8%] text-right"
-                            : "top-[97%] left-[8%] text-left",
+                        // Alternating corners, as designed: forcing every
+                        // focused label to the same lower-left corner pushed
+                        // the whole row's content down and lost the rhythm
+                        // the alternation gives. The corner belongs to the
+                        // member, so it travels with them.
+                        member.labelAt === "top"
+                          ? "bottom-[88%] right-[8%] text-right"
+                          : "top-[97%] left-[8%] text-left",
                       )}
                     >
                       {/* Sacramento, the one place the site leaves Inter — a

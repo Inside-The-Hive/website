@@ -58,3 +58,6 @@ next-env.d.ts
 # local dev server output
 .dev.log
 shots/
+
+# Verification builds (see distDir in next.config.ts).
+/.next-verify/

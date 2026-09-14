@@ -121,6 +121,13 @@ export const team: TeamMember[] = [
     labelAt: "bottom",
     photo: "/crew/promise.png",
   },
+  {
+    name: "Michael",
+    /** TODO(client): role not supplied. */
+    role: "",
+    labelAt: "top",
+    photo: "/crew/michael.png",
+  },
 ];
 
 /**

@@ -96,6 +96,8 @@ const SET = [
   // that pattern as subject and the alpha mode keeps it. The light fill
   // clears it: edge-connected, and the subject wears black throughout.
   ["Promise.png", "promise.png", "light"],
+  // Arrives already cut out against real transparency.
+  ["Michael.png", "michael.png", "alpha"],
 ];
 
 /** Clears an edge-connected light background, returning RGBA raw pixels. */
@@ -323,10 +325,20 @@ async function main() {
     }
 
     const clean = await despeckle(staged);
-    const trimmed = await sharp(clean.buffer)
+    // Downscale before padding, not after. A large source pads out to a
+    // canvas larger still — one 4306x5758 portrait reached 3825x5903 — and
+    // compositing at that size trips sharp's pixel limit. Scaling the subject
+    // first keeps every later step small, and the figure is bound for a few
+    // hundred CSS pixels either way.
+    const preTrim = await sharp(clean.buffer)
       .trim({ threshold: 1 })
       .png()
       .toBuffer();
+    const pre = await sharp(preTrim).metadata();
+    const trimmed =
+      pre.height > MAX_HEIGHT
+        ? await sharp(preTrim).resize({ height: MAX_HEIGHT }).png().toBuffer()
+        : preTrim;
     const t = await sharp(trimmed).metadata();
 
     // Pad the short axis only — never crop, or a head loses its crown.
@@ -347,12 +359,7 @@ async function main() {
       // South, so every figure stands on the same ground line.
       .composite([{ input: trimmed, gravity: "south" }]);
 
-    await (h > MAX_HEIGHT
-      ? canvas.resize({ height: MAX_HEIGHT })
-      : canvas
-    )
-      .png({ compressionLevel: 9 })
-      .toFile(dest);
+    await canvas.png({ compressionLevel: 9 }).toFile(dest);
 
     const done = await sharp(dest).metadata();
     console.log(

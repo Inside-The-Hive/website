@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   EmailIcon,
   TelegramIcon,
@@ -337,29 +337,72 @@ function CrewCard({ member, index }: { member: TeamMember; index: number }) {
 export function Team() {
   const members = team.filter((member) => member.photo);
 
-  // Index of the crew member standing at the left of the row. The window is
-  // taken modulo the headcount, so paging past the end wraps to the start and
-  // the row loops in both directions without an end stop.
   // Index of the person in focus, not of the leftmost slot: the window is
   // built around them, so pressing a control changes who is in the middle
   // rather than which slice of the roster is on screen.
   const [focused, setFocused] = useState(0);
+  // Which way the track is currently travelling: -1, 0 or 1. While this is
+  // non-zero the track carries a transform and a transition, so the figures
+  // visibly slide; when the transition ends it returns to 0 and `focused`
+  // takes the step, which puts every figure back on its slot with the roster
+  // shifted by one. That hand-off is what makes the movement continuous
+  // rather than a jump — the rebase is invisible because the rendered result
+  // is identical to where the animation just finished.
+  const [sliding, setSliding] = useState(0);
+  /** True once the travelling transform has been applied — see the effect. */
+  const [shifted, setShifted] = useState(false);
+
+  // A transition needs two frames: one that establishes the starting value
+  // and one that changes it. Setting `sliding` renders the transform and the
+  // transition together, so the browser has nothing to interpolate from and
+  // jumps straight to the end — which is exactly the pop this replaces. The
+  // transform is therefore held back a frame, applied only once the element
+  // has been painted with its transition in place.
+  useEffect(() => {
+    if (sliding === 0) {
+      setShifted(false);
+      return;
+    }
+    const frame = requestAnimationFrame(() => setShifted(true));
+    return () => cancelAnimationFrame(frame);
+  }, [sliding]);
 
   if (members.length === 0) return null;
 
   const paged = members.length > WINDOW;
   const size = paged ? WINDOW : members.length;
-  // Modulo on every read rather than clamping the state: `start` is free to
-  // run negative or past the length, and the window still resolves.
   const wrap = (i: number) =>
     ((i % members.length) + members.length) % members.length;
-  // The window is centred on the focused person, so they land in the middle
-  // slot. Offsets run negative through positive across FOCUS.
-  const visible = Array.from({ length: size }, (_, i) =>
-    members[wrap(focused + i - (paged ? FOCUS : 0))],
+
+  // One spare slot on each side. The track renders wider than the row shows
+  // and the section clips it, so a figure sliding in comes from off-frame
+  // rather than appearing at the edge.
+  const PAD = paged ? 1 : 0;
+  const visible = Array.from({ length: size + PAD * 2 }, (_, i) =>
+    members[wrap(focused + i - PAD - (paged ? FOCUS : 0))],
   );
-  const step = (delta: number) => setFocused((value) => value + delta);
-  const focusSlot = paged ? FOCUS : -1;
+
+  // Slots are laid out on the same track whether or not the row pages, so the
+  // focus index shifts by the pad — and by the direction of travel while a
+  // slide is running, so the figure arriving in the middle takes colour and
+  // scale on the way in rather than snapping to them once it lands.
+  const focusSlot = paged ? FOCUS + PAD + sliding : -1;
+
+  const step = (delta: number) => {
+    // Ignore a press while one is already travelling, or the transform is
+    // replaced mid-flight and the row appears to teleport.
+    if (sliding !== 0) return;
+    setSliding(delta);
+  };
+
+
+  // The animation has arrived: adopt the step and drop the transform in the
+  // same render, so nothing moves on screen.
+  const settle = () => {
+    if (sliding === 0) return;
+    setFocused((value) => value + sliding);
+    setSliding(0);
+  };
 
   return (
     // Clips the panels where they run past the gutter.
@@ -395,8 +438,28 @@ export function Team() {
         {/* Centred once the row fits: the items overlap heavily, so the group
             is far narrower than four full-width columns and would otherwise
             sit hard against the left gutter with its first figure clipped. */}
+        {/* The clip. The track renders a slot wider than the row shows on
+            each side, so a figure sliding in travels from off-frame instead
+            of appearing at the edge; this is what hides the spares. */}
+        <div className="hidden overflow-x-clip md:block">
         <ul
-          className="hidden items-start pt-[7%] md:flex md:justify-center"
+          // Only the track's own transform ends a slide. This event bubbles,
+          // and the figures beneath run their own scale, filter and opacity
+          // transitions — each of which was settling the row, so one press
+          // advanced the roster several times.
+          onTransitionEnd={(event) => {
+            if (event.target === event.currentTarget && event.propertyName === "transform") {
+              settle();
+            }
+          }}
+          className={cn(
+            "flex items-start pt-[7%] md:justify-center",
+            // Transition only while travelling. Left on permanently, the
+            // rebase at the end of a slide would itself animate and the row
+            // would swing back the way it came.
+            sliding !== 0 &&
+              "transition-transform duration-(--dur-base) ease-(--ease-out-expo) motion-reduce:transition-none",
+          )}
           // Item width is derived from how many people are in the row, not
           // fixed. Each item overlaps its neighbours by OVERLAP on both sides,
           // so n items occupy n x (w - 2 x OVERLAP) + 2 x OVERLAP of track. Solving
@@ -413,6 +476,18 @@ export function Team() {
             // added.
             ["--crew-w" as string]: `${crewWidth(size).toFixed(3)}%`,
             ["--crew-overlap" as string]: `${(-INTERLOCK * crewWidth(size)).toFixed(3)}%`,
+            // One slot's advance, as a share of the track. An item is
+            // crewWidth wide and overlaps both neighbours by INTERLOCK of
+            // that, so consecutive figures sit this far apart — the same
+            // footprint the row's own width math is built on, which is why a
+            // slide of exactly this distance lands each figure on the slot
+            // its neighbour just left.
+            //
+            // Moving forward means the roster travels left, hence the sign.
+            transform:
+              sliding === 0 || !shifted
+                ? undefined
+                : `translateX(${(-sliding * crewWidth(size) * (1 - 2 * INTERLOCK)).toFixed(3)}%)`,
           }}
         >
           {visible.map((member, index) => {
@@ -647,6 +722,7 @@ export function Team() {
             );
           })}
         </ul>
+        </div>
 
         {/* The controls. Only when there are more crew than the row holds —
             with seven or fewer there is nothing to page to, and a pair of

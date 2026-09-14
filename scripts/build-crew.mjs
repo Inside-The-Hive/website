@@ -182,6 +182,88 @@ async function hardenAlpha(source) {
     .toBuffer();
 }
 
+/**
+ * Removes stray islands of opaque pixels, keeping only the subject.
+ *
+ * Some sources arrive with scattered debris around the figure — remnants of
+ * whatever cut them out. It is invisible against a white page and obvious
+ * against this layout's colour panels, where it reads as a dithered smear
+ * beside the person.
+ *
+ * Connected-component labelling rather than a blur or a threshold: the debris
+ * is the same colour as the subject, so only its disconnectedness separates
+ * it. Every component smaller than a share of the largest one is cleared, and
+ * the largest is by definition the person.
+ */
+const ISLAND_MIN = 0.02;
+
+async function despeckle(buffer) {
+  const { data, info } = await sharp(buffer)
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+
+  const { width: w, height: h } = info;
+  const out = Buffer.from(data);
+  const n = w * h;
+  const label = new Int32Array(n).fill(-1);
+  const sizes = [];
+  const queue = new Int32Array(n);
+
+  for (let seed = 0; seed < n; seed += 1) {
+    if (label[seed] !== -1 || out[seed * 4 + 3] === 0) continue;
+
+    const id = sizes.length;
+    let head = 0;
+    let tail = 0;
+    queue[tail] = seed;
+    tail += 1;
+    label[seed] = id;
+    let count = 0;
+
+    while (head < tail) {
+      const q = queue[head];
+      head += 1;
+      count += 1;
+
+      const x = q % w;
+      const y = (q - x) / w;
+      const push = (r) => {
+        if (label[r] === -1 && out[r * 4 + 3] !== 0) {
+          label[r] = id;
+          queue[tail] = r;
+          tail += 1;
+        }
+      };
+      if (x + 1 < w) push(q + 1);
+      if (x - 1 >= 0) push(q - 1);
+      if (y + 1 < h) push(q + w);
+      if (y - 1 >= 0) push(q - w);
+    }
+
+    sizes.push(count);
+  }
+
+  const largest = Math.max(...sizes, 0);
+  const floor = largest * ISLAND_MIN;
+  let cleared = 0;
+  for (let p = 0; p < n; p += 1) {
+    const id = label[p];
+    if (id !== -1 && sizes[id] < floor) {
+      out[p * 4 + 3] = 0;
+      cleared += 1;
+    }
+  }
+
+  return {
+    buffer: await sharp(out, { raw: { width: w, height: h, channels: 4 } })
+      .png()
+      .toBuffer(),
+    cleared,
+    islands: sizes.length,
+  };
+}
+
 async function main() {
   fs.mkdirSync(OUT, { recursive: true });
 
@@ -217,7 +299,11 @@ async function main() {
         .toBuffer();
     }
 
-    const trimmed = await sharp(staged).trim({ threshold: 1 }).png().toBuffer();
+    const clean = await despeckle(staged);
+    const trimmed = await sharp(clean.buffer)
+      .trim({ threshold: 1 })
+      .png()
+      .toBuffer();
     const t = await sharp(trimmed).metadata();
 
     // Pad the short axis only — never crop, or a head loses its crown.
@@ -245,6 +331,7 @@ async function main() {
       `${from} -> crew/${to}`.padEnd(38),
       `${done.width}x${done.height}`.padEnd(12),
       `ratio ${(done.width / done.height).toFixed(3)}`,
+      clean.cleared ? `despeckled ${clean.cleared}px` : "",
     );
   }
 

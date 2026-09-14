@@ -244,6 +244,16 @@ function crewWidth(count: number) {
 const WINDOW = 7;
 
 /**
+ * Index of the focused slot within the window.
+ *
+ * The middle, which is why the window is odd. The row reads as figures
+ * travelling through a fixed focal point rather than a strip sliding sideways:
+ * the person in this slot is the one in colour and scaled forward, and every
+ * press moves the next person into it.
+ */
+const FOCUS = Math.floor(WINDOW / 2);
+
+/**
  * One person, stacked — the small-screen card.
  *
  * The desktop row is a hover composition, and hover does not exist on a
@@ -330,7 +340,10 @@ export function Team() {
   // Index of the crew member standing at the left of the row. The window is
   // taken modulo the headcount, so paging past the end wraps to the start and
   // the row loops in both directions without an end stop.
-  const [start, setStart] = useState(0);
+  // Index of the person in focus, not of the leftmost slot: the window is
+  // built around them, so pressing a control changes who is in the middle
+  // rather than which slice of the roster is on screen.
+  const [focused, setFocused] = useState(0);
 
   if (members.length === 0) return null;
 
@@ -338,11 +351,15 @@ export function Team() {
   const size = paged ? WINDOW : members.length;
   // Modulo on every read rather than clamping the state: `start` is free to
   // run negative or past the length, and the window still resolves.
-  const visible = Array.from(
-    { length: size },
-    (_, i) => members[(((start + i) % members.length) + members.length) % members.length],
+  const wrap = (i: number) =>
+    ((i % members.length) + members.length) % members.length;
+  // The window is centred on the focused person, so they land in the middle
+  // slot. Offsets run negative through positive across FOCUS.
+  const visible = Array.from({ length: size }, (_, i) =>
+    members[wrap(focused + i - (paged ? FOCUS : 0))],
   );
-  const step = (delta: number) => setStart((value) => value + delta);
+  const step = (delta: number) => setFocused((value) => value + delta);
+  const focusSlot = paged ? FOCUS : -1;
 
   return (
     // Clips the panels where they run past the gutter.
@@ -400,6 +417,10 @@ export function Team() {
         >
           {visible.map((member, index) => {
             const pending = isPending(member.name);
+            // While the row pages, the middle slot is the subject: colour,
+            // scaled forward, label showing. Hover drives all three when
+            // there is nothing to page through.
+            const isFocus = index === focusSlot;
 
             return (
               <li
@@ -411,7 +432,12 @@ export function Team() {
                 // front of their neighbour, which is what the ascending
                 // z-index resolves. Hover jumps above every static value so
                 // the scaling portrait is never clipped.
-                className="group relative mx-(--crew-overlap) w-(--crew-w) shrink-0 hover:z-20"
+                className={cn(
+                  "group relative mx-(--crew-overlap) w-(--crew-w) shrink-0 transition-[z-index] hover:z-20",
+                  // Above every static value, so the scaled figure and its
+                  // label are never clipped by the neighbour that overlaps it.
+                  isFocus && "z-20",
+                )}
                 // `translateY`, not `top`: a percentage `top` on a relative
                 // item resolves against the containing block's height, and the
                 // flex row's height is derived from these items — so the
@@ -420,7 +446,7 @@ export function Team() {
                 // element's own box, which is what makes the lift land.
                 //
                 style={{
-                  zIndex: panelFor(index).z,
+                  zIndex: isFocus ? 20 : panelFor(index).z,
                   translate: isLifted(index)
                     ? `${LIFT_COMP.toFixed(3)}% -${LIFT_PCT}%`
                     : "0 0",
@@ -478,7 +504,15 @@ export function Team() {
                       is the item's own lift, which carries the panel with it,
                       so nothing moves the figure independently of the colour
                       it stands on. */}
-                  <div className="absolute inset-x-0 top-0 bottom-[4%] origin-bottom transition-transform duration-(--dur-base) ease-(--ease-out-expo) group-hover:scale-[1.05] motion-reduce:transition-none">
+                  <div
+                    className={cn(
+                      "absolute inset-x-0 top-0 bottom-[4%] origin-bottom transition-transform duration-(--dur-base) ease-(--ease-out-expo) motion-reduce:transition-none",
+                      // Scaled harder than the old hover: this is the one
+                      // figure the row is pointing at, and 5% did not read as
+                      // a focal point so much as a wobble.
+                      isFocus ? "scale-[1.12]" : "group-hover:scale-[1.05]",
+                    )}
+                  >
                     <Image
                       src={member.photo!}
                       alt=""
@@ -493,7 +527,12 @@ export function Team() {
                       // wrapper, which already owns the hover transform and
                       // would overwrite it. Bottom origin so a scaled figure
                       // stays on the shared ground line.
-                      className="origin-bottom object-contain object-[35%_bottom] grayscale transition-[filter] duration-(--dur-base) group-hover:grayscale-0"
+                      className={cn(
+                        "origin-bottom object-contain object-[35%_bottom] transition-[filter] duration-(--dur-base)",
+                        isFocus
+                          ? "grayscale-0"
+                          : "grayscale group-hover:grayscale-0",
+                      )}
                       style={{ scale: String(FIGURE_SCALE) }}
                     />
                   </div>
@@ -527,10 +566,24 @@ export function Team() {
                         // of them. Aligned to the panel's own corner (x 8% /
                         // 92%), the text grows inward, so nothing can spill
                         // into the neighbouring slot.
-                        "pointer-events-none absolute z-30 translate-y-1 whitespace-nowrap text-ink opacity-0 transition-[opacity,transform] duration-(--dur-base) ease-(--ease-out-expo) group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:transition-none",
-                        member.labelAt === "top"
-                          ? "bottom-[88%] right-[8%] text-right"
-                          : "top-[97%] left-[8%] text-left",
+                        "pointer-events-none absolute z-30 whitespace-nowrap text-ink transition-[opacity,transform] duration-(--dur-base) ease-(--ease-out-expo) motion-reduce:transition-none",
+                        // The focused figure names itself — the row is
+                        // pointing at them, so the label is not something the
+                        // reader should have to hunt for with a pointer.
+                        isFocus
+                          ? "translate-y-0 opacity-100"
+                          : "translate-y-1 opacity-0 group-hover:translate-y-0 group-hover:opacity-100",
+                        // The hover label could sit wherever it liked — it
+                        // appeared under a pointer and vanished. The focused
+                        // one is permanently on screen and directly above the
+                        // controls, so a bottom-anchored label ran into them.
+                        // In focus both variants tuck against the panel's
+                        // lower left, inside the row's own footprint.
+                        isFocus
+                          ? "top-[99%] left-[8%] text-left"
+                          : member.labelAt === "top"
+                            ? "bottom-[88%] right-[8%] text-right"
+                            : "top-[97%] left-[8%] text-left",
                       )}
                     >
                       {/* Sacramento, the one place the site leaves Inter — a
@@ -627,7 +680,7 @@ export function Team() {
               aria-live="polite"
               className="u-label min-w-[5ch] text-center text-(length:--text-small) text-ink/55 tabular-nums"
             >
-              {((start % members.length) + members.length) % members.length + 1}
+              {wrap(focused) + 1}
               {" / "}
               {members.length}
             </p>

@@ -43,6 +43,17 @@ const OUT = path.join(PUBLIC, "crew");
 const TARGET_RATIO = 0.648;
 
 /**
+ * Cap on the output's height, in pixels.
+ *
+ * The row renders each figure at a few hundred CSS pixels, so anything past
+ * this is weight the reader pays for and never sees. Portraits arrive at
+ * wildly different sizes — one source was 2624x3936 and produced a 12.5MB
+ * PNG, four times the next largest — and without a cap that lands in the page
+ * as-is. Comfortably above the largest rendered size, including a 2x screen.
+ */
+const MAX_HEIGHT = 1600;
+
+/**
  * Lightness above which an edge-connected pixel counts as background. Set
  * below the darkest studio white measured across these files (about 244) with
  * room to spare, and far above anything in the subjects, who wear black.
@@ -78,8 +89,13 @@ const SET = [
   ["divine-trim.png", "divine.png"],
   ["snazzy.png", "snazzy.png"],
   ["Deon.png", "deon.png"],
-  ["000000.png", "crew-8.png", "alpha"],
-  ["111111.png", "crew-9.png"],
+  ["chibunna.png", "chibunna.png", "alpha"],
+  ["nycan.png", "nycan.png"],
+  // The figure is cut out, but the transparency checkerboard was flattened
+  // into the file as real white and grey pixels — so its alpha channel marks
+  // that pattern as subject and the alpha mode keeps it. The light fill
+  // clears it: edge-connected, and the subject wears black throughout.
+  ["Promise.png", "promise.png", "light"],
 ];
 
 /** Clears an edge-connected light background, returning RGBA raw pixels. */
@@ -281,7 +297,14 @@ async function main() {
     // arrived already cut out is left alone — re-running the fill on it would
     // do nothing useful and risks eating a light edge.
     let staged;
-    if (cut === "alpha") {
+    if (cut === "light") {
+      // Named explicitly, so run the fill even though the file carries an
+      // alpha channel — here that channel is what is wrong.
+      const { buffer, width, height } = await cutBackground(source, "light");
+      staged = await sharp(buffer, { raw: { width, height, channels: 4 } })
+        .png()
+        .toBuffer();
+    } else if (cut === "alpha") {
       // Shot on black, where colour cannot tell jacket from background.
       staged = await maskByAlpha(source);
     } else if (meta.hasAlpha) {
@@ -313,7 +336,7 @@ async function main() {
     else w = Math.round(h * TARGET_RATIO);
 
     const dest = path.join(OUT, to);
-    await sharp({
+    const canvas = sharp({
       create: {
         width: w,
         height: h,
@@ -322,7 +345,12 @@ async function main() {
       },
     })
       // South, so every figure stands on the same ground line.
-      .composite([{ input: trimmed, gravity: "south" }])
+      .composite([{ input: trimmed, gravity: "south" }]);
+
+    await (h > MAX_HEIGHT
+      ? canvas.resize({ height: MAX_HEIGHT })
+      : canvas
+    )
       .png({ compressionLevel: 9 })
       .toFile(dest);
 

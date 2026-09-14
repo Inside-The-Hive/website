@@ -99,22 +99,27 @@ export const team: TeamMember[] = [
     labelAt: "top",
     photo: "/crew/deon.png",
   },
-  // TODO(client): real names and roles for these two. The portraits are real
-  // and supplied; the identities are not known here and are deliberately left
-  // as TODO rather than invented — isPending() in Team.tsx hides the label
-  // entirely while a name starts with TODO, so the figure appears in the row
-  // without a caption until these are filled in.
   {
-    name: "TODO",
-    role: "TODO",
+    name: "Chibunna",
+    // TODO(client): role not supplied. The label renders the name alone
+    // until it is — an invented job title is worse than a missing one.
+    role: "",
     labelAt: "bottom",
-    photo: "/crew/crew-8.png",
+    photo: "/crew/chibunna.png",
   },
   {
-    name: "TODO",
-    role: "TODO",
+    name: "Nycan",
+    /** TODO(client): role not supplied. */
+    role: "",
     labelAt: "top",
-    photo: "/crew/crew-9.png",
+    photo: "/crew/nycan.png",
+  },
+  {
+    name: "Promise",
+    /** TODO(client): role not supplied. */
+    role: "",
+    labelAt: "bottom",
+    photo: "/crew/promise.png",
   },
 ];
 

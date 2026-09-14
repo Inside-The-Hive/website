@@ -324,9 +324,11 @@ function CrewCard({ member, index }: { member: TeamMember; index: number }) {
               member.name
             )}
           </p>
-          <p className="mt-1 text-sm leading-tight font-normal text-ink/55">
-            {member.role}
-          </p>
+          {member.role && (
+            <p className="mt-1 text-sm leading-tight font-normal text-ink/55">
+              {member.role}
+            </p>
+          )}
           {/* Marks are 44px touch targets here rather than the desktop row's
               bare glyphs — a 16px icon is not tappable. */}
           <div className="mt-1 -ml-2.5 flex items-center">
@@ -716,9 +718,16 @@ export function Team() {
                           member.name
                         )}
                       </p>
-                      <p className="mt-[1.1cqw] text-[max(3.6cqw,12.5px)] leading-tight font-normal text-ink/55">
-                        {member.role}
-                      </p>
+                      {/* Omitted rather than rendered empty: a blank
+                          paragraph still carries its top margin, so a member
+                          whose role has not been supplied yet would push
+                          their social marks down out of line with everyone
+                          else's. */}
+                      {member.role && (
+                        <p className="mt-[1.1cqw] text-[max(3.6cqw,12.5px)] leading-tight font-normal text-ink/55">
+                          {member.role}
+                        </p>
+                      )}
 
                       {/* Personal accounts. All three marks always show, so
                           the label's design is settled before the handles

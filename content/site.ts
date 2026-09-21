@@ -39,7 +39,7 @@ export const site = {
  * About has no page yet and is not worth a link that leads nowhere.
  */
 export const navLinks = [
-  { label: "Gallery", href: "/gallery" },
+  { label: "Events", href: "/gallery" },
   { label: "Podcast", href: "/podcast" },
 ] as const;
 
@@ -89,7 +89,7 @@ export const footerGroups = [
   {
     title: "Explore",
     links: [
-      { label: "Gallery", href: "/gallery" },
+      { label: "Events", href: "/gallery" },
       { label: "Podcast", href: "/podcast" },
     ],
   },

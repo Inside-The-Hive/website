@@ -35,7 +35,7 @@ import sharp from "sharp";
 const SIZE = 900;
 
 /** Files at the root of public/ that belong to the gallery. */
-const PATTERN = /^(dinner|movie|technova|unchain)\d+\.(jpe?g|png)$/i;
+const PATTERN = /^(dinner|movie|technova|unchain|ith-roof)\d+\.(jpe?g|png)$/i;
 
 const DIR = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC = path.join(DIR, "..", "public");

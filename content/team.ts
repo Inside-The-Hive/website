@@ -132,15 +132,6 @@ export const team: TeamMember[] = [
     labelAt: "top",
     photo: "/crew/michael.png",
   },
-  {
-    name: "Truth",
-    role: "Intern",
-    labelAt: "bottom",
-    photo: "/crew/truth.png",
-    x: "https://x.com/heistruthx",
-    telegram: "https://t.me/heistruthx",
-    email: "truth7824@gmail.com",
-  },
 ];
 
 /**

@@ -37,6 +37,36 @@ export type GalleryPhoto = {
  */
 const REAL: Omit<GalleryPhoto, "id">[] = [
   {
+    image: "/gallery/ith-roof1.webp",
+    title: "Redots Club x Inside The Hive Dinner Night",
+    slug: "redots-nftng-dinner-night",
+  },
+  {
+    image: "/gallery/ith-roof2.webp",
+    title: "Redots Club x Inside The Hive Dinner Night",
+    slug: "redots-nftng-dinner-night",
+  },
+  {
+    image: "/gallery/ith-roof3.webp",
+    title: "Redots Club x Inside The Hive Dinner Night",
+    slug: "redots-nftng-dinner-night",
+  },
+  {
+    image: "/gallery/ith-roof4.webp",
+    title: "Redots Club x Inside The Hive Dinner Night",
+    slug: "redots-nftng-dinner-night",
+  },
+  {
+    image: "/gallery/ith-roof5.webp",
+    title: "Redots Club x Inside The Hive Dinner Night",
+    slug: "redots-nftng-dinner-night",
+  },
+  {
+    image: "/gallery/ith-roof6.webp",
+    title: "Redots Club x Inside The Hive Dinner Night",
+    slug: "redots-nftng-dinner-night",
+  },
+  {
     image: "/gallery/dinner1.webp",
     title: "RedotClub x Inside The Hive Dinner Night",
     slug: "redots-club-dinner-night",

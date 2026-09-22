@@ -1,10 +1,6 @@
 import Link from "next/link";
-import { socials } from "@/content/site";
 
 /** Pulled from the site's own contact address rather than restated here. */
-const PARTNER_EMAIL =
-  socials.find((s) => s.label === "Email")?.href.replace("mailto:", "") ??
-  "insidethehivepod@gmail.com";
 
 /**
  * The ask, at the foot of the gallery.
@@ -106,14 +102,12 @@ export function PartnerCta() {
           <div className="flex flex-wrap items-end gap-4 md:col-span-5 md:justify-end">
             {/* Yellow as a fill with ink text — the one loud element here, and
                 the same treatment the nav gives its primary action. */}
-            {/* Mail rather than a /partner route: that page does not exist,
-                and a live address is a better ask than a dead link. */}
-            <a
-              href={`mailto:${PARTNER_EMAIL}?subject=${encodeURIComponent("Event coverage enquiry")}`}
+            <Link
+              href="/partner"
               className="u-label inline-flex min-h-12 items-center bg-honey px-7 text-ink transition-colors duration-(--dur-fast) hover:bg-white"
             >
               Partner with us
-            </a>
+            </Link>
             <Link
               href="/gallery"
               // Backdrop blur rather than a flat border: over moving footage a

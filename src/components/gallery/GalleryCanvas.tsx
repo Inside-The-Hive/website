@@ -123,7 +123,7 @@ function StaticHero() {
       {/* Same texture the home hero carries, behind the scattered frames. */}
       <DoodleField />
       <h1 className="pointer-events-none absolute inset-0 z-50 flex items-center justify-center text-(length:--text-h1) font-extrabold tracking-[-0.03em] text-ink">
-        Gallery
+        Events
       </h1>
 
       {picks.map((photo, index) => {
@@ -335,7 +335,7 @@ export function GalleryCanvas() {
             "0 0 18px rgba(255,255,255,0.95), 0 0 48px rgba(255,255,255,0.8), 0 0 110px rgba(255,255,255,0.6)",
         }}
       >
-        Gallery
+        Events
       </h1>
 
       {/* Exactly one element carries the camera transform. Thirty individually

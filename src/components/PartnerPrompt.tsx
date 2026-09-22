@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { socials } from "@/content/site";
 
@@ -149,13 +150,16 @@ export function PartnerPrompt() {
         </p>
 
         <div className="mt-6 flex flex-wrap gap-3">
-          <a
-            href={`mailto:${EMAIL}?subject=${encodeURIComponent("Partnering with Inside The Hive")}`}
+          {/* The page, not a mailto. The card has room for three sentences;
+              anyone it persuades needs somewhere to find out what partnering
+              actually involves before composing an email. */}
+          <Link
+            href="/partner"
             onClick={dismiss}
             className="inline-flex min-h-11 items-center bg-honey px-6 text-sm font-medium text-ink transition-colors duration-(--dur-fast) hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
             Start a conversation
-          </a>
+          </Link>
           <button
             type="button"
             onClick={() => {

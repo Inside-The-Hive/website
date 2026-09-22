@@ -42,7 +42,7 @@ export function EventIndex() {
         {/* Spaced tiles rather than a hairline grid. At this size the frames
             are the content, and butting them edge to edge made two unrelated
             rooms read as one photograph. */}
-        <ul className="grid grid-cols-1 gap-[clamp(1.5rem,3vw,2.75rem)] md:grid-cols-2">
+        <ul className="grid grid-cols-1 gap-[clamp(1.5rem,3vw,2.75rem)] sm:grid-cols-2 xl:grid-cols-3">
           {events.map((event) => {
             const photos = photosForEvent(event.slug);
             const cover = photos[0];

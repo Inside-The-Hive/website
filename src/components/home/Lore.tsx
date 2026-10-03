@@ -41,9 +41,9 @@ export function Lore() {
             footnote to it rather than a second paragraph of equal weight.
             Centred on the page, as is the narrative below it. */}
         <p className="mx-auto max-w-[62ch] text-[clamp(1.5rem,3.05vw,2.75rem)] leading-[1.18] font-normal tracking-[-0.02em] text-ink">
-          {site.name} started the way most things in Lagos start — someone
-          young, out of school, with more conviction than plan, walking into
-          rooms he had not been invited to and paying attention.
+          {site.name} started with a phone in hand, no studio, no budget, a
+          borrowed camera and a laser-focused view on telling the true African
+          Web3 story from the inside.
         </p>
 
         {/* The narrative. Small and on a short measure, centred on the page
@@ -56,27 +56,27 @@ export function Lore() {
             for no gain. */}
         <ScrollTintText className="mx-auto mt-[clamp(1.75rem,4vh,3rem)] grid max-w-[65ch] gap-6 text-left text-[clamp(1.125rem,2.08vw,1.5rem)] leading-[1.42]">
           <p>
-            There was no studio and no budget. There was a phone, a borrowed
-            camera, and a suspicion that African Web3 was being covered by
-            people who had never stood in one of its rooms. The coverage that
-            existed came from a distance — announcements, threads, secondhand
-            takes. Nobody was in the room while it happened.
+            A story often overlooked by people who had barely any interest in
+            looking deeper. Too often the story was being told from a distance,
+            but the conversations, communities, builders and moments shaping
+            the ecosystem were happening somewhere else. The African Web3
+            ecosystem needed a change, and the birth of {site.name} presented
+            that change.
           </p>
 
           <p>
-            So he went. Meetups above shops, launches that ran three hours
-            late, conference hallways where the real conversation was always
-            happening just outside the panel. He shot what he saw, published
-            it fast, and learned the difference between reporting on a
-            community and belonging to one.
+            From grassroots meetups and project launches to conferences and
+            community dinners where unfiltered conversations happen outside the
+            panel, {site.name} has covered, published and presented the outside
+            world with a closer view into the stories shaping the African Web3
+            ecosystem.
           </p>
 
           <p>
-            People started recognising the camera before they recognised him.
-            Founders asked him to cover launches. Then to help run them. The
-            work turned from documenting other people&rsquo;s events into
-            building the ones worth documenting — dinners, screenings,
-            summits, a podcast that puts the same people on the record.
+            Today {site.name} is bigger, better and more committed than ever to
+            capturing the people, ideas, projects and moments shaping
+            Africa&rsquo;s Web3 ecosystem — and turning those stories into
+            content, conversations and experiences that travel beyond the room.
           </p>
 
           {/* Darker than the paragraphs above — it is the closing statement,
@@ -84,8 +84,9 @@ export function Lore() {
               the ramp one paragraph short would read as the effect breaking
               rather than as emphasis. */}
           <p className="mt-2">
-            That is still the whole method. Be in the room. Bring a camera.
-            Make something the room is proud of.
+            Trusted by builders, founders, communities and ecosystems pushing
+            the industry forward, {site.name} exists for one reason: to tell
+            the story of a thriving African Web3 ecosystem from the inside.
           </p>
         </ScrollTintText>
       </div>

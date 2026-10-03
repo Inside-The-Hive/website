@@ -134,15 +134,15 @@ async function convert(sourcePath, destPath) {
     .rotate()
     .resize(SIZE, SIZE, {
       fit: "cover",
-      // Event photography is reliably people standing in the lower two
-      // thirds of the frame, with ceiling, stage lighting or a banner
-      // filling the top. "attention" picked whichever region had the most
-      // edges/saturation, which on these shots is often a bright light or a
-      // backdrop near the top — so a tall source lost people's feet while
-      // keeping ceiling. South-anchored cropping instead always trims off
-      // the top first when a crop is needed, which is the stated fix: never
-      // cut from the bottom.
-      position: "south",
+      // Anchor to the top of the source, not the bottom. Sharp's "position"
+      // names the edge of the SOURCE the crop window is pinned against, so
+      // "south" keeps the bottom of the frame and discards the top — which
+      // is backwards from what was wanted here and cut people's faces off a
+      // portrait shot where the subject fills the upper frame. "north" pins
+      // the window to the top instead, so a crop always removes pixels from
+      // the bottom and the top of the frame — where faces and heads are —
+      // is never the part that gets cut.
+      position: "north",
     })
     .webp({ quality: 80, effort: 5 })
     .toFile(destPath);

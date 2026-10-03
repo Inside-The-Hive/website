@@ -61,3 +61,15 @@ shots/
 
 # Verification builds (see distDir in next.config.ts).
 /.next-verify/
+
+# Raw event-photo exports. A client/Drive folder dropped at the root of
+# public/ can run into the hundreds of files and multiple gigabytes — one
+# delivery here was six folders, 492 images, 2.5GB — and only the resized
+# derivatives in public/gallery/ are ever served. See SOURCE_FOLDERS in
+# scripts/build-gallery.mjs for the folder-name -> event-slug mapping these
+# patterns have to stay in sync with.
+/public/*PICTURES*/
+/public/*MEDIA*/
+/public/*Pictures*/
+/public/*PHOTOGRAPHS*/
+/public/movie night*/

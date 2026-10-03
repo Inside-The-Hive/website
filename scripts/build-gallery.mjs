@@ -3,22 +3,38 @@
  *
  * Usage: node scripts/build-gallery.mjs
  *
- * Reads every `<event><n>` file at the root of public/ and writes a square
- * WebP into public/gallery/. Originals are read-only here and are never
- * modified or moved — they are the masters.
+ * Reads photographs from two kinds of source and writes small WebPs into
+ * public/gallery/:
  *
- * Why this exists at all: the photographs arrive straight off the camera at
- * around 6720x4480. The canvas renders them at roughly 250px, so a raw file is
- * some twenty-seven times larger than needed in each dimension, and the browser
- * still has to decode the full bitmap — about 115MB in memory per image, near a
- * gigabyte across the set once each appears twice. Panning then has to composite
- * all of it every frame, which is what made the camera hang and skip. Resizing
- * ahead of time cut the set from 37.6MB to 0.8MB on the wire, and from ~962MB to
- * ~37MB decoded, which took the pan from dropping frames to a clean sixty.
+ *   1. Loose files at the root of public/ matching <event><n>.(jpg|png) —
+ *      the original convention, kept for one-off additions.
+ *   2. Whole folders dropped at the root of public/ (e.g. a Google Drive
+ *      export), mapped to an event slug by SOURCE_FOLDERS below. Every image
+ *      inside is picked up regardless of nesting depth or filename.
  *
- * Next's image optimizer is not used for these: the canvas positions each frame
- * absolutely inside a transformed world at sizes it cannot infer, so the work is
- * done once here at build time instead of per-request.
+ * Originals are read-only here and are never modified, moved, or deleted —
+ * they are the masters. This script only ever writes into public/gallery/.
+ *
+ * Why this exists at all: photographs arrive straight off the camera at
+ * 4000-7000px per side and several megabytes each. The canvas renders a frame
+ * at roughly 210-300px CSS, so a raw file is more than twenty times larger
+ * than needed in each dimension, and the browser still has to decode the full
+ * bitmap. Resizing ahead of time is what keeps the pan smooth — see the git
+ * history for the numbers from the first pass (37.6MB -> 0.8MB, ~962MB ->
+ * ~37MB decoded).
+ *
+ * A folder dropped straight off a phone or a shared drive can run into the
+ * hundreds of files and several gigabytes — one delivery here was six
+ * folders, 492 images, 2.5GB. Two limits keep that from becoming the site's
+ * problem: SIZE is held small (520px; the previous 900px was already more
+ * than a 2x display needs at this render size), and PER_EVENT_CAP bounds how
+ * many frames any one event contributes, chosen evenly across the folder
+ * rather than just the first N so a cap doesn't mean "only the start of the
+ * shoot".
+ *
+ * Next's image optimizer is not used for these: the canvas positions each
+ * frame absolutely inside a transformed world at sizes it cannot infer, so
+ * the work is done once here at build time instead of per-request.
  */
 
 import fs from "node:fs";
@@ -29,53 +45,186 @@ import sharp from "sharp";
 /**
  * Output edge, in pixels.
  *
- * Frames render at 210-300px CSS and scale to 1.05 on hover. 900 covers that on
- * a 3x display with room spare, and still decodes to only ~3MB each.
+ * Frames render at 210-300px CSS and scale to 1.05 on hover. 520 covers that
+ * on a 2x display with room spare. The previous 900px was sized for a 3x
+ * display the canvas never actually renders at — nobody views the gallery at
+ * triple pixel density zoomed to fill the panel — and across 492 incoming
+ * photographs that difference is the one that matters for load time.
  */
-const SIZE = 900;
+const SIZE = 520;
 
-/** Files at the root of public/ that belong to the gallery. */
-const PATTERN = /^(dinner|movie|technova|unchain|ith-roof)\d+\.(jpe?g|png)$/i;
+/**
+ * Ceiling on frames kept per event.
+ *
+ * Picked evenly across the source folder by index (every Nth file) rather
+ * than the first PER_EVENT_CAP alphabetically, so a capped set still spans
+ * the whole shoot instead of just whatever sorts first.
+ */
+const PER_EVENT_CAP = 24;
+
+/** Loose files at the root of public/ that belong to the gallery. */
+const LOOSE_PATTERN = /^(dinner|movie|technova|unchain|ith-roof)\d+\.(jpe?g|png)$/i;
+
+const IMAGE_EXT = /\.(jpe?g|png)$/i;
+
+/**
+ * Folders dropped at the root of public/, mapped to the event slug their
+ * photographs belong to. Match is a case-insensitive prefix of the folder
+ * name, since Drive appends an export timestamp
+ * ("-20261003T004505Z-1-001") that differs per download.
+ *
+ * Two folders can share a slug — the NFTng dinner night's photographs
+ * arrived as two separate exports — and both are swept in.
+ */
+const SOURCE_FOLDERS = [
+  { prefix: "REDOT CLUB 2026 PICTURES", slug: "redots-club-dinner-night" },
+  { prefix: "RedDots Club ROOFTOP MEDIA", slug: "redots-nftng-dinner-night" },
+  {
+    prefix: "REDOTSCLUBxINSIDETHEHIVE DINNER NIGHT PHOTOGRAPHS",
+    slug: "redots-nftng-dinner-night",
+  },
+  {
+    prefix: "INSIDETHEHIVE TECHNOVA SUMMIT BOOTH PICTURES",
+    slug: "technova",
+  },
+  { prefix: "movie night", slug: "redots-club-movie-night" },
+  {
+    prefix: "UNCHAIN SUMMER 26",
+    slug: "nftng-unchain-summer",
+  },
+];
 
 const DIR = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC = path.join(DIR, "..", "public");
 const OUT = path.join(PUBLIC, "gallery");
 
+/** Every image file under `root`, any depth, sorted for a stable pick order. */
+function walkImages(root) {
+  const out = [];
+  const stack = [root];
+  while (stack.length) {
+    const dir = stack.pop();
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) stack.push(full);
+      else if (IMAGE_EXT.test(entry.name)) out.push(full);
+    }
+  }
+  out.sort();
+  return out;
+}
+
+/** Evenly-spaced selection of `cap` items from `items`, order preserved. */
+function sample(items, cap) {
+  if (items.length <= cap) return items;
+  const step = items.length / cap;
+  const picked = [];
+  for (let i = 0; i < cap; i += 1) picked.push(items[Math.floor(i * step)]);
+  return picked;
+}
+
+/** A filesystem-safe, lowercase slug for a source path, used as the output name. */
+function nameFor(slug, index) {
+  return `${slug}-${String(index + 1).padStart(2, "0")}.webp`;
+}
+
+async function convert(sourcePath, destPath) {
+  await sharp(sourcePath)
+    // EXIF orientation first — a phone portrait crops wrongly otherwise.
+    .rotate()
+    .resize(SIZE, SIZE, {
+      fit: "cover",
+      // Event photography is reliably people standing in the lower two
+      // thirds of the frame, with ceiling, stage lighting or a banner
+      // filling the top. "attention" picked whichever region had the most
+      // edges/saturation, which on these shots is often a bright light or a
+      // backdrop near the top — so a tall source lost people's feet while
+      // keeping ceiling. South-anchored cropping instead always trims off
+      // the top first when a crop is needed, which is the stated fix: never
+      // cut from the bottom.
+      position: "south",
+    })
+    .webp({ quality: 80, effort: 5 })
+    .toFile(destPath);
+}
+
 async function main() {
   fs.mkdirSync(OUT, { recursive: true });
 
-  const files = fs.readdirSync(PUBLIC).filter((f) => PATTERN.test(f));
-  if (files.length === 0) {
-    console.error("No source photographs matched at the root of public/.");
-    process.exit(1);
-  }
-
   let before = 0;
   let after = 0;
+  let total = 0;
 
-  for (const file of files) {
-    const out = path.join(OUT, `${path.parse(file).name.toLowerCase()}.webp`);
-    before += fs.statSync(path.join(PUBLIC, file)).size;
+  // ---- Pass 1: loose files at the root, original convention. ----
+  const loose = fs.readdirSync(PUBLIC).filter((f) => LOOSE_PATTERN.test(f));
+  for (const file of loose) {
+    const src = path.join(PUBLIC, file);
+    const dest = path.join(OUT, `${path.parse(file).name.toLowerCase()}.webp`);
+    before += fs.statSync(src).size;
+    await convert(src, dest);
+    after += fs.statSync(dest).size;
+    total += 1;
+    console.log(`${file} -> gallery/${path.basename(dest)}`);
+  }
 
-    await sharp(path.join(PUBLIC, file))
-      // EXIF orientation first — a phone portrait crops wrongly otherwise.
-      .rotate()
-      // `attention` picks the crop window around the busiest region, which on
-      // event photography is reliably the people rather than the ceiling.
-      .resize(SIZE, SIZE, { fit: "cover", position: "attention" })
-      .webp({ quality: 82, effort: 5 })
-      .toFile(out);
+  // ---- Pass 2: whole folders, grouped and capped per event. ----
+  const bySlug = new Map();
+  for (const entry of fs.readdirSync(PUBLIC, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue;
+    const match = SOURCE_FOLDERS.find((f) =>
+      entry.name.toLowerCase().startsWith(f.prefix.toLowerCase()),
+    );
+    if (!match) continue;
+    const images = walkImages(path.join(PUBLIC, entry.name));
+    const list = bySlug.get(match.slug) ?? [];
+    list.push(...images);
+    bySlug.set(match.slug, list);
+  }
 
-    after += fs.statSync(out).size;
-    console.log(`${file} -> gallery/${path.basename(out)}`);
+  // Sorted by slug so the output is deterministic across runs regardless of
+  // directory-listing order.
+  const newGalleryEntries = [];
+  for (const slug of [...bySlug.keys()].sort()) {
+    const all = bySlug.get(slug).sort();
+    const picked = sample(all, PER_EVENT_CAP);
+    console.log(
+      `\n${slug}: ${all.length} photographs found, keeping ${picked.length}`,
+    );
+    // Run this event's conversions in parallel, but await before moving to
+    // the next event so console output stays grouped and readable.
+    await Promise.all(
+      picked.map(async (src, index) => {
+        const dest = path.join(OUT, nameFor(slug, index));
+        before += fs.statSync(src).size;
+        newGalleryEntries.push({ slug, dest: path.basename(dest) });
+        await convert(src, dest);
+        after += fs.statSync(dest).size;
+        total += 1;
+        console.log(`  ${path.basename(src)} -> gallery/${path.basename(dest)}`);
+      }),
+    );
   }
 
   const mb = (bytes) => (bytes / 1048576).toFixed(1);
   console.log(
-    `\n${files.length} frames: ${mb(before)}MB -> ${mb(after)}MB ` +
+    `\n${total} frames: ${mb(before)}MB -> ${mb(after)}MB ` +
       `(${(100 - (after / before) * 100).toFixed(1)}% smaller)`,
   );
-  console.log("Add the new paths to content/gallery.ts.");
+
+  if (newGalleryEntries.length) {
+    console.log(
+      "\nNew entries from folders — add these to content/gallery.ts:",
+    );
+    const bySlugOut = new Map();
+    for (const { slug, dest } of newGalleryEntries) {
+      const l = bySlugOut.get(slug) ?? [];
+      l.push(dest);
+      bySlugOut.set(slug, l);
+    }
+    for (const [slug, files] of bySlugOut) {
+      console.log(`  ${slug}: ${files.length} files (${files[0]} .. ${files[files.length - 1]})`);
+    }
+  }
 }
 
 main().catch((error) => {
